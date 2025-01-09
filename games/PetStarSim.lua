@@ -149,12 +149,10 @@ local Toggle = Menu:CreateToggle({
     Callback = function(Value)
         getgenv().AutoHatch = Value
         if Value then
-            -- Start auto-hatching eggs
             task.spawn(function()
                 AutoHatchEggs()
             end)
         else
-            -- Stop auto-hatching eggs
             print("Auto Hatch Eggs stopped.")
         end
     end,
