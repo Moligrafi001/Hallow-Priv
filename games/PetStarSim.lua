@@ -91,7 +91,6 @@ local hatchFunction = ReplicatedStorage:WaitForChild("PetSystem")
 local function AutoHatchEggs()
     while getgenv().AutoHatch == true do
         if hatchFunction and hatchFunction:IsA("RemoteFunction") then
-            -- Arguments may be needed; adjust if necessary
             local success, response = pcall(function()
                 return hatchFunction:InvokeServer(3) 
             end)
