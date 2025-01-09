@@ -88,13 +88,12 @@ local hatchFunction = ReplicatedStorage:WaitForChild("PetSystem")
     :WaitForChild("Remotes")
     :WaitForChild("Hatch")
 
--- Function to auto-hatch eggs
 local function AutoHatchEggs()
     while getgenv().AutoHatch == true do
         if hatchFunction and hatchFunction:IsA("RemoteFunction") then
             -- Arguments may be needed; adjust if necessary
             local success, response = pcall(function()
-                return hatchFunction:InvokeServer(3) -- Example: Argument "3" for "Open x3" eggs
+                return hatchFunction:InvokeServer(3) 
             end)
 
             if success then
@@ -107,7 +106,7 @@ local function AutoHatchEggs()
             break
         end
 
-        wait(3) -- Adjust the wait time to the egg hatching cooldown
+        wait(3) 
     end
 end
 
