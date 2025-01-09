@@ -57,10 +57,9 @@ getgenv().AutoChest = false
 getgenv().PlayerESP = false
 getgenv().ChestsESP = false
 getgenv().Fullbright = false
-getgenv().AutoMobs = false
 
 -- Locais
-local SelectedMob = "No Mob Selected"
+local IlhaSelecionada = "Nenhum"
 
 -- Funções
 local function AutoChest()
@@ -71,13 +70,15 @@ local function AutoChest()
 					local final = "Chest" .. numero .. "base1"
 					if chest:FindFirstChild(final) and workspace:FindFirstChild(game.Players.LocalPlayer.Name) then
 						game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
-						game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
-						wait(0.7)
-						for _, pp in pairs(chest:GetDescendants()) do
-							if pp:IsA("ProximityPrompt") then
-								fireproximityprompt(pp)
-								game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
-							break
+						if getgenv().AutoChest == true then
+							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
+							wait(0.7)
+							for _, pp in pairs(chest:GetDescendants()) do
+								if pp:IsA("ProximityPrompt") then
+									fireproximityprompt(pp)
+									game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+								break
+								end
 							end
 						end
 					break
@@ -86,6 +87,12 @@ local function AutoChest()
 			end
 			wait(0.2)
 		end
+	end
+	wait(1)
+	if getgenv().AutoChest == false then
+		pcall(function()
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+		end)
 	end
 end
 local function PlayerESP()
@@ -255,58 +262,31 @@ local function NoFog()
 		end
 	end)
 end
--- workspace.Monsters.monster0101.MonsterTitle.DescLabel
-local function AutoMobs()
-	while getgenv().AutoMobs == true do
-		for _, mob in pairs(workspace.Monsters:GetChildren()) do
-			if mob.Name == SelectedMob then
-				if mob:FindFirstChild("HumanoidRootPart") and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character.HumanoidRootPart then
-					if not mob:FindFirstChild("pussy") then
-						local weld = Instance.new("Weld")
-						weld.Name = "pussy"
-						weld.Part0 = mob.HumanoidRootPart
-						weld.Part1 = game.Players.LocalPlayer.Character.HumanoidRootPart
-						weld.C0 = CFrame.new(0, 9, 0)
-						weld.Parent = mob
-					end
-				end
-			end
-		end
-		wait(0.33)
-	end
-	if getgenv().AutoMobs == false then
-		for _, mob in pairs(workspace.Monsters:GetChildren()) do
-			if mob:FindFirstChild("pussy") then
-				mob.pussy:Destroy()
-			end
-		end
+local function IlhaTP()
+	if IlhaSelecionada == "[Lv. 1] Center Town" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(4679.76367, 42.2578659, 456.411102, -0.0171580166, 7.95514978e-08, 0.999852777, 2.43265301e-08, 1, -7.91457566e-08, -0.999852777, 2.2964965e-08, -0.0171580166)
+	elseif IlhaSelecionada == "[Lv. 100] Arena Island" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2824.09326, 39.8518562, 497.499268, 0.0509811006, -4.10657748e-08, -0.998699605, -3.91588486e-08, 1, -4.31182059e-08, 0.998699605, 4.13061407e-08, 0.0509811006)
+	elseif IlhaSelecionada == "[Lv. 400] Pirate Port" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2593.84937, 37.4718246, 2821.4707, 0.939572215, 1.30868498e-08, -0.342350781, -3.92323507e-09, 1, 2.7459226e-08, 0.342350781, -2.44568028e-08, 0.939572215)
+	elseif IlhaSelecionada == "[Lv. 600] Demon Island" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(2926.09741, 35.8855057, -2311.03296, 0.999669671, 1.29144775e-08, -0.0257012546, -1.08754765e-08, 1, 7.94744466e-08, 0.0257012546, -7.91686787e-08, 0.999669671)
+	elseif IlhaSelecionada == "[Lv. 800] Ninja Village" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(549.231873, 19.581461, -1566.31616, -0.515836358, -2.40943194e-08, 0.856687129, 3.22156133e-08, 1, 4.75229562e-08, -0.856687129, 5.2112771e-08, -0.515836358)
+	elseif IlhaSelecionada == "[Lv. 1000] Namek Planet" then
+		game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(27.1166286, 19.2115784, 2631.10156, 0.450213253, -0.0156807061, 0.892783344, 0.00335402554, 0.999868453, 0.0158701614, -0.892914772, -0.00415053824, 0.450206608)
+	else
+		Rayfield:Notify({
+			Title = "No Island selected.",
+			Content = "You have to select it before you teleport.",
+			Duration = 3,
+			Image = 17091459839,
+		})
 	end
 end
--- it's working but it's adding the weld in every mob, it needs to do it with only one mob per time
 
 -- Menu		
 local Menu = Window:CreateTab("Main", "home")
-local Section = Menu:CreateSection("Auto Farm")
-local Dropdown = Menu:CreateDropdown({
-   Name = "Select Mob to Farm",
-   Options = {"Pirate [Lv:1]"},
-   CurrentOption = {"No Mob Selected"},
-   MultipleOptions = false,
-   Callback = function(Options)
-   	SelectedMob = Options[1]
-   	if SelectedMob == "Pirate [Lv:1]" then
-   		SelectedMob = "monster0101"
-   	end
-   end,
-})
-local Toggle = Menu:CreateToggle({
-   Name = "Auto Farm Mobs",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().AutoMobs = Value
-   	AutoMobs()
-   end,
-})
 local Section = Menu:CreateSection("Chest Farm")
 local Toggle = Menu:CreateToggle({
    Name = "Auto Farm Chests (In Island)",
@@ -316,6 +296,8 @@ local Toggle = Menu:CreateToggle({
    	AutoChest()
    end,
 })
+local Section = Menu:CreateSection("More features coming soon...")
+local Label = Menu:CreateLabel("Join our discord in the credits tab!")
 
 -- Visual
 local VisualTab = Window:CreateTab("Visual", "eye")
@@ -350,6 +332,29 @@ local Toggle =  VisualTab:CreateToggle({
    	ChestsESP()
    end,
 })
+local Section = VisualTab:CreateSection("More features coming soon...")
+local Label = VisualTab:CreateLabel("Join our discord in the credits tab!")
+
+-- Teleport
+local TPsTab = Window:CreateTab("Teleport", "Shell")
+local Section = TPsTab:CreateSection("Teleport to Island")
+local Dropdown = TPsTab:CreateDropdown({
+   Name = "Selected Island",
+   Options = {"[Lv. 1] Center Town", "[Lv. 100] Arena Island", "[Lv. 400] Pirate Port", "[Lv. 600] Demon Island", "[Lv. 800] Ninja Village", "[Lv. 1000] Namek Planet"},
+   CurrentOption = {"No Island Selected"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		IlhaSelecionada = Options[1]
+   end,
+})
+local Button = TPsTab:CreateButton({
+   Name = "Teleport to Island",
+   Callback = function()
+       IlhaTP()
+    end,
+})
+local Section = TPsTab:CreateSection("More features coming soon...")
+local Label = TPsTab:CreateLabel("Join our discord in the credits tab!")
 
 -- Movement
 local MoveTab = Window:CreateTab("Movement", "chevrons-up")
@@ -402,11 +407,15 @@ local Toggle = MoveTab:CreateToggle({
    	SetJumpPower()
    end,
 })
+local Section = MoveTab:CreateSection("More features coming soon...")
+local Label = MoveTab:CreateLabel("Join our discord in the credits tab!")
 
 -- Credits
 local Credits = Window:CreateTab("Credits", "info")
-local Section = Credits:CreateSection("Creator")
+local Section = Credits:CreateSection("Owner / Developer")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
+local Section = Credits:CreateSection("Co Developer")
+local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
 local Section = Credits:CreateSection("Discord Server")
 local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
 local Button = Credits:CreateButton({
