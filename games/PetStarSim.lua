@@ -10,6 +10,7 @@ local Window = Rayfield:CreateWindow({
 -- Values
 getgenv().AutoColStars = false
 getgenv().AutoHatch = false
+getgenv().SelectedEgg = nil
 
 -- Services
 local Players = game:GetService("Players")
@@ -86,26 +87,28 @@ end
 
 local function AutoHatchEggs()
     local hatchFunction = ReplicatedStorage:WaitForChild("PetSystem")
-        :WaitForChild("Remotes")
+        :WaitForChild("Remote")
         :WaitForChild("Hatch")
-
-    while getgenv().AutoHatch == true do
-        if hatchFunction and hatchFunction:IsA("RemoteFunction") then
+     while getgenv().AutoHatch == true do
+        if hatchFunction and hatchFunction:IsA("RemoteFunction") and getgenv().SelectedEgg then
             local success, response = pcall(function()
-                return hatchFunction:InvokeServer(3)  
+                return hatchFunction:InvokeServer(getgenv().SelectedEgg, 3) 
             end)
 
             if success then
-                print("Hatched eggs successfully! Response:", response)
+                print("Hatch function invoked. Response:", response)
+                if response == false then
+                    print("Check if you have enough resources or meet game conditions.")
+                end
             else
                 warn("Failed to hatch eggs! Error:", response)
             end
         else
-            warn("Hatch RemoteFunction not found!")
+            warn("Hatch RemoteFunction not found or no egg selected!")
             break
         end
 
-        wait(3) 
+        wait(6) 
     end
 end
 
@@ -142,15 +145,24 @@ local Toggle = Menu:CreateToggle({
 
 local Section = Menu:CreateSection("Auto open eggs")
 
+local EggDropdown = Menu:CreateDropdown({
+    Name = "Select Egg",
+    Options = {"Basic Egg", "Autumn Egg", "Bee Egg", "Snow Egg", "Tropical Egg", "Mine Egg", "Diamond Egg", "Magical Egg", "Sakura Egg",},
+    CurrentOption = {"Basic Egg"},
+    MultipleOptions = false,
+    Callback = function(Options)
+        getgenv().SelectedEgg = Options[1] 
+        print("Selected Egg:", getgenv().SelectedEgg)
+    end,
+})
+
 local Toggle = Menu:CreateToggle({
     Name = "Start Auto Hatch Eggs",
     CurrentValue = false,
     Callback = function(Value)
         getgenv().AutoHatch = Value
         if Value then
-            task.spawn(function()
-                AutoHatchEggs()
-            end)
+            task.spawn(AutoHatchEggs)
         else
             print("Auto Hatch Eggs stopped.")
         end
