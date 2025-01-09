@@ -175,9 +175,9 @@ local Section = Menu:CreateSection("Auto make golden pets")
 
 -- Credits
 local Credits = Window:CreateTab("Credits", "info")
-local Section = Credits:CreateSection("Owner / Developer")
+local Section = Credits:CreateSection("Founder Developer")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-local Section = Credits:CreateSection("Co Developer")
+local Section = Credits:CreateSection("Lead Developer")
 local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
 local Section = Credits:CreateSection("Discord Server")
 local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
