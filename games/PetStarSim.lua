@@ -84,15 +84,15 @@ local function AutoCollectStars(mapName)
     isAutoCollecting = false
 end
 
-local hatchFunction = ReplicatedStorage:WaitForChild("PetSystem")
-    :WaitForChild("Remotes")
-    :WaitForChild("Hatch")
-
 local function AutoHatchEggs()
+    local hatchFunction = ReplicatedStorage:WaitForChild("PetSystem")
+        :WaitForChild("Remotes")
+        :WaitForChild("Hatch")
+
     while getgenv().AutoHatch == true do
         if hatchFunction and hatchFunction:IsA("RemoteFunction") then
             local success, response = pcall(function()
-                return hatchFunction:InvokeServer(3) 
+                return hatchFunction:InvokeServer(3)  
             end)
 
             if success then
@@ -161,11 +161,11 @@ local Section = Menu:CreateSection("Auto make golden pets")
 
 
 
--- Credits
+-- Credits Section
 local Credits = Window:CreateTab("Credits", "info")
-local Section = Credits:CreateSection("Owner / Developer")
+local Section = Credits:CreateSection("Creator")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-local Section = Credits:CreateSection("Co Developer")
+local Section = Credits:CreateSection("Co - Creator")
 local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
 local Section = Credits:CreateSection("Discord Server")
 local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
