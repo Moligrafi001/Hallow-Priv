@@ -1,6 +1,6 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/games/ChestSea.lua",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-setclipboard("https://discord.gg/4q82nmfn4A")
+setclipboard("https://discord.gg/XnsG57tQWS")
 game.StarterGui:SetCore("SendNotification", {
 	Title = "Hey! Can you help me?",
 	Text = "Join our discord, the link has been set to your clipboard",
@@ -10,7 +10,7 @@ game.StarterGui:SetCore("SendNotification", {
 wait(1)
 game.StarterGui:SetCore("SendNotification", {
 	Title = "Link:",
-	Text = "https://discord.gg/4q82nmfn4A",
+	Text = "https://discord.gg/XnsG57tQWS",
 	Icon = "",
 	Duration = 25
 })
@@ -26,7 +26,7 @@ local Window = Rayfield:CreateWindow({
    KeySettings = {
       Title = "Key System",
       Subtitle = "Support us.",
-      Note = "Join discord.gg/4q82nmfn4A to get the key. Link copied!",
+      Note = "Join discord.gg/XnsG57tQWS to get the key. Link copied!",
       FileName = "Hallow Hub Key",
       SaveKey = true,
       GrabKeyFromSite = false,
