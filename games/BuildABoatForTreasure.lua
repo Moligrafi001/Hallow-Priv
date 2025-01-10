@@ -76,51 +76,40 @@ local function NoClip()
 end
 
 -- AutoFarm function
-local function autoFarm(currentRun)
-    -- Variables
-    local Character = LocalPlayer.Character
-    local NormalStages = Workspace.BoatStages.NormalStages
+local function autoFarm(runIndex)
+    local character = LocalPlayer.Character
+    local stages = Workspace.BoatStages.NormalStages
 
-    -- Go to each stage
     for i = 1, 10 do
-        local Stage = NormalStages["CaveStage" .. i]
-        local DarknessPart = Stage:FindFirstChild("DarknessPart")
+        local stage = stages["CaveStage" .. i]
+        local darknessPart = stage:FindFirstChild("DarknessPart")
 
-        if DarknessPart then
-            -- Teleport to next stage
-            print("Teleporting to next stage: Stage " .. i)
-            Character.HumanoidRootPart.CFrame = DarknessPart.CFrame
+        if darknessPart then
+            print("Teleporting to stage: " .. i)
+            character.HumanoidRootPart.CFrame = darknessPart.CFrame
 
-            -- Create a temp part under the player
-            local Part = Instance.new("Part", Character)
-            Part.Anchored = true
-            Part.Position = Character.HumanoidRootPart.Position - Vector3.new(0, 6, 0)
+            local tempPart = Instance.new("Part", character)
+            tempPart.Size = Vector3.new(5, 1, 5)
+            tempPart.BrickColor = BrickColor.new("Bright blue")
+            tempPart.Anchored = true
+            tempPart.Position = character.HumanoidRootPart.Position - Vector3.new(0, 6, 0)
 
-            -- Wait for a while, then remove temp part
-            wait(getgenv().TreasureAutoFarm.Teleport)
-            Part:Destroy()
+            wait(getgenv().TreasureAutoFarm.Teleport or 1)
+            tempPart:Destroy()
         end
     end
 
-    -- Teleport to the end
     print("Teleporting to the end")
-    repeat
-        wait()
-        Character.HumanoidRootPart.CFrame = NormalStages.TheEnd.GoldenChest.Trigger.CFrame
-    until Lighting.ClockTime ~= 14
+    character.HumanoidRootPart.CFrame = stages.TheEnd.GoldenChest.Trigger.CFrame
 
-    -- Wait for respawn
-    local Respawned = false
-    local Connection
-    Connection = LocalPlayer.CharacterAdded:Connect(function()
-        Respawned = true
-        Connection:Disconnect()
+    local respawned = false
+    LocalPlayer.CharacterAdded:Connect(function()
+        respawned = true
     end)
 
-    -- Wait until respawn is triggered
-    repeat wait() until Respawned
-    wait(getgenv().TreasureAutoFarm.TimeBetweenRuns)
-    print("Auto Farm: Run " .. currentRun .. " finished")
+    repeat wait() until respawned
+    wait(getgenv().TreasureAutoFarm.TimeBetweenRuns or 5)
+    print("Run " .. runIndex .. " completed.")
 end
 
 -- Menu
