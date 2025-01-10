@@ -109,9 +109,29 @@ local function TpTeam()
 	end
 end
 local function AntiBarriers()
-	print("Pressed!")
+	while getgenv().AntiBarriers == true do
+		for _, base in pairs(workspace:GetChildren()) do
+			if base:IsA("Part") and base:FindFirstChild("Lock") and base.Lock:FindFirstChild("Part") then
+				if base.Lock.Part.CanCollide == true or base.Lock.Part.CanTouch == true then
+					base.Lock.Part.CanCollide = false
+					base.Lock.Part.CanTouch = false
+				end
+			end
+		end
+		wait(0.01)
+	end
+	if getgenv().AntiBarriers == false then
+		for _, base in pairs(workspace:GetChildren()) do
+			if base:IsA("Part") and base:FindFirstChild("Lock") and base.Lock:FindFirstChild("Part") then
+				if base.Lock.Part.CanCollide == false or base.Lock.Part.CanTouch == false then
+					base.Lock.Part.CanCollide = true
+					base.Lock.Part.CanTouch = true
+				end
+			end
+		end
+		wait(0.01)
+	end
 end
--- workspace.BoatStages.OtherStages.WashingMachineStage:GetChildren()[25].Part1
 local function NoWater()
 	while getgenv().NoWater == true do
 		if workspace.Water.CanTouch == true then
