@@ -1,4 +1,4 @@
--- Rayfield UI setup
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/games/NameOfTheThing.lua",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
     Name = "Hallow Hub | Build A Boat For Treasure!",
