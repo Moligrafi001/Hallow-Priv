@@ -1,11 +1,37 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/games/ChestSea.lua",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+setclipboard("https://discord.gg/4q82nmfn4A")
+game.StarterGui:SetCore("SendNotification", {
+	Title = "Hey! Can you help me?",
+	Text = "Join our discord, the link has been set to your clipboard",
+	Icon = "",
+	Duration = 30
+})
+wait(1)
+game.StarterGui:SetCore("SendNotification", {
+	Title = "Link:",
+	Text = "https://discord.gg/4q82nmfn4A",
+	Icon = "",
+	Duration = 25
+})
+
 local Window = Rayfield:CreateWindow({
    Name = "Hallow Hub | Fruit Reborn",
    Icon = 17091459839,
    LoadingTitle = "Hallow Hub",
    LoadingSubtitle = "By Moligrafi",
-   Theme = "Amethyst"
+   Theme = "Amethyst",
+   
+   KeySystem = true,
+   KeySettings = {
+      Title = "Key System",
+      Subtitle = "Support us.",
+      Note = "Join discord.gg/4q82nmfn4A to get the key. Link copied!",
+      FileName = "Hallow Hub Key",
+      SaveKey = true,
+      GrabKeyFromSite = false,
+      Key = {"WeSupportHallowHub"}
+   }
 })
 
 -- Movement
