@@ -8,52 +8,39 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
--- Values
-getgenv().TreasureAutoFarm = {
-    Enabled = false, -- Starts as off
-    Teleport = 2, 
-    TimeBetweenRuns = 5 
-}    
-
--- Services
-local Players = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
-local LocalPlayer = Players.LocalPlayer
 -- Movement
 local WalkSpeedText = 16
 local JumpPowerText = 50
-_G.SetWalkSpeed = false
-_G.SetJumpPower = false
-_G.InfJump = false
-_G.NoClip = false                                                                   
-
-                                                                                                                    --player funcs
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
 local function SetWalkSpeed()
-	while _G.SetWalkSpeed == true do
+	while getgenv().SetWalkSpeed == true do
 		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
 			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
 		end
 		wait(0.01)
 	end
-	if _G.SetWalkSpeed == false then
+	if getgenv().SetWalkSpeed == false then
 		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 	end
 end
 local function SetJumpPower()
-	while _G.SetJumpPower == true do
+	while getgenv().SetJumpPower == true do
 		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
 			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
 		end
 		wait(0.01)
 		end
-	if _G.SetJumpPower == false then
+	if getgenv().SetJumpPower == false then
 		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
 	end
 end
 local function InfJump()
-	while _G.InfJump == true do
+	while getgenv().InfJump == true do
 		game:GetService("UserInputService").JumpRequest:connect(function()
-			if _G.InfJump == true then
+			if getgenv().InfJump == true then
 				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
 			end
 		end)
@@ -61,10 +48,10 @@ local function InfJump()
 	end
 end
 local function NoClip()
-	while _G.NoClip == true do
+	while getgenv().NoClip == true do
 		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
 			if part:IsA("BasePart") then
-				if _G.NoClip then
+				if getgenv().NoClip then
 					part.CanCollide = false
 				else
 					part.CanCollide = true
@@ -75,77 +62,209 @@ local function NoClip()
 	end
 end
 
--- AutoFarm function
-local function autoFarm(runIndex)
-    local character = LocalPlayer.Character
-    local stages = Workspace.BoatStages.NormalStages
+-- Locals
+local selectedTp = false
 
-    for i = 1, 10 do
-        local stage = stages["CaveStage" .. i]
-        local darknessPart = stage:FindFirstChild("DarknessPart")
+-- Values
+getgenv().AntiBarriers = false
+getgenv().NoWater = false
+getgenv().NoSand = false
 
-        if darknessPart then
-            print("Teleporting to stage: " .. i)
-            character.HumanoidRootPart.CFrame = darknessPart.CFrame
+-- workspace.ChangeTeam:FireServer(game:GetService("Teams").white)
 
-            local tempPart = Instance.new("Part", character)
-            tempPart.Size = Vector3.new(5, 1, 5)
-            tempPart.BrickColor = BrickColor.new("Bright blue")
-            tempPart.Anchored = true
-            tempPart.Position = character.HumanoidRootPart.Position - Vector3.new(0, 6, 0)
-
-            wait(getgenv().TreasureAutoFarm.Teleport or 1)
-            tempPart:Destroy()
-        end
-    end
-
-    print("Teleporting to the end")
-    character.HumanoidRootPart.CFrame = stages.TheEnd.GoldenChest.Trigger.CFrame
-
-    local respawned = false
-    LocalPlayer.CharacterAdded:Connect(function()
-        respawned = true
-    end)
-
-    repeat wait() until respawned
-    wait(getgenv().TreasureAutoFarm.TimeBetweenRuns or 5)
-    print("Run " .. runIndex .. " completed.")
+local function TpTeam()
+	local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+	if character:FindFirstChild("Humanoid") then
+		if character.Humanoid.Health <= 0 then
+			Rayfield:Notify({
+				Title = "You're dead!",
+				Content = "You need to be alive to teleport.",
+				Duration = 2.5,
+				Image = 17091459839,
+			})
+		else
+			if selectedTp == "White" then
+				character.HumanoidRootPart.CFrame = CFrame.new(-49.8767357, -9.70000172, -553.887329, -0.999787033, 1.25884325e-08, -0.0206365604, 1.47957655e-08, 1, -1.06809573e-07, 0.0206365604, -1.07092156e-07, -0.999787033)
+			elseif selectedTp == "Red" then
+				character.HumanoidRootPart.CFrame = CFrame.new(425.057861, -9.70000172, -64.5107422, 0.0343699642, 1.23541966e-07, 0.999409199, 3.98828561e-08, 1, -1.24986585e-07, -0.999409199, 4.4155076e-08, 0.0343699642)
+			elseif selectedTp == "Black" then
+				character.HumanoidRootPart.CFrame = CFrame.new(-531.822144, -9.70000267, -69.1551514, -0.00589912944, 1.20717658e-07, -0.999982595, -9.69744374e-09, 1, 1.2077696e-07, 0.999982595, 1.04097539e-08, -0.00589912944)
+			elseif selectedTp == "Blue" then
+				character.HumanoidRootPart.CFrame = CFrame.new(425.261688, -9.70000172, 300.105286, 0.00153439876, 1.43000376e-08, 0.999998808, 2.10142148e-09, 1, -1.43032786e-08, -0.999998808, 2.12336593e-09, 0.00153439876)
+			elseif selectedTp == "Green" then
+				character.HumanoidRootPart.CFrame = CFrame.new(-533.034668, -9.70000267, 293.827362, 0.00386504922, -5.97546501e-09, -0.999992549, 2.27750636e-08, 1, -5.8874825e-09, 0.999992549, -2.2752138e-08, 0.00386504922)
+			elseif selectedTp == "Magenta" then
+				character.HumanoidRootPart.CFrame = CFrame.new(426.041626, -9.70000172, 646.9021, 0.0128429839, 2.46640219e-09, 0.999917507, 5.62189184e-09, 1, -2.53881338e-09, -0.999917507, 5.65403413e-09, 0.0128429839)
+			elseif selectedTp == "Yellow" then
+				character.HumanoidRootPart.CFrame = CFrame.new(-532.347107, -9.70000267, 640.261658, -0.0351400562, -9.47882128e-09, -0.999382377, -7.10814092e-08, 1, -6.98533098e-09, 0.999382377, 7.07920407e-08, -0.0351400562)
+			else
+				Rayfield:Notify({
+						Title = "No team selected.",
+						Content = "You have to select it before you teleport.",
+						Duration = 2.5,
+						Image = 17091459839,
+					})
+			end
+		end
+	end
+end
+local function AntiBarriers()
+	print("Pressed!")
+end
+-- workspace.BoatStages.OtherStages.WashingMachineStage:GetChildren()[25].Part1
+local function NoWater()
+	while getgenv().NoWater == true do
+		if workspace.Water.CanTouch == true then
+			workspace.Water.CanTouch = false
+		end
+		for _, stage in pairs(workspace.BoatStages.NormalStages:GetChildren()) do
+			if stage:FindFirstChild("Water") then
+				if stage.Water.CanTouch == true then
+					stage.Water.CanTouch = false
+				end
+			end
+		end
+		for _, stage in pairs(workspace.BoatStages.OtherStages:GetChildren()) do
+			if stage:FindFirstChild("Water") and stage.Water:IsA("Part") then
+				if stage.Water.CanTouch == true then
+					stage.Water.CanTouch = false
+				end
+			end
+			if stage.Name == "WashingMachineStage" then
+				if stage:FindFirstChild("Water") then
+					for _, water in pairs(stage.Water:GetChildren()) do
+						if water.CanTouch == true then
+							water.CanTouch = false
+						end
+					end
+				end
+			end
+		end
+		wait(0.01)
+	end
+	if getgenv().NoWater == false then
+		if workspace.Water.CanTouch == false then
+			workspace.Water.CanTouch = true
+		end
+		for _, stage in pairs(workspace.BoatStages.NormalStages:GetChildren()) do
+			if stage:FindFirstChild("Water") then
+				if stage.Water.CanTouch == false then
+					stage.Water.CanTouch = true
+				end
+			end
+		end
+		for _, stage in pairs(workspace.BoatStages.OtherStages:GetChildren()) do
+			if stage:FindFirstChild("Water") and stage.Water:IsA("Part") then
+				if stage.Water.CanTouch == false then
+					stage.Water.CanTouch = true
+				end
+			end
+			if stage.Name == "WashingMachineStage" then
+				if stage:FindFirstChild("Water") then
+					for _, water in pairs(stage.Water:GetChildren()) do
+						if water.CanTouch == false then
+							water.CanTouch = true
+						end
+					end
+				end
+			end
+		end
+	end
+end
+local function NoSand()
+	while getgenv().NoSand == true do
+		if workspace.Sand.CanTouch == true then
+			workspace.Sand.CanTouch = false
+		end
+		for _, stage in pairs(workspace.BoatStages.NormalStages:GetChildren()) do
+			if stage:FindFirstChild("Sand") then
+				if stage.Sand.CanTouch == true then
+					stage.Sand.CanTouch = false
+				end
+			end
+		end
+		for _, stage in pairs(workspace.BoatStages.OtherStages:GetChildren()) do
+			if stage:FindFirstChild("Sand") then
+				if stage.Sand.CanTouch == true then
+					stage.Sand.CanTouch = false
+				end
+			end
+		end
+		wait(0.01)
+	end
+	if getgenv().NoSand == false then
+		if workspace.Sand.CanTouch == false then
+			workspace.Sand.CanTouch = true
+		end
+		for _, stage in pairs(workspace.BoatStages.NormalStages:GetChildren()) do
+			if stage:FindFirstChild("Sand") then
+				if stage.Sand.CanTouch == false then
+					stage.Sand.CanTouch = true
+				end
+			end
+		end
+		for _, stage in pairs(workspace.BoatStages.OtherStages:GetChildren()) do
+			if stage:FindFirstChild("Sand") then
+				if stage.Sand.CanTouch == false then
+					stage.Sand.CanTouch = true
+				end
+			end
+		end
+	end
 end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-local Section = Menu:CreateSection("Auto Farms")
+local Section = Menu:CreateSection("Helpful")
+local Toggle = Menu:CreateToggle({
+   Name = "No Water Damage",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().NoWater = Value
+   	NoWater()
+   end,
+})
+local Toggle = Menu:CreateToggle({
+   Name = "No Sand Damage",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().NoSand = Value
+   	NoSand()
+   end,
+})
+local Section = Menu:CreateSection("Misc")
+local Toggle = Menu:CreateToggle({
+   Name = "Anti Barriers",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AntiBarriers = Value
+   	AntiBarriers()
+   end,
+})
 
--- Toggle AutoFarm button
-local autoFarmButton = Menu:CreateButton({
-    Name = "Toggle AutoFarm",
-    Callback = function()
-        getgenv().TreasureAutoFarm.Enabled = not getgenv().TreasureAutoFarm.Enabled
-        if getgenv().TreasureAutoFarm.Enabled then
-            Rayfield:Notify({
-                Title = "AutoFarm Enabled",
-                Content = "AutoFarm is now ON.",
-                Duration = 4,
-            })
-            local autoFarmRun = 1
-            while getgenv().TreasureAutoFarm.Enabled do
-                print("Initializing Auto Farm: Run " .. autoFarmRun)
-                autoFarm(autoFarmRun)
-                autoFarmRun = autoFarmRun + 1
-                wait(1)
-            end
-        else
-            Rayfield:Notify({
-                Title = "AutoFarm Disabled",
-                Content = "AutoFarm is now OFF.",
-                Duration = 4,
-            })
-        end
+-- Teleport
+local TPsTab = Window:CreateTab("Teleport", "Shell")
+local Section = TPsTab:CreateSection("Teleport to Team")
+local Dropdown = TPsTab:CreateDropdown({
+   Name = "Selected Team",
+   Options = {"White", "Red", "Black", "Blue", "Green", "Magenta", "Yellow"},
+   CurrentOption = {"No Map Selected"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		selectedTp = Options[1]
+   end,
+})
+local Button = TPsTab:CreateButton({
+   Name = "Teleport to Team",
+   Callback = function()
+       TpTeam()
     end,
 })
 
-local Section = Menu:CreateSection("Player")
-local Input = Menu:CreateInput({
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+local Section = MoveTab:CreateSection("Walk")
+local Input = MoveTab:CreateInput({
    Name = "Player Walk Speed",
    CurrentValue = "",
    Flag = "WalkSpeedInput",
@@ -155,26 +274,26 @@ local Input = Menu:CreateInput({
    	WalkSpeedText = Text
    end,
 })
-local Toggle = Menu:CreateToggle({
+local Toggle = MoveTab:CreateToggle({
    Name = "Toggle Walk Speed",
    CurrentValue = false,
    Flag = "WalkSpeedToggle", 
    Callback = function(Value)
-   	_G.SetWalkSpeed = Value
+   	getgenv().SetWalkSpeed = Value
    	SetWalkSpeed()
    end,
 })
-local Toggle = Menu:CreateToggle({
+local Toggle = MoveTab:CreateToggle({
    Name = "No Clip",
    CurrentValue = false,
    Flag = "NoClipToggle",
    Callback = function(Value)
-   	_G.NoClip = Value
+   	getgenv().NoClip = Value
    	NoClip()
    end,
 })
-local Section = Menu:CreateSection("Jump")
-local Input = Menu:CreateInput({
+local Section = MoveTab:CreateSection("Jump")
+local Input = MoveTab:CreateInput({
    Name = "Player Jump Power",
    CurrentValue = "",
    Flag = "JumpPowerInput",
@@ -184,185 +303,23 @@ local Input = Menu:CreateInput({
    	JumpPowerText = Text
    end,
 })
-local Toggle = Menu:CreateToggle({
+local Toggle = MoveTab:CreateToggle({
    Name = "Toggle Jump Power",
    CurrentValue = false,
    Flag = "JumpPowerToggle",
    Callback = function(Value)
-   	_G.SetJumpPower = Value
+   	getgenv().SetJumpPower = Value
    	SetJumpPower()
    end,
 })
-local Toggle = Menu:CreateToggle({
+local Toggle = MoveTab:CreateToggle({
    Name = "Inf Jump",
    CurrentValue = false,
    Flag = "InfJumpToggle",
    Callback = function(Value)
-   	_G.InfJump = Value
+   	getgenv().InfJump = Value
    	InfJump()
    end,
-})
-
-local Teleport = Window:CreateTab("Teleport")
-local Section = Teleport:CreateSection("Player teleports")
-
-local TeleportRandomPlayerButton = Teleport:CreateButton({
-    Name = "Teleport Random Player",
-    Info = "Teleport to a random player.",
-    Interact = 'Changable',
-    Callback = function()
-        local randomPlayer = game.Players:GetPlayers()[math.random(1, #game.Players:GetPlayers())]
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(Vector3.new(randomPlayer.Character.Head.Position.X, randomPlayer.Character.Head.Position.Y, randomPlayer.Character.Head.Position.Z))
-        print("Teleported To Random Player")
-    end,
-})
-
-local Input = Teleport:CreateInput({
-    Name = "Player Display Name",
-    Info = "Enter the player's display name to teleport to.",
-    PlaceholderText = "Player's display name",
-    NumbersOnly = false,
-    CharacterLimit = 20,
-    OnEnter = true,
-    RemoveTextAfterFocusLost = false,
-    Callback = function(Text)
-        _G.PlayerDisplayName = Text
-        print("Selected Display Name: " .. Text)
-    end,
-})
-
-local Button = Teleport:CreateButton({
-    Name = "Teleport to Display Name",
-    Info = "Teleport to the player whose display name is entered in the input box.",
-    Interact = 'Changable',
-    Callback = function()
-        local players = game:GetService("Players"):GetPlayers()
-        local targetPlayer = nil
-
-        for _, player in ipairs(players) do
-            if player.DisplayName == _G.PlayerDisplayName then
-                targetPlayer = player
-                break
-            end
-        end
-
-        if targetPlayer then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = targetPlayer.Character.HumanoidRootPart.CFrame
-            print("Teleported to: " .. targetPlayer.DisplayName)
-        else
-            print("Player with the display name not found.")
-        end
-    end,
-})
-
-local Section = Teleport:CreateSection("teleport tool")
-
-local TeleportToolButton = Teleport:CreateButton({
-    Name = "Teleport Tool",
-    Info = "Receive a teleport tool for teleporting.",
-    Interact = 'Changable',
-    Callback = function()
-        local plr = game:GetService("Players").LocalPlayer
-        local mouse = plr:GetMouse()
-
-        local tool = Instance.new("Tool")
-        tool.RequiresHandle = false
-        tool.Name = "Teleport Tool"
-
-        tool.Activated:Connect(function()
-            local root = plr.Character.HumanoidRootPart
-            local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
-            local offset = pos - root.Position
-            root.CFrame = root.CFrame + offset
-        end)
-
-        tool.Parent = plr.Backpack
-        print("Tool Received")
-    end,
-})
-
-local Section = Teleport:CreateSection("Zones")
-
-local BlackZoneButton = Teleport:CreateButton({
-    Name = "BlackZone",
-    Info = "Teleport to BlackZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-328.943665, -9.89999294, -72.1218643)
-        print("Teleported To BlackZone")
-    end,
-})
-
-local ReallyBlueZoneButton = Teleport:CreateButton({
-    Name = "Really blueZone",
-    Info = "Teleport to Really blueZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(221.835587, -9.89999294, 289.496735)
-        print("Teleported To Really blueZone")
-    end,
-})
-
-local CamoZoneButton = Teleport:CreateButton({
-    Name = "CamoZone",
-    Info = "Teleport to CamoZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-328.966553, -9.89999294, 285.890778)
-        print("Teleported To CamoZone")
-    end,
-})
-
-local MagentaZoneButton = Teleport:CreateButton({
-    Name = "MagentaZone",
-    Info = "Teleport to MagentaZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(221.835083, -9.89999294, 647.695251)
-        print("Teleported To MagentaZone")
-    end,
-})
-
-local ReallyRedZoneButton = Teleport:CreateButton({
-    Name = "Really redZone",
-    Info = "Teleport to Really redZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(221.835068, -9.89999294, -68.7047195)
-        print("Teleported To Really redZone")
-    end,
-})
-
-local WhiteZoneButton = Teleport:CreateButton({
-    Name = "WhiteZone",
-    Info = "Teleport to WhiteZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-53.5637512, -9.89999294, -345.507538)
-        print("Teleported To WhiteZone")
-    end,
-})
-
-local NewYellerZoneButton = Teleport:CreateButton({
-    Name = "New YellerZone",
-    Info = "Teleport to New YellerZone.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-328.942108, -9.89999294, 643.876709)
-        print("Teleported To New YellerZone")
-    end,
-})
-
-local Section = Teleport:CreateSection("End Zone")
-
-local WaterSandButton = Teleport:CreateButton({
-    Name = "WaterSand",
-    Info = "Teleport to WaterSand.",
-    Interact = 'Changable',
-    Callback = function()
-        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(-53.5905228, -360.700012, 9499.88184)
-        print("Teleported To WaterSand")
-    end,
 })
 
 -- Credits
