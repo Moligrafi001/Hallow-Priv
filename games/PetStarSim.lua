@@ -26,65 +26,74 @@ local selectedMap = "SPAWN"
 
 local function AutoCollectStars(selectedMap)
     if isAutoCollecting then
-        print("Already collecting on map " .. currentMap .. ", stopping current collection.")
+        print("Already collecting on map " .. (currentMap or "unknown") .. ", stopping current collection.")
         return
     end
 
-    currentMap = selectedMap or "SPAWN"
+    selectedMap = selectedMap or "SPAWN"
+    currentMap = selectedMap
+    isAutoCollecting = true
 
     while getgenv().AutoColStars do
         local localStars = Workspace:FindFirstChild("LocalStars")
-        local spawnFolder = localStars and localStars:FindFirstChild(selectedMap)
+        if not localStars then
+            warn("LocalStars folder not found in Workspace!")
+            task.wait(0.5)
+            continue
+        end
 
+        local spawnFolder = localStars:FindFirstChild(selectedMap)
         if not spawnFolder then
             warn("Map " .. selectedMap .. " or corresponding folder not found in LocalStars!")
             task.wait(0.5)
-        else
-            local stars = spawnFolder:GetChildren()
-            if #stars == 0 then
-                warn("No stars found in the folder for map: " .. selectedMap)
-                task.wait(0.5)
-            else
-                for _, star in ipairs(stars) do
-                    local primaryPart = star:FindFirstChild("Primary")
-                    if primaryPart and primaryPart:IsA("BasePart") then
-                        local character = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
-                        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+            continue
+        end
 
-                        if humanoidRootPart then
-                            primaryPart.CFrame = humanoidRootPart.CFrame
+        local stars = spawnFolder:GetChildren()
+        if #stars == 0 then
+            warn("No stars found in the folder for map: " .. selectedMap)
+            task.wait(0.5)
+            continue
+        end
 
-    
-                            firetouchinterest(humanoidRootPart, primaryPart, 0)
-                            task.wait(0.1)
-                            firetouchinterest(humanoidRootPart, primaryPart, 1)
+        for _, star in ipairs(stars) do
+            local primaryPart = star:FindFirstChild("Primary")
+            if primaryPart and primaryPart:IsA("BasePart") then
+                local character = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
+                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
 
-                            print("Simulated touch with star: " .. star.Name)
+                if humanoidRootPart then
+                    primaryPart.CFrame = humanoidRootPart.CFrame
 
-                            local collectStarRemote = ReplicatedStorage:FindFirstChild("Core")
-                                and ReplicatedStorage.Core:FindFirstChild("Remote")
-                                and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
-                            if collectStarRemote then
-                                collectStarRemote:FireServer(star)
-                                print("Collected star: " .. star.Name)
-                            else
-                                warn("RemoteEvent 'collectStar' not found!")
-                            end
+                    firetouchinterest(humanoidRootPart, primaryPart, 0)
+                    task.wait(0.1)
+                    firetouchinterest(humanoidRootPart, primaryPart, 1)
 
-                            task.wait(0.1) 
-                        else
-                            warn("HumanoidRootPart not found for the player!")
-                        end
+                    print("Simulated touch with star: " .. star.Name)
+
+                    local collectStarRemote = ReplicatedStorage:FindFirstChild("Core")
+                        and ReplicatedStorage.Core:FindFirstChild("Remote")
+                        and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
+                    if collectStarRemote then
+                        collectStarRemote:FireServer(star)
+                        print("Collected star: " .. star.Name)
                     else
-                        warn("No valid 'Primary' part found in star: " .. star.Name)
+                        warn("RemoteEvent 'collectStar' not found!")
                     end
+
+                    task.wait(0.1)
+                else
+                    warn("HumanoidRootPart not found for the player!")
                 end
+            else
+                warn("No valid 'Primary' part found in star: " .. star.Name)
             end
         end
     end
 
     isAutoCollecting = false
 end
+
 
 
 local function teleport(location, title, message)
@@ -197,35 +206,62 @@ end
 local Menu = Window:CreateTab("Main", "home")
 local Section = Menu:CreateSection("Auto collect stars")
 
+local ToggleEnabled = false 
+
 local Dropdown = Menu:CreateDropdown({
     Name = "Select Map (If not unlocked it will NOT work.)",
     Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
-        selectedMap = Options[1] 
+        if ToggleEnabled then
+            Rayfield:Notify({
+                Title = "Action Blocked",
+                Content = "Cannot change the map while Auto Collect Stars is enabled. Please disable it first.",
+                Duration = 2.5,
+                Image = 17091459839,
+            })
+            return 
+        end
+
+        selectedMap = Options[1]
         TeleportMap()
     end,
 })
+
+local Section = Menu:CreateSection("PICK MAP FIRST BEFORE TOGGLEING ON!!!!!!!!!!")
+
+local stopFarming = false 
+
+local stopFarming = false -- Flag to stop the autofarm
 
 local Toggle = Menu:CreateToggle({
     Name = "Start Auto Collect Stars ⚠️YOU HAVE TO STAND IN THE MAP THAT YOU CHOSE⚠️",
     CurrentValue = false,
     Callback = function(Value)
-        getgenv().AutoColStars = Value 
+        ToggleEnabled = Value 
+        getgenv().AutoColStars = Value
+
         if Value then
+            stopFarming = false 
             task.spawn(function()
-                while getgenv().AutoColStars do
-                    AutoCollectStars(selectedMap)
-                    task.wait(3) 
-                end
+                AutoCollectStars(selectedMap)
             end)
         else
+            stopFarming = true 
+
+
+            Rayfield:Notify({
+                Title = "Auto Collect Stopped",
+                Content = "The auto collect feature has been disabled.",
+                Duration = 2.5,
+                Image = 17091459839,
+            })
+
             print("Auto Collect Stars stopped.")
         end
     end,
 })
-
 
 local Section = Menu:CreateSection("Player", "person-standing")
 
