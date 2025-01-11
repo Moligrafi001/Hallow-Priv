@@ -54,14 +54,13 @@ local function AutoCollectStars(selectedMap)
                         if humanoidRootPart then
                             primaryPart.CFrame = humanoidRootPart.CFrame
 
-                            -- Simulate a touch
+    
                             firetouchinterest(humanoidRootPart, primaryPart, 0)
                             task.wait(0.1)
                             firetouchinterest(humanoidRootPart, primaryPart, 1)
 
                             print("Simulated touch with star: " .. star.Name)
 
-                            -- Fire RemoteEvent to collect the star
                             local collectStarRemote = ReplicatedStorage:FindFirstChild("Core")
                                 and ReplicatedStorage.Core:FindFirstChild("Remote")
                                 and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
@@ -72,7 +71,7 @@ local function AutoCollectStars(selectedMap)
                                 warn("RemoteEvent 'collectStar' not found!")
                             end
 
-                            task.wait(0.1) -- Avoid rapid firing
+                            task.wait(0.1) 
                         else
                             warn("HumanoidRootPart not found for the player!")
                         end
@@ -213,12 +212,12 @@ local Toggle = Menu:CreateToggle({
     Name = "Start Auto Collect Stars ⚠️YOU HAVE TO STAND IN THE MAP THAT YOU CHOSE⚠️",
     CurrentValue = false,
     Callback = function(Value)
-        getgenv().AutoColStars = Value -- Global toggle for auto-collect
+        getgenv().AutoColStars = Value 
         if Value then
             task.spawn(function()
                 while getgenv().AutoColStars do
                     AutoCollectStars(selectedMap)
-                    task.wait(1) -- Adjust the interval as needed
+                    task.wait(3) 
                 end
             end)
         else
