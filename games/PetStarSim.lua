@@ -24,7 +24,6 @@ local isAutoCollecting = false
 local currentMap = "SPAWN"
 local selectedMap = "SPAWN"
 
-
 local function AutoCollectStars(selectedMap)
     if isAutoCollecting then
         print("Already collecting on map " .. (currentMap or "unknown") .. ", stopping current collection.")
@@ -35,12 +34,23 @@ local function AutoCollectStars(selectedMap)
     currentMap = selectedMap
     isAutoCollecting = true
 
-    while getgenv().AutoColStars do
+    while true do
+        if not getgenv().AutoColStars then
+            print("AutoCollectStars has been disabled, stopping the collection.")
+            isAutoCollecting = false
+            break
+        end
+
         local localStars = Workspace:FindFirstChild("LocalStars")
         if not localStars then
             warn("LocalStars folder not found in Workspace!")
             task.wait(0.5)
             continue
+        end
+
+        print("Children of LocalStars:")
+        for _, child in ipairs(localStars:GetChildren()) do
+            print("  - " .. child.Name)
         end
 
         local spawnFolder = localStars:FindFirstChild(selectedMap)
@@ -58,6 +68,12 @@ local function AutoCollectStars(selectedMap)
         end
 
         for _, star in ipairs(stars) do
+            if not getgenv().AutoColStars then
+                print("AutoCollectStars has been disabled during collection, stopping.")
+                isAutoCollecting = false
+                break
+            end
+
             local primaryPart = star:FindFirstChild("Primary")
             if primaryPart and primaryPart:IsA("BasePart") then
                 local character = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
@@ -67,7 +83,7 @@ local function AutoCollectStars(selectedMap)
                     primaryPart.CFrame = humanoidRootPart.CFrame
 
                     firetouchinterest(humanoidRootPart, primaryPart, 0)
-                    task.wait(0.1)
+                    task.wait(0.05)  -- Reduced wait time for faster interaction
                     firetouchinterest(humanoidRootPart, primaryPart, 1)
 
                     print("Simulated touch with star: " .. star.Name)
@@ -82,7 +98,7 @@ local function AutoCollectStars(selectedMap)
                         warn("RemoteEvent 'collectStar' not found!")
                     end
 
-                    task.wait(0.1)
+                    task.wait(0.05)  
                 else
                     warn("HumanoidRootPart not found for the player!")
                 end
@@ -90,11 +106,12 @@ local function AutoCollectStars(selectedMap)
                 warn("No valid 'Primary' part found in star: " .. star.Name)
             end
         end
+
+        task.wait(0.2)  
     end
 
     isAutoCollecting = false
 end
-
 
 
 local function teleport(location, title, message)
@@ -236,8 +253,6 @@ local Section = Menu:CreateSection("PICK MAP FIRST BEFORE TOGGLEING ON!!!!!!!!!!
 
 local stopFarming = false 
 
-local stopFarming = false -- Flag to stop the autofarm
-
 local Toggle = Menu:CreateToggle({
     Name = "Start Auto Collect Stars ⚠️YOU HAVE TO STAND IN THE MAP THAT YOU CHOSE⚠️",
     CurrentValue = false,
@@ -270,7 +285,7 @@ local Section = Menu:CreateSection("Player", "person-standing")
 
 local Input = Menu:CreateInput({
    Name = "Player Walk Speed",
-   CurrentValue = "",
+   CurrentValue = "16",
    Flag = "WalkSpeedInput",
    PlaceholderText = "Default Walk Speed = 16",
    RemoveTextAfterFocusLost = false,
