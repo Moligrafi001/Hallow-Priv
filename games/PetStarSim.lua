@@ -24,6 +24,7 @@ local isAutoCollecting = false
 local currentMap = "SPAWN"
 local selectedMap = "SPAWN"
 
+
 local function AutoCollectStars(selectedMap)
     if isAutoCollecting then
         print("Already collecting on map " .. (currentMap or "unknown") .. ", stopping current collection.")
@@ -174,6 +175,8 @@ local mapPositions = {
     ["Diamond Mine"] = CFrame.new(8.39960861, 3.9999578, -1733.69385, 0.999885857, -1.27159751e-07, -0.0151077257, 1.2689209e-07, 1, -1.86757685e-08, 0.0151077257, 1.67565855e-08, 0.999885857),
     ["Magical Forest"] = CFrame.new(8.94233418, 3.9999578, -1931.28259, 0.999978125, -7.19709403e-10, 0.00661586365, 8.80404194e-10, 1, -2.42863987e-08, -0.00661586365, 2.42916922e-08, 0.999978125),
     ["Sakura Forest"] = CFrame.new(9.63525772, 3.9999578, -2126.64038, 0.998708427, -4.76508255e-09, 0.0508081615, 3.2844083e-10, 1, 8.73297878e-08, -0.0508081615, -8.72003056e-08, 0.998708427),
+    ["Sakura Revine"] = CFrame.new(10.4414206, 3.99438834, -2321.14819, 0.997639, 5.84764166e-08, -0.0686761737, -6.19572944e-08, 1, -4.85553642e-08, 0.0686761737, 5.26957145e-08, 0.997639),
+    ["Magma Revine"] = CFrame.new(8.24645805, 3.97864127, -2515.40601, 0.999063671, -2.30366226e-10, -0.0432639308, 4.2857784e-10, 1, 4.57217642e-09, 0.0432639308, -4.58643745e-09, 0.999063671),
 }
 
 local function TeleportMap()
@@ -210,7 +213,7 @@ local ToggleEnabled = false
 
 local Dropdown = Menu:CreateDropdown({
     Name = "Select Map (If not unlocked it will NOT work.)",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Revine", "Magma Revine"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
@@ -361,6 +364,10 @@ local function Teleport()
             teleportPosition = CFrame.new(73.3748856, 4.49999952, -1979.67188)
         elseif selectedEgg == "Sakura Egg" then
             teleportPosition = CFrame.new(71.8911285, 4.49999952, -2173.75244)
+        elseif selectedEgg == "Split Egg" then
+            teleportPosition = CFrame.new(71.7752457, 4.50232172, -2372.65015)
+        elseif selectedEgg == "Devil Egg" then
+            teleportPosition = CFrame.new(72.6531219, 4.50232172, -2563.57422)
         end
 
         character.HumanoidRootPart.CFrame = teleportPosition
@@ -384,7 +391,9 @@ TP:CreateDropdown({
         "Mine Egg",
         "Diamond Egg",
         "Magical Egg",
-        "Sakura Egg"
+        "Sakura Egg",
+        "Split Egg",
+        "Devil Egg"
     },
     CurrentOption = "Basic Egg",
     MultipleOptions = false,
@@ -406,7 +415,9 @@ TP:CreateDropdown({
         "Mine Shaft",
         "Diamond Mine",
         "Magical Forest",
-        "Sakura Forest"
+        "Sakura Forest",
+        "Sakura Revine",
+        "Magma Revine"
     },
     CurrentOption = "SPAWN",
     MultipleOptions = false,
@@ -425,7 +436,7 @@ local Section = Pet:CreateSection("Auto make golden pets")
 local Credits = Window:CreateTab("Credits", "info")
 local Section = Credits:CreateSection("Founder Developer")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-local Section = Credits:CreateSection("Co-Developer")
+local Section = Credits:CreateSection("Developer")
 local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
 local Section = Credits:CreateSection("Discord Server")
 local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
