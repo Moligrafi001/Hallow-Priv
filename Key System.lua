@@ -20,8 +20,49 @@ PandaAuth:Initialize({
 local HttpService = game:GetService("HttpService")
 local ChaveHub = "nil"
 local Verificado = false
+local function VerificarSalvo()
+  local foldername = "Hallow Hub"
+  local filename = foldername .. "//Saved Key.txt"
+  if Verificado == false then
+    if isfolder(foldername) and isfile(filename) then
+      if PandaAuth:ValidateKey(readfile(filename)) then
+        Verificado = true
+        Rayfield:Notify({
+        Title = "Saved key is right!",
+        Content = "Script is loading... Don't execute it again.",
+        Duration = 4,
+        Image = 17091459839,
+        })
+      else
+        Rayfield:Notify({
+        Title = "Saved key is wrong.",
+        Content = "Get another key.",
+        Duration = 4,
+        Image = 17091459839,
+        })
+      end
+    end
+  end
+end
 local function ChecarChave()
+  local foldername = "Hallow Hub"
+  local filename = foldername .. "//Saved Key.txt"
   if PandaAuth:ValidateKey(ChaveHub) and Verificado == false then
+    Verificado = true
+    if isfolder(foldername) then
+      if isfile(filename) then
+        writefile(filename, ChaveHub)
+      else
+        writefile(filename, ChaveHub)
+      end
+    else
+      makefolder(foldername)
+      if isfile(filename) then
+        writefile(filename, ChaveHub)
+      else
+        writefile(filename, ChaveHub)
+      end
+    end
     Rayfield:Notify({
       Title = "Yay! Right key!",
       Content = "Script is loading... Don't execute it again.",
@@ -29,7 +70,6 @@ local function ChecarChave()
       Image = 17091459839,
       })
     loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
-    Verificado = true
   else
     Rayfield:Notify({
       Title = "Wrong key!",
