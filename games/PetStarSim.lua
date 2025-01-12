@@ -24,93 +24,66 @@ local isAutoCollecting = false
 local currentMap = "SPAWN"
 local selectedMap = "SPAWN"
 
-local function AutoCollectStars(selectedMap)
+local function AutoCollectStars(mapName)
     if isAutoCollecting then
-        print("Already collecting on map " .. (currentMap or "unknown") .. ", stopping current collection.")
+        print("Already collecting on map " .. currentMap .. ", stopping current collection.")
         return
     end
 
-    selectedMap = selectedMap or "SPAWN"
-    currentMap = selectedMap
+
     isAutoCollecting = true
+    currentMap = mapName  
 
-    while true do
-        if not getgenv().AutoColStars then
-            print("AutoCollectStars has been disabled, stopping the collection.")
-            isAutoCollecting = false
-            break
-        end
+    while getgenv().AutoColStars == true do
+        local player = Players.LocalPlayer
+        local character = player.Character or player.CharacterAdded:Wait()
 
-        -- Ensure `LocalStars` folder exists in Workspace
-        local localStars = Workspace:FindFirstChild("LocalStars")
-        if not localStars then
-            warn("LocalStars folder not found in Workspace!")
-            task.wait(0.5)
+        -- Check if the character exists and has a HumanoidRootPart
+        if not character or not character:FindFirstChild("HumanoidRootPart") then
+            warn("Character or HumanoidRootPart not found!")
+            wait(1) 
             continue
         end
 
-        -- Debug: List children of LocalStars
-        print("Children of LocalStars:")
-        for _, child in ipairs(localStars:GetChildren()) do
-            print("  - " .. child.Name)
-        end
+        local humanoidRootPart = character.HumanoidRootPart
+        local localStars = Workspace:FindFirstChild("LocalStars")
+        local spawnFolder = localStars and localStars:FindFirstChild(mapName)
 
-        -- Ensure selected map exists in `LocalStars`
-        local spawnFolder = localStars:FindFirstChild(selectedMap)
-        if not spawnFolder then
-            warn("Map " .. selectedMap .. " or corresponding folder not found in LocalStars!")
-            task.wait(0.5)
+        if not localStars or not spawnFolder then
+            warn("Map " .. mapName .. " or SPAWN folder not found in LocalStars!")
+            wait(1) -- Avoid spamming warnings
             continue
         end
 
         local stars = spawnFolder:GetChildren()
         if #stars == 0 then
-            warn("No stars found in the folder for map: " .. selectedMap)
-            task.wait(0.5)
+            warn("No stars found in SPAWN folder!")
+            wait(1)
             continue
         end
 
-        for _, star in ipairs(stars) do
-            if not getgenv().AutoColStars then
-                print("AutoCollectStars has been disabled during collection, stopping.")
-                isAutoCollecting = false
-                break
-            end
+        local randomStar = stars[math.random(1, #stars)]
 
-            local primaryPart = star:FindFirstChild("Primary")
-            if primaryPart and primaryPart:IsA("BasePart") then
-                local character = Players.LocalPlayer.Character or Players.LocalPlayer.CharacterAdded:Wait()
-                local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-
-                if humanoidRootPart then
-                    primaryPart.CFrame = humanoidRootPart.CFrame
-
-                    firetouchinterest(humanoidRootPart, primaryPart, 0)
-                    task.wait(0.05)  -- Adjusted wait time for stability
-                    firetouchinterest(humanoidRootPart, primaryPart, 1)
-
-                    print("Simulated touch with star: " .. star.Name)
-
-                    local collectStarRemote = ReplicatedStorage:FindFirstChild("Core")
-                        and ReplicatedStorage.Core:FindFirstChild("Remote")
-                        and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
-                    if collectStarRemote then
-                        collectStarRemote:FireServer(star)
-                        print("Collected star: " .. star.Name)
-                    else
-                        warn("RemoteEvent 'collectStar' not found!")
-                    end
-
-                    task.wait(0.05)  
-                else
-                    warn("HumanoidRootPart not found for the player!")
-                end
-            else
-                warn("No valid 'Primary' part found in star: " .. star.Name)
-            end
+        -- Check if the random star has a part named "Primary"
+        local primaryPart = randomStar:FindFirstChild("Primary")
+        if not primaryPart or not primaryPart:IsA("BasePart") then
+            warn("No valid 'Primary' part found in random star!")
+            wait(0.1)
+            continue
         end
 
-        task.wait(0.2)  
+        humanoidRootPart.CFrame = primaryPart.CFrame
+        print("Teleported to star in map " .. mapName .. ": " .. randomStar.Name)
+
+        local collectStarRemote = ReplicatedStorage:FindFirstChild("Core") and ReplicatedStorage.Core:FindFirstChild("Remote") and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
+        if collectStarRemote then
+            collectStarRemote:FireServer(randomStar)  
+            print("Collected star: " .. randomStar.Name)
+        else
+            warn("RemoteEvent 'collectStar' not found in ReplicatedStorage.Core.Remote!")
+        end
+
+        wait(0.05) 
     end
 
     isAutoCollecting = false
@@ -268,14 +241,14 @@ local Dropdown = Menu:CreateDropdown({
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
-        if ToggleEnabled then
+        if getgenv().AutoColStars then  -- Assuming you use getgenv().AutoColStars for the toggle state
             Rayfield:Notify({
                 Title = "Action Blocked",
                 Content = "Cannot change the map while Auto Collect Stars is enabled. Please disable it first.",
                 Duration = 2.5,
                 Image = 17091459839,
             })
-            return 
+            return
         end
 
         selectedMap = Options[1]
@@ -283,36 +256,22 @@ local Dropdown = Menu:CreateDropdown({
     end,
 })
 
+
 local Section = Menu:CreateSection("PICK MAP FIRST BEFORE TOGGLEING ON!!!!!!!!!!")
 
-local stopFarming = false 
 
 local Toggle = Menu:CreateToggle({
-    Name = "Start Auto Collect Stars ⚠️YOU HAVE TO STAND IN THE MAP THAT YOU CHOSE⚠️",
+    Name = "Toggle Auto Collect Stars",
     CurrentValue = false,
+    Flag = "AutoCollectStarsToggle",
     Callback = function(Value)
-        ToggleEnabled = Value 
         getgenv().AutoColStars = Value
-
         if Value then
-            stopFarming = false 
-            task.spawn(function()
-                AutoCollectStars(selectedMap)
-            end)
+            AutoCollectStars(selectedMap)
         else
-            stopFarming = true 
-
-
-            Rayfield:Notify({
-                Title = "Auto Collect Stopped",
-                Content = "The auto collect feature has been disabled.",
-                Duration = 2.5,
-                Image = 17091459839,
-            })
-
-            print("Auto Collect Stars stopped.")
+            isAutoCollecting = false
         end
-    end,
+    end
 })
 
 local Section = Menu:CreateSection("Player", "person-standing")
@@ -471,7 +430,7 @@ TP:CreateDropdown({
     CurrentOption = "SPAWN",
     MultipleOptions = false,
     Callback = function(Options)
-        selectedMap = Options[1]  
+        getgenv().SelectedMap = Option[1] 
         TeleportMap()  
     end,
 })
@@ -479,95 +438,7 @@ TP:CreateDropdown({
 local Pet = Window:CreateTab("Pets", "bone")
 local Section = Pet:CreateSection("Auto Hatch")
 
-Pet:CreateButton({
-    Name = "Stop All Auto Hatches",
-    Callback = function()
-        stopAllAutoHatches()
-        Rayfield:Notify({
-            Title = "Auto Hatch Stopped",
-            Content = "All auto hatching has been disabled.",
-            Duration = 2.5,
-            Image = 17091459839,
-        })
-    end
-})
 
-Pet:CreateButton({
-    Name = "Auto Open Basic Egg",
-    Callback = function()
-        autoOpenEgg("Basic Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Autumn Egg",
-    Callback = function()
-        autoOpenEgg("Autumn Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Bee Egg",
-    Callback = function()
-        autoOpenEgg("Bee Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Snow Egg",
-    Callback = function()
-        autoOpenEgg("Snow Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Tropical Egg",
-    Callback = function()
-        autoOpenEgg("Tropical Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Mine Egg",
-    Callback = function()
-        autoOpenEgg("Mine Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Diamond Egg",
-    Callback = function()
-        autoOpenEgg("Diamond Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Magical Egg",
-    Callback = function()
-        autoOpenEgg("Magical Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Sakura Egg",
-    Callback = function()
-        autoOpenEgg("Sakura Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Split Egg",
-    Callback = function()
-        autoOpenEgg("Split Egg")
-    end
-})
-
-Pet:CreateButton({
-    Name = "Auto Open Devil Egg",
-    Callback = function()
-        autoOpenEgg("Devil Egg")
-    end
-})
 
 
 -- Credits
