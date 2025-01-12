@@ -3,7 +3,7 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local PandaAuth = loadstring(game:HttpGet("https://raw.githubusercontent.com/Panda-Repositories/PandaKS_Libraries/refs/heads/main/library/LuaLib/ROBLOX/PandaSVALLib.lua"))()
 PandaAuth:Initialize({
   Service = "hallowhub",
-  API_Key = "1de6c1d876b400422be46795b66c82f973f7f5487474e01dbade47ca192f8c33",
+  API_Key = "9e2587f18e0b05c969b3b383f9bb8465f202d7822191dbe81902b11a8db12389",
   DisplayName = "My Panda Service",
   IsDebug = false,
   Allow_BlacklistUsers = false,
