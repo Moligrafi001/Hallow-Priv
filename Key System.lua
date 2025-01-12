@@ -123,8 +123,8 @@ local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
 local Button = Credits:CreateButton({
    Name = "Copy Server Link",
    Callback = function()
-   	setclipboard("discord.gg/AESCuek87s")
-   	toclipboard("discord.gg/AESCuek87s")
+   	setclipboard("discord.gg/XnsG57tQWS")
+   	toclipboard("discord.gg/XnsG57tQWS")
     end,
 })
 local Section = Credits:CreateSection("Note")
