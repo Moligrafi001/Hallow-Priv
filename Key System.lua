@@ -1,5 +1,4 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local PandaAuth = loadstring(game:HttpGet("https://raw.githubusercontent.com/Panda-Repositories/PandaKS_Libraries/refs/heads/main/library/LuaLib/ROBLOX/PandaSVALLib.lua"))()
 PandaAuth:Initialize({
   Service = "hallowhub",
@@ -17,10 +16,10 @@ PandaAuth:Initialize({
     print("[Pelinda] Authentication failed. Access denied.") 
   end 
 }) 
-local HttpService = game:GetService("HttpService")
 local ChaveHub = "nil"
 local Verificado = false
 local function CarregarPedido()
+  local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
   local function Verificando()
     Rayfield:Notify({
       Title = "Checking key...",
@@ -63,6 +62,7 @@ local function CarregarPedido()
         Duration = 4,
         Image = 17091459839,
         })
+      wait(1)
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
     else
       Verificado = false
