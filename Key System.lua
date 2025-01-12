@@ -33,6 +33,7 @@ local function VerificarSalvo()
         Duration = 4,
         Image = 17091459839,
         })
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
       else
         Rayfield:Notify({
         Title = "Saved key is wrong.",
@@ -69,7 +70,7 @@ local function ChecarChave()
       Duration = 4,
       Image = 17091459839,
       })
-    loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
   else
     Rayfield:Notify({
       Title = "Wrong key!",
