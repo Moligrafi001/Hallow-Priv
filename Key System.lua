@@ -4,7 +4,7 @@ local PandaAuth = loadstring(game:HttpGet("https://raw.githubusercontent.com/Pan
 PandaAuth:Initialize({
   Service = "hallowhub",
   API_Key = "9e2587f18e0b05c969b3b383f9bb8465f202d7822191dbe81902b11a8db12389",
-  DisplayName = "My Panda Service",
+  DisplayName = "Hallow Hub",
   IsDebug = false,
   Allow_BlacklistUsers = false,
   GUIVersion = false,
