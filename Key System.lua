@@ -146,3 +146,5 @@ local Button = Credits:CreateButton({
 })
 local Section = Credits:CreateSection("Note")
 local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
+
+VerificarSalvo()
