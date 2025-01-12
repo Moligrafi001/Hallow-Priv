@@ -95,7 +95,7 @@ local PasteKey = Menu:CreateButton({
     end,
 })
 local VerifyKey = Menu:CreateButton({
-    Name = "Verify Key",
+    Name = "Check Key",
     Callback = function()
       ChecarChave()
     end,
