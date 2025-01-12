@@ -18,53 +18,44 @@ PandaAuth:Initialize({
   end 
 }) 
 local HttpService = game:GetService("HttpService")
-local ChaveHub ="nil"
+local ChaveHub = "nil"
+local VerificadorCarregou = false
 local function ChecarChave()
   if PandaAuth:ValidateKey(ChaveHub) then
-    if getgenv().FoiVerificado == false then
+    if VerificadorCarregou == false then
+      VerificadorCarregou = true
       Rayfield:Notify({
-      Title = "Right key!",
-      Content = "Script is loading...",
+      Title = "Yay! Right key!",
+      Content = "Script is loading... Don't execute it again.",
       Duration = 4,
       Image = 17091459839,
-    })
-      getgenv().FoiVerificado = true
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+      })
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
     else
       Rayfield:Notify({
       Title = "You already verified!",
       Content = "Script is loading.",
       Duration = 4,
       Image = 17091459839,
-    })
+      })
     end
   else
     Rayfield:Notify({
       Title = "Wrong key!",
       Content = "Bad!",
-      Duration = 9,
+      Duration = 4,
       Image = 17091459839,
     })
   end
 end
-getgenv().PegouChave = false
 local function PegarChave()
-  if getgenv().PegouChave == false then
-    setclipboard(PandaAuth:GetKey())
-    Rayfield:Notify({
-      Title = "Got the link key!",
-      Content = "Perfect!",
-      Duration = 9,
-      Image = 17091459839,
-    })
-  else
-    Rayfield:Notify({
-      Title = "You already got the link!",
-      Content = "Very bad!",
-      Duration = 9,
-      Image = 17091459839,
-    })
-  end
+  setclipboard(PandaAuth:GetKey())
+  Rayfield:Notify({
+    Title = "Got the link key!",
+    Content = "Link copied!",
+    Duration = 9,
+    Image = 17091459839,
+  })
 end
 
 local Window = Rayfield:CreateWindow({
@@ -97,13 +88,8 @@ local InputKey = Menu:CreateInput({
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
    	ChaveHub = Text
+   	ChecarChave()
    end,
-})
-local PasteKey = Menu:CreateButton({
-    Name = "Paste Key",
-    Callback = function()
-      InputKey:Set(getclipboard())
-    end,
 })
 local VerifyKey = Menu:CreateButton({
     Name = "Verify Key",
