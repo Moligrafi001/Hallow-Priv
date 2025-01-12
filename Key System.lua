@@ -78,6 +78,7 @@ local ButtonGetKey = Menu:CreateButton({
       getgenv().PegouChave = true
     end,
 })
+local SectionGetKey = Menu:CreateSection("Authenticate Key")
 local InputKey = Menu:CreateInput({
    Name = "Key",
    CurrentValue = "",
@@ -85,8 +86,13 @@ local InputKey = Menu:CreateInput({
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
    	ChaveHub = Text
-   	ChecarChave()
    end,
+})
+local PasteKey = Menu:CreateButton({
+    Name = "Paste Key",
+    Callback = function()
+      InputKey:Set(getclipboard())
+    end,
 })
 local VerifyKey = Menu:CreateButton({
     Name = "Verify Key",
