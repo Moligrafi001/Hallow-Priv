@@ -91,7 +91,7 @@ local InputKey = Menu:CreateInput({
 local VerifyKey = Menu:CreateButton({
     Name = "Verify Key",
     Callback = function()
-      PegarChave()
+      ChecarChave()
     end,
 })
 
