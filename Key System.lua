@@ -85,7 +85,7 @@ local function CarregarPedido()
   local SectionInstructions = Menu:CreateSection("🔑 Key Instructions 🔑")
   local Paragraph = Menu:CreateParagraph({
       Title = "·-–— Steps to Get the Key —–-·",
-      Content = "1. Click the 'Generate Link' button below;\n2. After you have clicked the button, a link will be copied to your, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it below in the text box."
+      Content = "1. Click the 'Generate Link' button below;\n2. After you have clicked the button, a link will be copied to your clipboard, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it below in the text box."
   })
   local DividerInstructions = Menu:CreateDivider()
   local SectionGetKey = Menu:CreateSection("Get Your Key")
@@ -143,13 +143,7 @@ local function VerificarSalvo()
     if isfolder(foldername) and isfile(filename) then
       if PandaAuth:ValidateKey(readfile(filename)) then
         Verificado = true
-        Rayfield:Notify({
-        Title = "Saved key is right!",
-        Content = "Script is loading... Don't execute it again.",
-        Duration = 4,
-        Image = 17091459839,
-        })
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
       else
         CarregarPedido()
       end
