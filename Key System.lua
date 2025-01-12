@@ -8,7 +8,9 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
-local Button = Credits:CreateButton({
+-- Menu		
+local Menu = Window:CreateTab("Authentication", "key")
+local Button = Menu:CreateButton({
    Name = "Get Key",
    Callback = function()
    	GetKey()
