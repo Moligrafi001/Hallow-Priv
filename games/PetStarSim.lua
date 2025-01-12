@@ -41,6 +41,7 @@ local function AutoCollectStars(selectedMap)
             break
         end
 
+        -- Ensure `LocalStars` folder exists in Workspace
         local localStars = Workspace:FindFirstChild("LocalStars")
         if not localStars then
             warn("LocalStars folder not found in Workspace!")
@@ -48,11 +49,13 @@ local function AutoCollectStars(selectedMap)
             continue
         end
 
+        -- Debug: List children of LocalStars
         print("Children of LocalStars:")
         for _, child in ipairs(localStars:GetChildren()) do
             print("  - " .. child.Name)
         end
 
+        -- Ensure selected map exists in `LocalStars`
         local spawnFolder = localStars:FindFirstChild(selectedMap)
         if not spawnFolder then
             warn("Map " .. selectedMap .. " or corresponding folder not found in LocalStars!")
@@ -83,7 +86,7 @@ local function AutoCollectStars(selectedMap)
                     primaryPart.CFrame = humanoidRootPart.CFrame
 
                     firetouchinterest(humanoidRootPart, primaryPart, 0)
-                    task.wait(0.05)  -- Reduced wait time for faster interaction
+                    task.wait(0.05)  -- Adjusted wait time for stability
                     firetouchinterest(humanoidRootPart, primaryPart, 1)
 
                     print("Simulated touch with star: " .. star.Name)
@@ -220,6 +223,37 @@ local function TeleportMap()
             })
         end
     end
+end
+
+local function autoOpenEgg(eggType)
+    local args = {
+        [1] = eggType,
+        [2] = "Auto Open"
+    }
+
+    local hatchRemote = game:GetService("ReplicatedStorage"):WaitForChild("PetSystem"):WaitForChild("Remote"):WaitForChild("Hatch")
+    
+    -- Attempt to bypass currency check
+    local oldNamecall
+    oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
+        local method = getnamecallmethod()
+        local args = {...}
+        
+        if self == hatchRemote and method == "InvokeServer" then
+            -- Modify args here if needed to bypass currency check
+            return true -- Return a successful result
+        end
+        
+        return oldNamecall(self, ...)
+    end)
+
+    hatchRemote:InvokeServer(unpack(args))
+end
+local isAutoHatching = false
+
+local function stopAllAutoHatches()
+    isAutoHatching = false
+    getgenv().AutoHatch = false
 end
 
 -- Menu		
@@ -443,8 +477,97 @@ TP:CreateDropdown({
 })
 
 local Pet = Window:CreateTab("Pets", "bone")
-local Section = Pet:CreateSection("Auto make golden pets")
+local Section = Pet:CreateSection("Auto Hatch")
 
+Pet:CreateButton({
+    Name = "Stop All Auto Hatches",
+    Callback = function()
+        stopAllAutoHatches()
+        Rayfield:Notify({
+            Title = "Auto Hatch Stopped",
+            Content = "All auto hatching has been disabled.",
+            Duration = 2.5,
+            Image = 17091459839,
+        })
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Basic Egg",
+    Callback = function()
+        autoOpenEgg("Basic Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Autumn Egg",
+    Callback = function()
+        autoOpenEgg("Autumn Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Bee Egg",
+    Callback = function()
+        autoOpenEgg("Bee Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Snow Egg",
+    Callback = function()
+        autoOpenEgg("Snow Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Tropical Egg",
+    Callback = function()
+        autoOpenEgg("Tropical Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Mine Egg",
+    Callback = function()
+        autoOpenEgg("Mine Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Diamond Egg",
+    Callback = function()
+        autoOpenEgg("Diamond Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Magical Egg",
+    Callback = function()
+        autoOpenEgg("Magical Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Sakura Egg",
+    Callback = function()
+        autoOpenEgg("Sakura Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Split Egg",
+    Callback = function()
+        autoOpenEgg("Split Egg")
+    end
+})
+
+Pet:CreateButton({
+    Name = "Auto Open Devil Egg",
+    Callback = function()
+        autoOpenEgg("Devil Egg")
+    end
+})
 
 
 -- Credits
