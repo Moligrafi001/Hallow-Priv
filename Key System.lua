@@ -67,26 +67,48 @@ local Menu = Window:CreateTab("Key System", "key")
 local SectionInstructions = Menu:CreateSection("🔑 Key Instructions 🔑")
 local Paragraph = Menu:CreateParagraph({
     Title = "How to Get the Key",
-    Content = "To get the key, simply click the 'Get Key' button below. After you have clicked the button, a link will be copied to your clipboard. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page. Copy the key that is shown and paste it in the box below the Get Key button."
+    Content = "1. Click the 'Generate Key' button below;\n2. After you have clicked the button, a link will be copied to your, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it in the box below the Get Key button."
 })
 local DividerInstructions = Menu:CreateDivider()
 local SectionGetKey = Menu:CreateSection("Get Your Key")
-local DividerGetKey = Menu:CreateDivider()
 local ButtonGetKey = Menu:CreateButton({
-    Name = "Get Key",
+    Name = "Generate Link",
     Callback = function()
       PegarChave()
       getgenv().PegouChave = true
     end,
 })
-local DividerEnd = Menu:CreateDivider()
-local Input = Menu:CreateInput({
-   Name = "Paste here your key",
-   CurrentValue = "Paste here your key",
+local InputKey = Menu:CreateInput({
+   Name = "Key",
+   CurrentValue = "",
    PlaceholderText = "Paste here your key",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
    	ChaveHub = Text
-   	ChecarChave
+   	ChecarChave()
    end,
 })
+local VerifyKey = Menu:CreateButton({
+    Name = "Verify Key",
+    Callback = function()
+      PegarChave()
+    end,
+})
+
+-- Credits
+local Credits = Window:CreateTab("Credits", "info")
+local Section = Credits:CreateSection("Founder Developer")
+local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
+local Section = Credits:CreateSection("Developer")
+local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
+local Section = Credits:CreateSection("Discord Server")
+local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
+local Button = Credits:CreateButton({
+   Name = "Copy Server Link",
+   Callback = function()
+   	setclipboard("discord.gg/AESCuek87s")
+   	toclipboard("discord.gg/AESCuek87s")
+    end,
+})
+local Section = Credits:CreateSection("Note")
+local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
