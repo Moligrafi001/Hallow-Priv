@@ -1,4 +1,4 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Priv/main/Key%20System.lua",true))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local PandaAuth = loadstring(game:HttpGet("https://raw.githubusercontent.com/Panda-Repositories/PandaKS_Libraries/refs/heads/main/library/LuaLib/ROBLOX/PandaSVALLib.lua"))()
 PandaAuth:Initialize({
@@ -21,12 +21,23 @@ local HttpService = game:GetService("HttpService")
 local ChaveHub ="nil"
 local function ChecarChave()
   if PandaAuth:ValidateKey(ChaveHub) then
-    Rayfield:Notify({
+    if getgenv().FoiVerificado == false then
+      Rayfield:Notify({
       Title = "Right key!",
-      Content = "Perfect!",
-      Duration = 9,
+      Content = "Script is loading...",
+      Duration = 4,
       Image = 17091459839,
     })
+      getgenv().FoiVerificado = true
+      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+    else
+      Rayfield:Notify({
+      Title = "You already verified!",
+      Content = "Script is loading.",
+      Duration = 4,
+      Image = 17091459839,
+    })
+    end
   else
     Rayfield:Notify({
       Title = "Wrong key!",
@@ -95,7 +106,7 @@ local PasteKey = Menu:CreateButton({
     end,
 })
 local VerifyKey = Menu:CreateButton({
-    Name = "Check Key",
+    Name = "Verify Key",
     Callback = function()
       ChecarChave()
     end,
