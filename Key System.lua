@@ -21,6 +21,14 @@ local HttpService = game:GetService("HttpService")
 local ChaveHub = "nil"
 local Verificado = false
 local function CarregarPedido()
+  local function Verificando()
+    Rayfield:Notify({
+      Title = "Checking key...",
+      Content = "Just wait.",
+      Duration = 3,
+      Image = 17091459839,
+    })
+  end
   local function PegarChave()
     setclipboard(PandaAuth:GetKey())
     Rayfield:Notify({
@@ -57,6 +65,7 @@ local function CarregarPedido()
         })
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
     else
+      Verificado = false
       Rayfield:Notify({
         Title = "Wrong key!",
         Content = "Bad!",
@@ -94,14 +103,18 @@ local function CarregarPedido()
      PlaceholderText = "Paste your key here",
      RemoveTextAfterFocusLost = false,
      Callback = function(Text)
+     	Verificando()
      	ChaveHub = Text
      	ChecarChave()
+     	Verificado = true
      end,
   })
   local VerifyKey = Menu:CreateButton({
-      Name = "Verify Key",
+      Name = "Check Key",
       Callback = function()
+        Verificando()
         ChecarChave()
+        Verificado = true
       end,
   })
   
