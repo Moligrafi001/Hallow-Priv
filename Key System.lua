@@ -19,26 +19,15 @@ PandaAuth:Initialize({
 }) 
 local HttpService = game:GetService("HttpService")
 local ChaveHub = "nil"
-local VerificadorCarregou = false
 local function ChecarChave()
   if PandaAuth:ValidateKey(ChaveHub) then
-    if VerificadorCarregou == false then
-      VerificadorCarregou = true
-      Rayfield:Notify({
+    Rayfield:Notify({
       Title = "Yay! Right key!",
       Content = "Script is loading... Don't execute it again.",
       Duration = 4,
       Image = 17091459839,
       })
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
-    else
-      Rayfield:Notify({
-      Title = "You already verified!",
-      Content = "Script is loading.",
-      Duration = 4,
-      Image = 17091459839,
-      })
-    end
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
   else
     Rayfield:Notify({
       Title = "Wrong key!",
