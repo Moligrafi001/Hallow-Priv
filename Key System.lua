@@ -153,6 +153,8 @@ local function VerificarSalvo()
       else
         CarregarPedido()
       end
+    else
+      CarregarPedido()
     end
   end
 end
