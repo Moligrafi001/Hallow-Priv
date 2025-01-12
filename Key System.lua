@@ -68,7 +68,7 @@ local Window = Rayfield:CreateWindow({
 local Menu = Window:CreateTab("Key System", "key")
 local SectionInstructions = Menu:CreateSection("🔑 Key Instructions 🔑")
 local Paragraph = Menu:CreateParagraph({
-    Title = "How to Get the Key",
+    Title = "·-–— Steps to Get the Key —–-·",
     Content = "1. Click the 'Generate Link' button below;\n2. After you have clicked the button, a link will be copied to your, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it in the box below the Get Key button."
 })
 local DividerInstructions = Menu:CreateDivider()
