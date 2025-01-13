@@ -57,6 +57,7 @@ getgenv().AutoChest = false
 getgenv().PlayerESP = false
 getgenv().ChestsESP = false
 getgenv().Fullbright = false
+getgenv().BringMobs = false
 
 -- Locais
 local IlhaSelecionada = "Nenhum"
@@ -123,6 +124,18 @@ local function AutoChest()
 			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
 		end)
 	end
+end
+local function BringMobs()
+  local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
+  while getgenv().BringMobs == true do
+    for _, mob in pairs(workspace.Monsters:GetChildren()) do
+      if getgenv().BringMobs == true and mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and character:FindFirstChild("HumanoidRootPart") then
+        mob.HumanoidRootPart:SetNetworkOwner(game.Players.LocalPlayer)
+        mob.HumanoidRootPart.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -9)
+      end
+    end
+    wait(1)
+  end
 end
 local function AutoBaus()
   while getgenv().AutoBaus == true do
@@ -332,6 +345,15 @@ end
 
 -- Menu		
 local Menu = Window:CreateTab("Main", "home")
+local Section = Menu:CreateSection("Mob Farm")
+local Toggle = Menu:CreateToggle({
+   Name = "Bring Mobs",
+   CurrentValue = false,
+   Callback = function(Value)
+    getgenv().BringMobs = Value
+    BringMobs()
+   end,
+})
 local Section = Menu:CreateSection("Chest Farm")
 local Dropdown = Menu:CreateDropdown({
    Name = "Auto Chests Mode",
