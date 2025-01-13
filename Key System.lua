@@ -60,24 +60,27 @@ local function CarregarPedido()
       })
     end
   end
-  local function ChecarChave()
+  local function SalvarChave()
     local foldername = "Hallow Hub"
     local filename = foldername .. "//Saved Key.txt"
-    if PandaAuth:ValidateKey(ChaveHub) and Verificado == false then
-      if isfolder(foldername) then
-        if isfile(filename) then
-          writefile(filename, ChaveHub)
-        else
-          writefile(filename, ChaveHub)
-        end
+    if isfolder(foldername) then
+      if isfile(filename) then
+        writefile(filename, ChaveHub)
       else
-        makefolder(foldername)
-        if isfile(filename) then
-          writefile(filename, ChaveHub)
-        else
-          writefile(filename, ChaveHub)
-        end
+        writefile(filename, ChaveHub)
       end
+    else
+      makefolder(foldername)
+      if isfile(filename) then
+        writefile(filename, ChaveHub)
+      else
+        writefile(filename, ChaveHub)
+      end
+    end
+  end
+  local function ChecarChave()
+    if PandaAuth:ValidateKey(ChaveHub) and Verificado == false then
+      SalvarChave()
       if Portuguese then
         Rayfield:Notify({
           Title = "Yay! Key correta!",
@@ -197,6 +200,21 @@ local function CarregarPedido()
         Image = 17091459839,
       })
     end
+    pcall(function()
+      if PandaAuth:ValidateKey(getclipboard()) then
+        Verificado = true
+        ChaveHub = getclipboard()
+        SalvarChave()
+        Rayfield:Notify({
+          Title = "Key copiada está correta!",
+          Content = "Carregando script, aguarde...",
+          Duration = 3,
+          Image = 17091459839,
+        })
+        wait(1)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+      end
+    end)
   else
     if ChaveExpirou == true then
       Rayfield:Notify({
@@ -206,6 +224,21 @@ local function CarregarPedido()
         Image = 17091459839,
       })
     end
+    pcall(function()
+      if PandaAuth:ValidateKey(getclipboard()) then
+        Verificado = true
+        ChaveHub = getclipboard()
+        SalvarChave()
+        Rayfield:Notify({
+          Title = "Copied key is right!",
+          Content = "Loading script, wait...",
+          Duration = 3,
+          Image = 17091459839,
+        })
+        wait(1)
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+      end
+    end)
   end
 end
 local function VerificarSalvo()
