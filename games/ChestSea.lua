@@ -73,46 +73,48 @@ local function AutoChest()
     })
   end
 	while getgenv().AutoChest == true do
-	  if ModoDeBaus == "In Island" then
-  		for _, chest in pairs(workspace.Chest:GetChildren()) do
-  			if chest:IsA("Model") then
-  				for numero = 1, 2 do
-  					local final = "Chest" .. numero .. "base1"
-  					if chest:FindFirstChild(final) and workspace:FindFirstChild(game.Players.LocalPlayer.Name) then
-  						game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
-  						if getgenv().AutoChest == true then
-  							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
-  							wait(0.7)
-  							for _, pp in pairs(chest:GetDescendants()) do
-  								if pp:IsA("ProximityPrompt") then
-  									fireproximityprompt(pp)
-  									game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
-  								break
-  								end
-  							end
-  						end
-  					break
-  					end
-  				end
+	  pcall(function()
+  	  if ModoDeBaus == "In Island" then
+    		for _, chest in pairs(workspace.Chest:GetChildren()) do
+    			if chest:IsA("Model") then
+    				for numero = 1, 2 do
+    					local final = "Chest" .. numero .. "base1"
+    					if chest:FindFirstChild(final) and workspace:FindFirstChild(game.Players.LocalPlayer.Name) then
+    						game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+    						if getgenv().AutoChest == true then
+    							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
+    							wait(0.7)
+    							for _, pp in pairs(chest:GetDescendants()) do
+    								if pp:IsA("ProximityPrompt") then
+    									fireproximityprompt(pp)
+    									game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+    								break
+    								end
+    							end
+    						end
+    					break
+    					end
+    				end
+    			end
   			end
-			end
-			wait(0.2)
-	  elseif ModoDeBaus == "All Islands" then
-	    game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
-	    for _, v in pairs(workspace.Chest:GetChildren()) do
-	      if getgenv().AutoChest == true and v:IsA("Model") then
-	        local wp = v.WorldPivot
-	        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(wp.Position)
-	        wait(0.3)
-	        if v.ProximityPrompt then
-	          fireproximityprompt(v.ProximityPrompt)
-	          wait(0.05)
-	          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
-	        end
-	      end
-	    end
-	    wait(0.15)
-		end
+  			wait(0.2)
+  	  elseif ModoDeBaus == "All Islands" then
+  	    game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+  	    for _, v in pairs(workspace.Chest:GetChildren()) do
+  	      if getgenv().AutoChest == true and v:IsA("Model") then
+  	        local wp = v.WorldPivot
+  	        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(wp.Position)
+  	        wait(0.3)
+  	        if v.ProximityPrompt then
+  	          fireproximityprompt(v.ProximityPrompt)
+  	          wait(0.05)
+  	          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+  	        end
+  	      end
+  	    end
+  	    wait(0.15)
+  	  end
+	  end)
 	wait()
 	end
 	wait(1)
