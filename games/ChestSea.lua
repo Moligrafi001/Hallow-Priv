@@ -58,12 +58,22 @@ getgenv().PlayerESP = false
 getgenv().ChestsESP = false
 getgenv().Fullbright = false
 getgenv().BringMobs = false
+getgenv().RenewQuests = false
 
 -- Locais
 local IlhaSelecionada = "Nenhum"
 local ModoDeBaus = "Nenhum"
 
 -- Funções
+local function RenewQuests()
+  while getgenv().RenewQuests == true do
+    game:GetService("Players").LocalPlayer:SetAttribute("AutoQuest", 1)
+    wait(0.01)
+  end
+  if getgenv().RenewQuests == false then
+    game:GetService("Players").LocalPlayer:SetAttribute("AutoQuest", 1)
+  end
+end
 local function AutoChest()
   if ModoDeBaus == "Nenhum" then
     Rayfield:Notify({
@@ -75,7 +85,7 @@ local function AutoChest()
   end
 	while getgenv().AutoChest == true do
 	  pcall(function()
-  	  if ModoDeBaus == "In Island" then
+  	  if ModoDeBaus == "Closers Chests" then
     		for _, chest in pairs(workspace.Chest:GetChildren()) do
     			if chest:IsA("Model") then
     				for numero = 1, 2 do
@@ -130,7 +140,6 @@ local function BringMobs()
   while getgenv().BringMobs == true do
     for _, mob in pairs(workspace.Monsters:GetChildren()) do
       if getgenv().BringMobs == true and mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and character:FindFirstChild("HumanoidRootPart") then
-        mob.HumanoidRootPart:SetNetworkOwner(game.Players.LocalPlayer)
         mob.HumanoidRootPart.CFrame = character.HumanoidRootPart.CFrame * CFrame.new(0, 0, -9)
       end
     end
@@ -347,17 +356,17 @@ end
 local Menu = Window:CreateTab("Main", "home")
 local Section = Menu:CreateSection("Mob Farm")
 local Toggle = Menu:CreateToggle({
-   Name = "Bring Mobs",
+   Name = "Auto Renew Quest",
    CurrentValue = false,
    Callback = function(Value)
-    getgenv().BringMobs = Value
-    BringMobs()
+    getgenv().RenewQuests = Value
+    RenewQuests()
    end,
 })
 local Section = Menu:CreateSection("Chest Farm")
 local Dropdown = Menu:CreateDropdown({
    Name = "Auto Chests Mode",
-   Options = {"In Island", "All Islands"},
+   Options = {"Closers Chests", "All Islands"},
    CurrentOption = {"Select the Mode"},
    MultipleOptions = false,
    Callback = function(Options)
