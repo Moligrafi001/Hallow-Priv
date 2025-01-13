@@ -8,7 +8,7 @@ PandaAuth:Initialize({
   Allow_BlacklistUsers = false,
   GUIVersion = false,
   EnableWebhook = false,
-  Webhook_URL = "https://yourwebhook.url",
+  Webhook_URL = "https://discord.com/api/webhooks/1328260420775186504/YfQelXUZMdmqsvtXqCprvoa6hUqS-0nOZNRJ_aaNXcMelpusO5PW2N_3oMTgQjCBN4_h",
   Authenticated = function() 
     print("[Pelinda] Key authenticated successfully! Access granted.") 
   end, 
@@ -18,6 +18,7 @@ PandaAuth:Initialize({
 }) 
 local ChaveHub = "nil"
 local Verificado = false
+local ChaveExpirou = false
 local function CarregarPedido()
   local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
   local function Verificando()
@@ -87,7 +88,6 @@ local function CarregarPedido()
       Title = "·-–— Steps to Get the Key —–-·",
       Content = "1. Click the 'Generate Link' button below;\n2. After you have clicked the button, a link will be copied to your clipboard, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it below in the text box."
   })
-  local DividerInstructions = Menu:CreateDivider()
   local SectionGetKey = Menu:CreateSection("Get Your Key")
   local ButtonGetKey = Menu:CreateButton({
       Name = "Generate Link",
@@ -117,7 +117,8 @@ local function CarregarPedido()
         Verificado = true
       end,
   })
-  
+  local DividerInstructions = Menu:CreateDivider()
+
   -- Credits
   local Credits = Window:CreateTab("Credits", "info")
   local Section = Credits:CreateSection("Founder Developer")
@@ -135,6 +136,14 @@ local function CarregarPedido()
   })
   local Section = Credits:CreateSection("Note")
   local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
+  if ChaveExpirou == true then
+    Rayfield:Notify({
+      Title = "Saved key is wrong.",
+      Content = "Your saved key expired or is wrong. Try to get a new one.",
+      Duration = 7,
+      Image = 17091459839,
+    })
+  end
 end
 local function VerificarSalvo()
   local foldername = "Hallow Hub"
@@ -145,6 +154,7 @@ local function VerificarSalvo()
         Verificado = true
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
       else
+        ChaveExpirou = true
         CarregarPedido()
       end
     else
