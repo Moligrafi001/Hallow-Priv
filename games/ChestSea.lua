@@ -60,33 +60,60 @@ getgenv().Fullbright = false
 
 -- Locais
 local IlhaSelecionada = "Nenhum"
+local ModoDeBaus = "Nenhum"
 
 -- Funções
 local function AutoChest()
+  if ModoDeBaus == "Nenhum" then
+    Rayfield:Notify({
+      Title = "No Chest Mode Selected!",
+      Content = "You have to select it before you farm.",
+      Duration = 5,
+      Image = 17091459839,
+    })
+  end
 	while getgenv().AutoChest == true do
-		for _, chest in pairs(workspace.Chest:GetChildren()) do
-			if chest:IsA("Model") then
-				for numero = 1, 2 do
-					local final = "Chest" .. numero .. "base1"
-					if chest:FindFirstChild(final) and workspace:FindFirstChild(game.Players.LocalPlayer.Name) then
-						game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
-						if getgenv().AutoChest == true then
-							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
-							wait(0.7)
-							for _, pp in pairs(chest:GetDescendants()) do
-								if pp:IsA("ProximityPrompt") then
-									fireproximityprompt(pp)
-									game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
-								break
-								end
-							end
-						end
-					break
-					end
-				end
+	  if ModoDeBaus == "In Island" then
+  		for _, chest in pairs(workspace.Chest:GetChildren()) do
+  			if chest:IsA("Model") then
+  				for numero = 1, 2 do
+  					local final = "Chest" .. numero .. "base1"
+  					if chest:FindFirstChild(final) and workspace:FindFirstChild(game.Players.LocalPlayer.Name) then
+  						game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+  						if getgenv().AutoChest == true then
+  							game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = chest[final].CFrame
+  							wait(0.7)
+  							for _, pp in pairs(chest:GetDescendants()) do
+  								if pp:IsA("ProximityPrompt") then
+  									fireproximityprompt(pp)
+  									game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+  								break
+  								end
+  							end
+  						end
+  					break
+  					end
+  				end
+  			end
 			end
 			wait(0.2)
+	  elseif ModoDeBaus == "All Islands" then
+	    game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("Hallow_Hub", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+	    for _, v in pairs(workspace.Chest:GetChildren()) do
+	      if getgenv().AutoChest == true and v:IsA("Model") then
+	        local wp = v.WorldPivot
+	        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(wp.Position)
+	        wait(0.3)
+	        if v.ProximityPrompt then
+	          fireproximityprompt(v.ProximityPrompt)
+	          wait(0.05)
+	          game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
+	        end
+	      end
+	    end
+	    wait(0.15)
 		end
+	wait()
 	end
 	wait(1)
 	if getgenv().AutoChest == false then
@@ -94,6 +121,22 @@ local function AutoChest()
 			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("Hallow_Hub")
 		end)
 	end
+end
+local function AutoBaus()
+  while getgenv().AutoBaus == true do
+    for _, v in pairs(workspace.Chest:GetChildren()) do
+      if getgenv().AutoBaus == true and v:IsA("Model") then
+        local wp = v.WorldPivot
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(wp.Position)
+        wait(0.3)
+        if v.ProximityPrompt then
+          fireproximityprompt(v.ProximityPrompt)
+          break
+        end
+      end
+    end
+    wait(0.2)
+  end
 end
 local function PlayerESP()
 	while getgenv().PlayerESP == true do
@@ -288,12 +331,21 @@ end
 -- Menu		
 local Menu = Window:CreateTab("Main", "home")
 local Section = Menu:CreateSection("Chest Farm")
+local Dropdown = Menu:CreateDropdown({
+   Name = "Auto Chests Mode",
+   Options = {"In Island", "All Islands"},
+   CurrentOption = {"Select the Mode"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		ModoDeBaus = Options[1]
+   end,
+})
 local Toggle = Menu:CreateToggle({
-   Name = "Auto Farm Chests (In Island)",
+   Name = "Auto Farm Chests",
    CurrentValue = false,
    Callback = function(Value)
-   	getgenv().AutoChest = Value
-   	AutoChest()
+    getgenv().AutoChest = Value
+    AutoChest()
    end,
 })
 local Section = Menu:CreateSection("More features coming soon...")
