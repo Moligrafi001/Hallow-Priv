@@ -42,7 +42,6 @@ local function CarregarPedido()
     local foldername = "Hallow Hub"
     local filename = foldername .. "//Saved Key.txt"
     if PandaAuth:ValidateKey(ChaveHub) and Verificado == false then
-      Verificado = true
       if isfolder(foldername) then
         if isfile(filename) then
           writefile(filename, ChaveHub)
@@ -84,7 +83,7 @@ local function CarregarPedido()
   })
   local Menu = Window:CreateTab("Key System", "key")
   local SectionInstructions = Menu:CreateSection("🔑 Key Instructions 🔑")
-  local Paragraph = Menu:CreateParagraph({
+  local TutorialLabel = Menu:CreateParagraph({
       Title = "·-–— Steps to Get the Key —–-·",
       Content = "1. Click the 'Generate Link' button below;\n2. After you have clicked the button, a link will be copied to your clipboard, paste it into your browser;\n3. Go into your browser and paste in the link. Follow all the necessary steps until you reach the key page;\n4. Copy the key that is shown and paste it below in the text box."
   })
@@ -96,7 +95,7 @@ local function CarregarPedido()
         getgenv().PegouChave = true
       end,
   })
-  local SectionGetKey = Menu:CreateSection("Authenticate Key")
+  local SectionCheckKey = Menu:CreateSection("Authenticate Key")
   local InputKey = Menu:CreateInput({
      Name = "Key",
      CurrentValue = "",
@@ -136,13 +135,31 @@ local function CarregarPedido()
   })
   local Section = Credits:CreateSection("Note")
   local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
-  if ChaveExpirou == true then
-    Rayfield:Notify({
-      Title = "Saved key is wrong.",
-      Content = "Your saved key expired or is wrong. Try to get a new one.",
-      Duration = 7,
-      Image = 17091459839,
-    })
+  
+  if game:GetService("LocalizationService").RobloxLocaleId == "pt-br" then
+    SectionInstructions:Set("🔑 Instruções 🔑")
+    TutorialLabel:Set({Title = "·-–— Passos para Autenticar —–-·", Content = "1. Clique no botão 'Gerar Link' logo abaixo;\n2. Após clicar, um link será copiado para sua área de transferência;\n3. Abra seu navegador, cole o link copiado e complete as tarefas;\n4. Assim que terminado o passo anterior, copie o código gerado e cole na caixa de texto."})
+    SectionGetKey:Set("Pegue sua Key")
+    ButtonGetKey:Set("Gerar Link")
+    SectionCheckKey:Set("Autenticar Key")
+    VerifyKey:Set("Verificar Key")
+    if ChaveExpirou == true then
+      Rayfield:Notify({
+        Title = "Key salva incorreta.",
+        Content = "Sua key salva expirou ou está incorreta. Tente pegar outra key.",
+        Duration = 7,
+        Image = 17091459839,
+      })
+    end
+  else
+    if ChaveExpirou == true then
+      Rayfield:Notify({
+        Title = "Saved key is wrong.",
+        Content = "Your saved key expired or is wrong. Try to get a new one.",
+        Duration = 7,
+        Image = 17091459839,
+      })
+    end
   end
 end
 local function VerificarSalvo()
