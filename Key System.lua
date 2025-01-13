@@ -20,23 +20,45 @@ local ChaveHub = "nil"
 local Verificado = false
 local ChaveExpirou = false
 local function CarregarPedido()
+  local Portuguese = false
+  if game:GetService("LocalizationService").RobloxLocaleId == "pt-br" then
+    Portuguese = true
+  end
   local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
   local function Verificando()
-    Rayfield:Notify({
-      Title = "Checking key...",
-      Content = "Just wait.",
-      Duration = 3,
-      Image = 17091459839,
-    })
+    if Portuguese then
+      Rayfield:Notify({
+        Title = "Verificando key...",
+        Content = "Apenas espere.",
+        Duration = 3,
+        Image = 17091459839,
+      })
+    else
+      Rayfield:Notify({
+        Title = "Checking key...",
+        Content = "Just wait.",
+        Duration = 3,
+        Image = 17091459839,
+      })
+    end
   end
   local function PegarChave()
     setclipboard(PandaAuth:GetKey())
-    Rayfield:Notify({
-      Title = "Got the link to the key!",
-      Content = "Link copied! Follow the steps.",
-      Duration = 9,
-      Image = 17091459839,
-    })
+    if Portuguese then
+      Rayfield:Notify({
+        Title = "Link copiado com sucesso!",
+        Content = "Siga todas as instruções atentamente.",
+        Duration = 9,
+        Image = 17091459839,
+      })
+    else
+      Rayfield:Notify({
+        Title = "Got the link to the key!",
+        Content = "Link copied! Follow the steps.",
+        Duration = 9,
+        Image = 17091459839,
+      })
+    end
   end
   local function ChecarChave()
     local foldername = "Hallow Hub"
@@ -56,22 +78,40 @@ local function CarregarPedido()
           writefile(filename, ChaveHub)
         end
       end
-      Rayfield:Notify({
-        Title = "Yay! Right key!",
-        Content = "Script is loading... Don't execute it again.",
-        Duration = 4,
-        Image = 17091459839,
-        })
+      if Portuguese then
+        Rayfield:Notify({
+          Title = "Yay! Key correta!",
+          Content = "Script está carregando, aguarde...",
+          Duration = 4,
+          Image = 17091459839,
+          })
+      else
+        Rayfield:Notify({
+          Title = "Yay! Right key!",
+          Content = "Script is loading... Don't execute it again.",
+          Duration = 4,
+          Image = 17091459839,
+          })
+      end
       wait(1)
       loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
     else
       Verificado = false
-      Rayfield:Notify({
-        Title = "Wrong key!",
-        Content = "Bad!",
-        Duration = 4,
-        Image = 17091459839,
-      })
+      if Portuguese then
+        Rayfield:Notify({
+          Title = "Key incorreta!",
+          Content = "Tem certeza que colou certo?",
+          Duration = 4,
+          Image = 17091459839,
+        })
+      else
+        Rayfield:Notify({
+          Title = "Wrong key!",
+          Content = "Bad!",
+          Duration = 4,
+          Image = 17091459839,
+        })
+      end
     end
   end
   local Window = Rayfield:CreateWindow({
@@ -136,7 +176,7 @@ local function CarregarPedido()
   local Section = Credits:CreateSection("Note")
   local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
   
-  if game:GetService("LocalizationService").RobloxLocaleId == "pt-br" then
+  if Portuguese then
     SectionInstructions:Set("🔑 Instruções 🔑")
     TutorialLabel:Set({Title = "·-–— Passos para Autenticar —–-·", Content = "1. Clique no botão 'Gerar Link' logo abaixo;\n2. Após clicar, um link será copiado para sua área de transferência;\n3. Abra seu navegador, cole o link copiado e complete as tarefas;\n4. Assim que terminado o passo anterior, copie o código gerado e cole na caixa de texto."})
     SectionGetKey:Set("Pegue sua Key")
@@ -146,7 +186,7 @@ local function CarregarPedido()
     if ChaveExpirou == true then
       Rayfield:Notify({
         Title = "Key salva incorreta.",
-        Content = "Sua key salva expirou ou está incorreta. Tente pegar outra key.",
+        Content = "Sua key salva expirou ou é incorreta. Tente pegar outra key.",
         Duration = 7,
         Image = 17091459839,
       })
