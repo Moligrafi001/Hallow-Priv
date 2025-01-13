@@ -178,7 +178,7 @@ local function CarregarPedido()
   
   if Portuguese then
     SectionInstructions:Set("🔑 Instruções 🔑")
-    TutorialLabel:Set({Title = "·-–— Passos para Autenticar —–-·", Content = "1. Clique no botão 'Gerar Link' logo abaixo;\n2. Após clicar, um link será copiado para sua área de transferência;\n3. Abra seu navegador, cole o link copiado e complete as tarefas;\n4. Assim que terminado o passo anterior, copie o código gerado e cole na caixa de texto."})
+    TutorialLabel:Set({Title = "·-–— Passos para Autenticar —–-·", Content = "1. Clique no botão 'Gerar Link' logo abaixo;\n2. Após clicar, um link será copiado para sua área de transferência;\n3. Abra seu navegador, cole o link copiado e complete as tarefas;\n4. Assim que terminado o passo anterior, copie o código gerado e cole na caixa de texto aqui abaixo."})
     SectionGetKey:Set("Pegue sua Key")
     ButtonGetKey:Set("Gerar Link")
     SectionCheckKey:Set("Autenticar Key")
