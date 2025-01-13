@@ -164,17 +164,17 @@ local function CarregarPedido()
   local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
   local DevSection = Credits:CreateSection("Co-Developer")
   local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
-  local Section = Credits:CreateSection("Discord Server")
+  local ServerSection = Credits:CreateSection("Discord Server")
   local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
-  local Button = Credits:CreateButton({
+  local ButtonServer = Credits:CreateButton({
      Name = "Copy Server Link",
      Callback = function()
      	setclipboard("discord.gg/XnsG57tQWS")
      	toclipboard("discord.gg/XnsG57tQWS")
       end,
   })
-  local Section = Credits:CreateSection("Note")
-  local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
+  local NoteSection = Credits:CreateSection("Note")
+  local NoteLabel = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
   
   if Portuguese then
     SectionInstructions:Set("🔑 Instruções 🔑")
@@ -185,6 +185,10 @@ local function CarregarPedido()
     VerifyKey:Set("Verificar Key")
     FounderSection:Set("Fundador Desenvolvedor")
     DevSection:Set("Co-Desenvolvedor")
+    ServerSection:Set("Servidor Discord")
+    ButtonServer:Set("Copiar Link")
+    NoteSection:Set("Nota")
+    NoteLabel:Set("Se você encontrar algum bug, entre no servidor e reporte via ticket")
     if ChaveExpirou == true then
       Rayfield:Notify({
         Title = "Key salva incorreta.",
