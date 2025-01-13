@@ -160,9 +160,9 @@ local function CarregarPedido()
 
   -- Credits
   local Credits = Window:CreateTab("Credits", "info")
-  local Section = Credits:CreateSection("Founder Developer")
+  local FounderSection = Credits:CreateSection("Founder Developer")
   local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-  local Section = Credits:CreateSection("Developer")
+  local DevSection = Credits:CreateSection("Co-Developer")
   local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
   local Section = Credits:CreateSection("Discord Server")
   local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
@@ -183,6 +183,8 @@ local function CarregarPedido()
     ButtonGetKey:Set("Gerar Link")
     SectionCheckKey:Set("Autenticar Key")
     VerifyKey:Set("Verificar Key")
+    FounderSection:Set("Fundador Desenvolvedor")
+    DevSection:Set("Co-Desenvolvedor")
     if ChaveExpirou == true then
       Rayfield:Notify({
         Title = "Key salva incorreta.",
