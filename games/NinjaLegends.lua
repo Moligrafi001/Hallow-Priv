@@ -8,22 +8,34 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
--- Globals
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
 
 getgenv().AutoSwing = false
 getgenv().AutoSell = false
-getgenv().SwingDelay = 0.5
-getgenv().HoopDelay = 0.5
+getgenv().FarmHoops = false
+getgenv().SwingDelay = "0.5"
+getgenv().HoopDelay = "0.5"
 getgenv().InfiniteJump = false
 getgenv().AutoHatch = false
 getgenv().CrystalToHatch = "Blue Crystal"
+getgenv().AutoEvolve = false
+getgenv().AutoSellPets = false
+getgenv().PetToSell = nil
+getgenv().AutoPurchaseSwords = false
+getgenv().AutoPurchaseBelts = false
+getgenv().AutoUpgradeSkills = false
+getgenv().AutoPurchaseShurikens = false
+getgenv().IslandToPurchaseFrom = "Ground"
 
--- Functions
-local function toggleAutoSwing(state)
-    getgenv().AutoSwing = state
+
+local function startAutoSwing()
+    getgenv().AutoSwing = true
+    local Plr = game.Players.LocalPlayer
+    local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
+
     while getgenv().AutoSwing do
+        -- Equip Weapon
         pcall(function()
             local Weapon
             for _, Tool in pairs(Plr.Backpack:GetChildren()) do
@@ -31,168 +43,245 @@ local function toggleAutoSwing(state)
                     Weapon = Tool
                 end
             end
-            Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
+
+            if Weapon then
+                Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
+            end
         end)
+
         NinjaEvent:FireServer("swingKatana")
-        wait(getgenv().SwingDelay)
+        wait(tonumber(getgenv().SwingDelay))
     end
 end
 
-local function toggleAutoSell(state)
-    getgenv().AutoSell = state
-    while getgenv().AutoSell do
-        local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
-        local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
-        local CurrentBelt = Plr.equippedBelt.Value
+local function stopAutoSwing()
+    getgenv().AutoSwing = false
+end
 
-        CurrentNinjitsu:GetPropertyChangedSignal("Value"):Connect(function()
-            if CurrentNinjitsu.Value >= GroundBelts[CurrentBelt.Name].capacity.Value then
-                local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
-                firetouchinterest(sellPart, Plr.Character.Head, 1)
-                wait(0.5)
-                firetouchinterest(sellPart, Plr.Character.Head, 0)
+local function startAutoSell()
+    getgenv().AutoSell = true
+    local Plr = game.Players.LocalPlayer
+    local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
+    local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
+    local CurrentBelt = Plr.equippedBelt.Value
+
+    CurrentNinjitsu:GetPropertyChangedSignal("Value"):Connect(function()
+        if CurrentNinjitsu.Value >= GroundBelts[CurrentBelt.Name].capacity.Value then
+            local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
+            firetouchinterest(sellPart, Plr.Character.Head, 1)
+            wait(0.5)
+            firetouchinterest(sellPart, Plr.Character.Head, 0)
+        end
+    end)
+end
+
+local function stopAutoSell()
+    getgenv().AutoSell = false
+end
+
+local function startFarmHoops()
+    getgenv().FarmHoops = true
+
+    while getgenv().FarmHoops do
+        pcall(function()
+            for i, hoop in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
+                if getgenv().FarmHoops then
+                    local args = {
+                        [1] = "useHoop",
+                        [2] = hoop
+                    }
+
+                    game:GetService("ReplicatedStorage").rEvents.hoopEvent:FireServer(unpack(args))
+
+                    wait(tonumber(getgenv().HoopDelay))
+                end
             end
         end)
     end
 end
 
-local function setSwingDelay(value)
-    getgenv().SwingDelay = value
+local function stopFarmHoops()
+    getgenv().FarmHoops = false
 end
 
-local function setHoopDelay(value)
-    getgenv().HoopDelay = value
-end
+local function startAutoHatch()
+    getgenv().AutoHatch = true
 
-local function setWalkSpeed(value)
-    Plr.Character:FindFirstChildOfClass("Humanoid").WalkSpeed = value
-end
-
-local function setJumpPower(value)
-    Plr.Character:FindFirstChildOfClass("Humanoid").JumpPower = value
-end
-
-local function toggleInfiniteJump(state)
-    getgenv().InfiniteJump = state
-    game:GetService("UserInputService").InputBegan:Connect(function(input)
-        if state and input.KeyCode == Enum.KeyCode.Space then
-            Plr.Character.HumanoidRootPart.Velocity = Vector3.new(0, 150, 0)
-        end
-    end)
-end
-
-local function toggleAutoHatch(state)
-    getgenv().AutoHatch = state
     while getgenv().AutoHatch do
         pcall(function()
             local args = {
                 [1] = "openCrystal",
                 [2] = getgenv().CrystalToHatch
             }
+
             game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer(unpack(args))
         end)
-        wait(1)
     end
 end
 
-local function setCrystalToHatch(option)
-    getgenv().CrystalToHatch = option
+local function stopAutoHatch()
+    getgenv().AutoHatch = false
 end
 
--- UI Setup
-local AutofarmTab = Window:CreateTab("Autofarm")
+local function startAutoEvolve()
+    getgenv().AutoEvolve = true
 
--- Autofarm Toggles
-local toggle = AutofarmTab:CreateToggle({
-    Name = "Auto Swing",
-    CurrentValue = false,
-    Callback = function(state)
-        toggleAutoSwing(state)
+    while getgenv().AutoEvolve do
+        pcall(function()
+            for i, type in pairs(Plr.petsFolder:GetChildren()) do
+                for i2, pet in pairs(type:GetChildren()) do
+                    game:GetService("ReplicatedStorage").rEvents.petNextEvolutionEvent:FireServer("evolvePet", pet, game:GetService("ReplicatedStorage").evolutionOrders.evolved)
+                end
+            end
+        end)
+
+        wait(2)
     end
-})
+end
 
-local toggle = AutofarmTab:CreateToggle({
-    Name = "Auto Sell",
-    CurrentValue = false,
-    Callback = function(state)
-        toggleAutoSell(state)
+local function stopAutoEvolve()
+    getgenv().AutoEvolve = false
+end
+
+local function startAutoSellPets()
+    getgenv().AutoSellPets = true
+
+    while getgenv().AutoSellPets do
+        for i, pet in pairs(Plr.petsFolder[getgenv().PetToSell]:GetChildren()) do
+            game:GetService("ReplicatedStorage").rEvents.sellPetEvent:FireServer("sellPet", pet)
+        end
+
+        wait(5)
     end
-})
+end
 
-local slider = AutofarmTab:CreateSlider({
-    Name = "Swing Delay",
-    Min = 0,
-    Max = 1,
-    Increment = 0.1,
-    CurrentValue = getgenv().SwingDelay,
-    Callback = function(value)
-        setSwingDelay(value)
+local function stopAutoSellPets()
+    getgenv().AutoSellPets = false
+end
+
+local function startAutoPurchaseSwords()
+    getgenv().AutoPurchaseSwords = true
+
+    while getgenv().AutoPurchaseSwords do
+        pcall(function()
+            NinjaEvent:FireServer("buyAllSwords", getgenv().IslandToPurchaseFrom)
+        end)
+
+        wait(5)
     end
-})
+end
 
-local slider = AutofarmTab:CreateSlider({
-    Name = "Hoop Delay",
-    Min = 0,
-    Max = 1,
-    Increment = 0.1,
-    CurrentValue = getgenv().HoopDelay,
-    Callback = function(value)
-        setHoopDelay(value)
+local function stopAutoPurchaseSwords()
+    getgenv().AutoPurchaseSwords = false
+end
+
+local function startAutoPurchaseBelts()
+    getgenv().AutoPurchaseBelts = true
+
+    while getgenv().AutoPurchaseBelts do
+        pcall(function()
+            NinjaEvent:FireServer("buyAllBelts", getgenv().IslandToPurchaseFrom)
+        end)
+
+        wait(5)
     end
-})
+end
 
-local ClientTab = Window:CreateTab("Local Player")
+local function stopAutoPurchaseBelts()
+    getgenv().AutoPurchaseBelts = false
+end
 
--- Local Player Controls
-local slider = ClientTab:CreateSlider({
-    Name = "Walk Speed",
-    Min = 16,
-    Max = 500,
-    Increment = 1,
-    CurrentValue = 16,
-    Callback = function(value)
-        setWalkSpeed(value)
+local function startAutoUpgradeSkills()
+    getgenv().AutoUpgradeSkills = true
+
+    while getgenv().AutoUpgradeSkills do
+        pcall(function()
+            NinjaEvent:FireServer("buyAllSkills", getgenv().IslandToPurchaseFrom)
+        end)
+
+        wait(5)
     end
-})
+end
 
-local slider = ClientTab:CreateSlider({
-    Name = "Jump Power",
-    Min = 50,
-    Max = 1000,
-    Increment = 10,
-    CurrentValue = 50,
-    Callback = function(value)
-        setJumpPower(value)
+local function stopAutoUpgradeSkills()
+    getgenv().AutoUpgradeSkills = false
+end
+
+local function startAutoPurchaseShurikens()
+    getgenv().AutoPurchaseShurikens = true
+
+    while getgenv().AutoPurchaseShurikens do
+        pcall(function()
+            NinjaEvent:FireServer("buyAllShurikens", getgenv().IslandToPurchaseFrom)
+        end)
+
+        wait(5)
     end
-})
+end
 
-local toggle = ClientTab:CreateToggle({
-    Name = "Infinite Jump",
-    CurrentValue = false,
-    Callback = function(state)
-        toggleInfiniteJump(state)
-    end
-})
+local function stopAutoPurchaseShurikens()
+    getgenv().AutoPurchaseShurikens = false
+end
 
-local PetsTab = Window:CreateTab("Pets")
+-- Movement
+local WalkSpeedText = 16
+local JumpPowerText = 50
+_G.SetWalkSpeed = false
+_G.SetJumpPower = false
+_G.InfJump = false
+_G.NoClip = false
+local function SetWalkSpeed()
+	while _G.SetWalkSpeed == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+		end
+		wait(0.01)
+	end
+	if _G.SetWalkSpeed == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+	end
+end
+local function SetJumpPower()
+	while _G.SetJumpPower == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
+		end
+		wait(0.01)
+		end
+	if _G.SetJumpPower == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
+	end
+end
+local function InfJump()
+	while _G.InfJump == true do
+		game:GetService("UserInputService").JumpRequest:connect(function()
+			if _G.InfJump == true then
+				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+			end
+		end)
+		wait(0.1)
+	end
+end
+local function NoClip()
+	while _G.NoClip == true do
+		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if _G.NoClip then
+					part.CanCollide = false
+				else
+					part.CanCollide = true
+				end
+			end
+		end
+		wait(0.1)
+	end
+end
 
--- Pets Controls
-local toggle = PetsTab:CreateToggle({
-    Name = "Auto Hatch",
-    CurrentValue = false,
-    Callback = function(state)
-        toggleAutoHatch(state)
-    end
-})
+local Menu = Window:CreateTab("Main", "home")
+local Section = Menu:CreateSection("Auto Farm")
 
-local dropdown = PetsTab:CreateDropdown({
-    Name = "Crystal",
-    Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
-    CurrentOption = getgenv().CrystalToHatch,
-    Callback = function(option)
-        setCrystalToHatch(option)
-    end
-})
+
+
 
 local CreditsTab = Window:CreateTab("Credits")
 -- Credits
@@ -209,4 +298,5 @@ CreditsTab:CreateButton({
     end
 })
 CreditsTab:CreateLabel("If you find any bug join the discord and open a ticket")
+
 
