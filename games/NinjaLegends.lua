@@ -100,10 +100,10 @@ local function setCrystalToHatch(option)
 end
 
 -- UI Setup
-local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
-local ClientTab = Window:CreateTab("Local Player", "rbxassetid://1234567890")
-local PetsTab = Window:CreateTab("Pets", "rbxassetid://1234567890")
-local CreditsTab = Window:CreateTab("Credits", "info")
+local AutofarmTab = Window:CreateTab("Autofarm")
+local ClientTab = Window:CreateTab("Local Player")
+local PetsTab = Window:CreateTab("Pets")
+local CreditsTab = Window:CreateTab("Credits")
 
 -- Autofarm Toggles
 AutofarmTab:CreateToggle({
