@@ -32,7 +32,7 @@ getgenv().IslandToPurchaseFrom = "Ground"
 local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
 local AutofarmSection = AutofarmTab:CreateSection("Autofarm")
 -- Autofarm Toggles
-AutofarmSection:CreateToggle({
+AutofarmTab:CreateToggle({
     Name = "Auto Swing",
     CurrentValue = false,
     Callback = function(state)
@@ -53,7 +53,7 @@ AutofarmSection:CreateToggle({
     end
 })
 
-AutofarmSection:CreateToggle({
+AutofarmTab:CreateToggle({
     Name = "Auto Sell",
     CurrentValue = false,
     Callback = function(state)
@@ -77,7 +77,7 @@ AutofarmSection:CreateToggle({
 
 local AutofarmConfigSection = AutofarmTab:CreateSection("Configurations")
 
-AutofarmConfigSection:CreateSlider({
+AutofarmTab:CreateSlider({
     Name = "Swing Delay",
     Min = 0,
     Max = 1,
@@ -88,7 +88,7 @@ AutofarmConfigSection:CreateSlider({
     end
 })
 
-AutofarmConfigSection:CreateSlider({
+AutofarmTab:CreateSlider({
     Name = "Hoop Delay",
     Min = 0,
     Max = 1,
@@ -103,7 +103,7 @@ local ClientTab = Window:CreateTab("Local Player", "rbxassetid://1234567890")
 local HumanoidSection = ClientTab:CreateSection("Humanoid")
 
 -- Humanoid Controls
-HumanoidSection:CreateSlider({
+ClientTab:CreateSlider({
     Name = "Walk Speed",
     Min = 16,
     Max = 500,
@@ -114,7 +114,7 @@ HumanoidSection:CreateSlider({
     end
 })
 
-HumanoidSection:CreateSlider({
+ClientTab:CreateSlider({
     Name = "Jump Power",
     Min = 50,
     Max = 1000,
@@ -127,7 +127,7 @@ HumanoidSection:CreateSlider({
 
 local BypassSection = ClientTab:CreateSection("Bypass")
 
-BypassSection:CreateToggle({
+ClientTab:CreateToggle({
     Name = "Infinite Jump",
     CurrentValue = false,
     Callback = function(state)
@@ -144,7 +144,7 @@ local PetsTab = Window:CreateTab("Pets", "rbxassetid://1234567890")
 local AutoHatchSection = PetsTab:CreateSection("Auto Hatch")
 
 -- Auto Hatch
-AutoHatchSection:CreateToggle({
+PetsTab:CreateToggle({
     Name = "Auto Hatch",
     CurrentValue = false,
     Callback = function(state)
@@ -162,7 +162,7 @@ AutoHatchSection:CreateToggle({
     end
 })
 
-AutoHatchSection:CreateDropdown({
+PetsTab:CreateDropdown({
     Name = "Crystal",
     Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
     CurrentOption = getgenv().CrystalToHatch,
