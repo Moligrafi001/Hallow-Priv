@@ -25,7 +25,7 @@ local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
 local AutofarmSection = AutofarmTab:CreateSection("Autofarm")
 
 -- Autofarm Toggles
-AutoSwing = AutofarmTab:CreateToggle({
+local AutoSwing = AutofarmTab:CreateToggle({
     Name = "Auto Swing",
     CurrentValue = false,
     Callback = function(state)
@@ -46,7 +46,7 @@ AutoSwing = AutofarmTab:CreateToggle({
     end
 })
 
-AutoSell = AutofarmTab:CreateToggle({
+local AutoSell = AutofarmTab:CreateToggle({
     Name = "Auto Sell",
     CurrentValue = false,
     Callback = function(state)
@@ -113,7 +113,7 @@ local JumpPowerSlider = ClientTab:CreateSlider({
     end
 })
 
-InfJump = ClientTab:CreateToggle({
+local InfJump = ClientTab:CreateToggle({
     Name = "Infinite Jump",
     CurrentValue = false,
     Callback = function(state)
@@ -136,7 +136,7 @@ local CrystalDropdown = PetsTab:CreateDropdown({
     end
 })
 
-AutoHatch = PetsTab:CreateToggle({
+local AutoHatch = PetsTab:CreateToggle({
     Name = "Auto Hatch",
     CurrentValue = false,
     Callback = function(state)
