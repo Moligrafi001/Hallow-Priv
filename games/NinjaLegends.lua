@@ -101,12 +101,9 @@ end
 
 -- UI Setup
 local AutofarmTab = Window:CreateTab("Autofarm")
-local ClientTab = Window:CreateTab("Local Player")
-local PetsTab = Window:CreateTab("Pets")
-local CreditsTab = Window:CreateTab("Credits")
 
 -- Autofarm Toggles
-AutofarmTab:CreateToggle({
+toggle = AutofarmTab:CreateToggle({
     Name = "Auto Swing",
     CurrentValue = false,
     Callback = function(state)
@@ -114,7 +111,7 @@ AutofarmTab:CreateToggle({
     end
 })
 
-AutofarmTab:CreateToggle({
+toggle = AutofarmTab:CreateToggle({
     Name = "Auto Sell",
     CurrentValue = false,
     Callback = function(state)
@@ -122,7 +119,7 @@ AutofarmTab:CreateToggle({
     end
 })
 
-AutofarmTab:CreateSlider({
+slider = AutofarmTab:CreateSlider({
     Name = "Swing Delay",
     Min = 0,
     Max = 1,
@@ -133,7 +130,7 @@ AutofarmTab:CreateSlider({
     end
 })
 
-AutofarmTab:CreateSlider({
+slider = AutofarmTab:CreateSlider({
     Name = "Hoop Delay",
     Min = 0,
     Max = 1,
@@ -144,8 +141,10 @@ AutofarmTab:CreateSlider({
     end
 })
 
+local ClientTab = Window:CreateTab("Local Player")
+
 -- Local Player Controls
-ClientTab:CreateSlider({
+slider = ClientTab:CreateSlider({
     Name = "Walk Speed",
     Min = 16,
     Max = 500,
@@ -156,7 +155,7 @@ ClientTab:CreateSlider({
     end
 })
 
-ClientTab:CreateSlider({
+slider = ClientTab:CreateSlider({
     Name = "Jump Power",
     Min = 50,
     Max = 1000,
@@ -167,7 +166,7 @@ ClientTab:CreateSlider({
     end
 })
 
-ClientTab:CreateToggle({
+toggle = ClientTab:CreateToggle({
     Name = "Infinite Jump",
     CurrentValue = false,
     Callback = function(state)
@@ -175,8 +174,10 @@ ClientTab:CreateToggle({
     end
 })
 
+local PetsTab = Window:CreateTab("Pets")
+
 -- Pets Controls
-PetsTab:CreateToggle({
+toggle = PetsTab:CreateToggle({
     Name = "Auto Hatch",
     CurrentValue = false,
     Callback = function(state)
@@ -184,7 +185,7 @@ PetsTab:CreateToggle({
     end
 })
 
-PetsTab:CreateDropdown({
+dropdown = PetsTab:CreateDropdown({
     Name = "Crystal",
     Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
     CurrentOption = getgenv().CrystalToHatch,
@@ -193,6 +194,7 @@ PetsTab:CreateDropdown({
     end
 })
 
+local CreditsTab = Window:CreateTab("Credits")
 -- Credits
 CreditsTab:CreateSection("Founder Developer")
 CreditsTab:CreateLabel("Discord: moligrafi")
