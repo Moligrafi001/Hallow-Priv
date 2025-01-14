@@ -8,22 +8,6 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
--- Tabs
-local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
-local ClientTab = Window:CreateTab("Local Player", "rbxassetid://1234567890")
-local PetsTab = Window:CreateTab("Pets", "rbxassetid://1234567890")
-local ShopTab = Window:CreateTab("Shop", "rbxassetid://1234567890")
-
--- Sections
-local AutofarmSection = AutofarmTab:CreateSection("Autofarm")
-local AutofarmConfigSection = AutofarmTab:CreateSection("Configurations")
-local HumanoidSection = ClientTab:CreateSection("Humanoid")
-local BypassSection = ClientTab:CreateSection("Bypass")
-local AutoHatchSection = PetsTab:CreateSection("Auto Hatch")
-local PetMiscSection = PetsTab:CreateSection("Miscellaneous")
-local AutoPurchaseSection = ShopTab:CreateSection("Auto Purchase")
-local PurchaseConfigSection = ShopTab:CreateSection("Configurations")
-
 -- Globals
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
@@ -45,6 +29,8 @@ getgenv().AutoUpgradeSkills = false
 getgenv().AutoPurchaseShurikens = false
 getgenv().IslandToPurchaseFrom = "Ground"
 
+local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
+local AutofarmSection = AutofarmTab:CreateSection("Autofarm")
 -- Autofarm Toggles
 AutofarmSection:CreateToggle({
     Name = "Auto Swing",
@@ -89,6 +75,8 @@ AutofarmSection:CreateToggle({
     end
 })
 
+local AutofarmConfigSection = AutofarmTab:CreateSection("Configurations")
+
 AutofarmConfigSection:CreateSlider({
     Name = "Swing Delay",
     Min = 0,
@@ -110,6 +98,9 @@ AutofarmConfigSection:CreateSlider({
         getgenv().HoopDelay = value
     end
 })
+
+local ClientTab = Window:CreateTab("Local Player", "rbxassetid://1234567890")
+local HumanoidSection = ClientTab:CreateSection("Humanoid")
 
 -- Humanoid Controls
 HumanoidSection:CreateSlider({
@@ -134,6 +125,8 @@ HumanoidSection:CreateSlider({
     end
 })
 
+local BypassSection = ClientTab:CreateSection("Bypass")
+
 BypassSection:CreateToggle({
     Name = "Infinite Jump",
     CurrentValue = false,
@@ -146,6 +139,9 @@ BypassSection:CreateToggle({
         end)
     end
 })
+
+local PetsTab = Window:CreateTab("Pets", "rbxassetid://1234567890")
+local AutoHatchSection = PetsTab:CreateSection("Auto Hatch")
 
 -- Auto Hatch
 AutoHatchSection:CreateToggle({
