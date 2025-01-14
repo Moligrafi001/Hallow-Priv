@@ -200,7 +200,7 @@ local function CarregarPedido()
         Image = 17091459839,
       })
     end
-    pcall(function()
+    if getclipboard then
       if PandaAuth:ValidateKey(getclipboard()) then
         Verificado = true
         ChaveHub = getclipboard()
@@ -214,7 +214,7 @@ local function CarregarPedido()
         wait(1)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
       end
-    end)
+    end
   else
     if ChaveExpirou == true then
       Rayfield:Notify({
@@ -224,7 +224,7 @@ local function CarregarPedido()
         Image = 17091459839,
       })
     end
-    pcall(function()
+    if getclipboard then
       if PandaAuth:ValidateKey(getclipboard()) then
         Verificado = true
         ChaveHub = getclipboard()
@@ -238,7 +238,7 @@ local function CarregarPedido()
         wait(1)
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
       end
-    end)
+    end
   end
 end
 local function VerificarSalvo()
