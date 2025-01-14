@@ -8,7 +8,6 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
--- Globals
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
 
@@ -20,17 +19,11 @@ getgenv().HoopDelay = 0.5
 getgenv().InfiniteJump = false
 getgenv().AutoHatch = false
 getgenv().CrystalToHatch = "Blue Crystal"
-getgenv().AutoEvolve = false
-getgenv().AutoSellPets = false
-getgenv().PetToSell = nil
-getgenv().AutoPurchaseSwords = false
-getgenv().AutoPurchaseBelts = false
-getgenv().AutoUpgradeSkills = false
-getgenv().AutoPurchaseShurikens = false
-getgenv().IslandToPurchaseFrom = "Ground"
 
+-- Tabs and Sections
 local AutofarmTab = Window:CreateTab("Autofarm", "rbxassetid://1234567890")
 local AutofarmSection = AutofarmTab:CreateSection("Autofarm")
+
 -- Autofarm Toggles
 AutofarmTab:CreateToggle({
     Name = "Auto Swing",
@@ -75,9 +68,7 @@ AutofarmTab:CreateToggle({
     end
 })
 
-local AutofarmConfigSection = AutofarmTab:CreateSection("Configurations")
-
-AutofarmTab:CreateSlider({
+local SwingDelaySlider = AutofarmTab:CreateSlider({
     Name = "Swing Delay",
     Min = 0,
     Max = 1,
@@ -88,7 +79,7 @@ AutofarmTab:CreateSlider({
     end
 })
 
-AutofarmTab:CreateSlider({
+local HoopDelaySlider = AutofarmTab:CreateSlider({
     Name = "Hoop Delay",
     Min = 0,
     Max = 1,
@@ -100,10 +91,7 @@ AutofarmTab:CreateSlider({
 })
 
 local ClientTab = Window:CreateTab("Local Player", "rbxassetid://1234567890")
-local HumanoidSection = ClientTab:CreateSection("Humanoid")
-
--- Humanoid Controls
-ClientTab:CreateSlider({
+local WalkSpeedSlider = ClientTab:CreateSlider({
     Name = "Walk Speed",
     Min = 16,
     Max = 500,
@@ -114,7 +102,7 @@ ClientTab:CreateSlider({
     end
 })
 
-ClientTab:CreateSlider({
+local JumpPowerSlider = ClientTab:CreateSlider({
     Name = "Jump Power",
     Min = 50,
     Max = 1000,
@@ -124,8 +112,6 @@ ClientTab:CreateSlider({
         Plr.Character:FindFirstChildOfClass("Humanoid").JumpPower = value
     end
 })
-
-local BypassSection = ClientTab:CreateSection("Bypass")
 
 ClientTab:CreateToggle({
     Name = "Infinite Jump",
@@ -141,9 +127,15 @@ ClientTab:CreateToggle({
 })
 
 local PetsTab = Window:CreateTab("Pets", "rbxassetid://1234567890")
-local AutoHatchSection = PetsTab:CreateSection("Auto Hatch")
+local CrystalDropdown = PetsTab:CreateDropdown({
+    Name = "Crystal",
+    Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
+    CurrentOption = getgenv().CrystalToHatch,
+    Callback = function(option)
+        getgenv().CrystalToHatch = option
+    end
+})
 
--- Auto Hatch
 PetsTab:CreateToggle({
     Name = "Auto Hatch",
     CurrentValue = false,
@@ -162,23 +154,13 @@ PetsTab:CreateToggle({
     end
 })
 
-PetsTab:CreateDropdown({
-    Name = "Crystal",
-    Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
-    CurrentOption = getgenv().CrystalToHatch,
-    Callback = function(option)
-        getgenv().CrystalToHatch = option
-    end
-})
-
 -- Notifications
-Rayfield:Notify({
+local Notification = Rayfield:Notify({
     Title = "UI Loaded",
     Content = "Ninja Legends Script is ready!",
     Duration = 5,
     Image = 17091459839
 })
-
 
 
 -- Credits
