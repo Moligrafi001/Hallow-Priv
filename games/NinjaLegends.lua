@@ -1,4 +1,4 @@
--- loadstring(game:HttpGet("",true))()
+-- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Priv/refs/heads/main/games/NinjaLegends.lua?token=GHSAT0AAAAAAC4PUKQNM5HMWHT5NMZ6WVGEZ4FZAXQ",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
     Name = "Hallow Hub | Ninja Legends⭐",
