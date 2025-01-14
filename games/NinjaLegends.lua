@@ -103,7 +103,7 @@ end
 local AutofarmTab = Window:CreateTab("Autofarm")
 
 -- Autofarm Toggles
-toggle = AutofarmTab:CreateToggle({
+local toggle = AutofarmTab:CreateToggle({
     Name = "Auto Swing",
     CurrentValue = false,
     Callback = function(state)
@@ -111,7 +111,7 @@ toggle = AutofarmTab:CreateToggle({
     end
 })
 
-toggle = AutofarmTab:CreateToggle({
+local toggle = AutofarmTab:CreateToggle({
     Name = "Auto Sell",
     CurrentValue = false,
     Callback = function(state)
@@ -119,7 +119,7 @@ toggle = AutofarmTab:CreateToggle({
     end
 })
 
-slider = AutofarmTab:CreateSlider({
+local slider = AutofarmTab:CreateSlider({
     Name = "Swing Delay",
     Min = 0,
     Max = 1,
@@ -130,7 +130,7 @@ slider = AutofarmTab:CreateSlider({
     end
 })
 
-slider = AutofarmTab:CreateSlider({
+local slider = AutofarmTab:CreateSlider({
     Name = "Hoop Delay",
     Min = 0,
     Max = 1,
@@ -144,7 +144,7 @@ slider = AutofarmTab:CreateSlider({
 local ClientTab = Window:CreateTab("Local Player")
 
 -- Local Player Controls
-slider = ClientTab:CreateSlider({
+local slider = ClientTab:CreateSlider({
     Name = "Walk Speed",
     Min = 16,
     Max = 500,
@@ -155,7 +155,7 @@ slider = ClientTab:CreateSlider({
     end
 })
 
-slider = ClientTab:CreateSlider({
+local slider = ClientTab:CreateSlider({
     Name = "Jump Power",
     Min = 50,
     Max = 1000,
@@ -166,7 +166,7 @@ slider = ClientTab:CreateSlider({
     end
 })
 
-toggle = ClientTab:CreateToggle({
+local toggle = ClientTab:CreateToggle({
     Name = "Infinite Jump",
     CurrentValue = false,
     Callback = function(state)
@@ -177,7 +177,7 @@ toggle = ClientTab:CreateToggle({
 local PetsTab = Window:CreateTab("Pets")
 
 -- Pets Controls
-toggle = PetsTab:CreateToggle({
+local toggle = PetsTab:CreateToggle({
     Name = "Auto Hatch",
     CurrentValue = false,
     Callback = function(state)
@@ -185,7 +185,7 @@ toggle = PetsTab:CreateToggle({
     end
 })
 
-dropdown = PetsTab:CreateDropdown({
+local dropdown = PetsTab:CreateDropdown({
     Name = "Crystal",
     Options = {"Blue Crystal", "Purple Crystal", "Golden Crystal"},
     CurrentOption = getgenv().CrystalToHatch,
