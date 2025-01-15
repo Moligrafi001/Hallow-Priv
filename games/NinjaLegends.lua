@@ -2,7 +2,6 @@
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
     Name = "Hallow Hub | Ninja Legends⭐",
-    Icon = 17091459839,
     LoadingTitle = "Hallow Hub",
     LoadingSubtitle = "By Moligrafi & PrismX",
     Theme = "Amethyst"
@@ -11,217 +10,17 @@ local Window = Rayfield:CreateWindow({
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
 
+-- Globals
 getgenv().AutoSwing = false
 getgenv().AutoSell = false
-getgenv().FarmHoops = false
-getgenv().SwingDelay = "0.5"
-getgenv().HoopDelay = "0.5"
-getgenv().InfiniteJump = false
 getgenv().AutoHatch = false
-getgenv().CrystalToHatch = "Blue Crystal"
 getgenv().AutoEvolve = false
-getgenv().AutoSellPets = false
-getgenv().PetToSell = nil
+getgenv().SwingDelay = "0.5"
+getgenv().FarmHoops = false
 getgenv().AutoPurchaseSwords = false
-getgenv().AutoPurchaseBelts = false
 getgenv().AutoUpgradeSkills = false
-getgenv().AutoPurchaseShurikens = false
 getgenv().IslandToPurchaseFrom = "Ground"
-
-
-local function startAutoSwing()
-    getgenv().AutoSwing = true
-    local Plr = game.Players.LocalPlayer
-    local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
-
-    while getgenv().AutoSwing do
-        -- Equip Weapon
-        pcall(function()
-            local Weapon
-            for _, Tool in pairs(Plr.Backpack:GetChildren()) do
-                if Tool:FindFirstChild("ninjitsuGain") then
-                    Weapon = Tool
-                end
-            end
-
-            if Weapon then
-                Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
-            end
-        end)
-
-        NinjaEvent:FireServer("swingKatana")
-        wait(tonumber(getgenv().SwingDelay))
-    end
-end
-
-local function stopAutoSwing()
-    getgenv().AutoSwing = false
-end
-
-local function startAutoSell()
-    getgenv().AutoSell = true
-    local Plr = game.Players.LocalPlayer
-    local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
-    local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
-    local CurrentBelt = Plr.equippedBelt.Value
-
-    CurrentNinjitsu:GetPropertyChangedSignal("Value"):Connect(function()
-        if CurrentNinjitsu.Value >= GroundBelts[CurrentBelt.Name].capacity.Value then
-            local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
-            firetouchinterest(sellPart, Plr.Character.Head, 1)
-            wait(0.5)
-            firetouchinterest(sellPart, Plr.Character.Head, 0)
-        end
-    end)
-end
-
-local function stopAutoSell()
-    getgenv().AutoSell = false
-end
-
-local function startFarmHoops()
-    getgenv().FarmHoops = true
-
-    while getgenv().FarmHoops do
-        pcall(function()
-            for i, hoop in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
-                if getgenv().FarmHoops then
-                    local args = {
-                        [1] = "useHoop",
-                        [2] = hoop
-                    }
-
-                    game:GetService("ReplicatedStorage").rEvents.hoopEvent:FireServer(unpack(args))
-
-                    wait(tonumber(getgenv().HoopDelay))
-                end
-            end
-        end)
-    end
-end
-
-local function stopFarmHoops()
-    getgenv().FarmHoops = false
-end
-
-local function startAutoHatch()
-    getgenv().AutoHatch = true
-
-    while getgenv().AutoHatch do
-        pcall(function()
-            local args = {
-                [1] = "openCrystal",
-                [2] = getgenv().CrystalToHatch
-            }
-
-            game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer(unpack(args))
-        end)
-    end
-end
-
-local function stopAutoHatch()
-    getgenv().AutoHatch = false
-end
-
-local function startAutoEvolve()
-    getgenv().AutoEvolve = true
-
-    while getgenv().AutoEvolve do
-        pcall(function()
-            for i, type in pairs(Plr.petsFolder:GetChildren()) do
-                for i2, pet in pairs(type:GetChildren()) do
-                    game:GetService("ReplicatedStorage").rEvents.petNextEvolutionEvent:FireServer("evolvePet", pet, game:GetService("ReplicatedStorage").evolutionOrders.evolved)
-                end
-            end
-        end)
-
-        wait(2)
-    end
-end
-
-local function stopAutoEvolve()
-    getgenv().AutoEvolve = false
-end
-
-local function startAutoSellPets()
-    getgenv().AutoSellPets = true
-
-    while getgenv().AutoSellPets do
-        for i, pet in pairs(Plr.petsFolder[getgenv().PetToSell]:GetChildren()) do
-            game:GetService("ReplicatedStorage").rEvents.sellPetEvent:FireServer("sellPet", pet)
-        end
-
-        wait(5)
-    end
-end
-
-local function stopAutoSellPets()
-    getgenv().AutoSellPets = false
-end
-
-local function startAutoPurchaseSwords()
-    getgenv().AutoPurchaseSwords = true
-
-    while getgenv().AutoPurchaseSwords do
-        pcall(function()
-            NinjaEvent:FireServer("buyAllSwords", getgenv().IslandToPurchaseFrom)
-        end)
-
-        wait(5)
-    end
-end
-
-local function stopAutoPurchaseSwords()
-    getgenv().AutoPurchaseSwords = false
-end
-
-local function startAutoPurchaseBelts()
-    getgenv().AutoPurchaseBelts = true
-
-    while getgenv().AutoPurchaseBelts do
-        pcall(function()
-            NinjaEvent:FireServer("buyAllBelts", getgenv().IslandToPurchaseFrom)
-        end)
-
-        wait(5)
-    end
-end
-
-local function stopAutoPurchaseBelts()
-    getgenv().AutoPurchaseBelts = false
-end
-
-local function startAutoUpgradeSkills()
-    getgenv().AutoUpgradeSkills = true
-
-    while getgenv().AutoUpgradeSkills do
-        pcall(function()
-            NinjaEvent:FireServer("buyAllSkills", getgenv().IslandToPurchaseFrom)
-        end)
-
-        wait(5)
-    end
-end
-
-local function stopAutoUpgradeSkills()
-    getgenv().AutoUpgradeSkills = false
-end
-
-local function startAutoPurchaseShurikens()
-    getgenv().AutoPurchaseShurikens = true
-
-    while getgenv().AutoPurchaseShurikens do
-        pcall(function()
-            NinjaEvent:FireServer("buyAllShurikens", getgenv().IslandToPurchaseFrom)
-        end)
-
-        wait(5)
-    end
-end
-
-local function stopAutoPurchaseShurikens()
-    getgenv().AutoPurchaseShurikens = false
-end
+getgenv().CrystalToHatch = "Blue Crystal"
 
 -- Movement
 local WalkSpeedText = 16
@@ -276,6 +75,367 @@ local function NoClip()
 		wait(0.1)
 	end
 end
+
+
+
+local Menu = Window:CreateTab("Main", "square-function")
+local AutofarmSection = Menu:CreateSection("Main Features")
+
+local AutoSwingConnection
+local ToggleSwing = Menu:CreateToggle({
+    Name = "Auto Swing",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSwing = state
+        if state then
+            task.spawn(function()
+                while getgenv().AutoSwing do
+                    pcall(function()
+                        local Weapon
+                        for _, Tool in pairs(Plr.Backpack:GetChildren()) do
+                            if Tool:FindFirstChild("ninjitsuGain") then
+                                Weapon = Tool
+                            end
+                        end
+
+                        if Weapon then
+                            Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
+                        end
+                    end)
+
+                    NinjaEvent:FireServer("swingKatana")
+                    task.wait(tonumber(getgenv().SwingDelay) or 0)
+                end
+            end)
+        end
+    end
+})
+
+local AutofarmSection = Menu:CreateSection("Auto Sell $")
+
+local AutoSellConnectioninsta = nil 
+
+local Toggle = Menu:CreateToggle({
+    Name = "Instant Auto Sell",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSell = state
+
+        if AutoSellConnectioninsta then
+            AutoSellConnectioninsta:Disconnect() 
+            AutoSellConnectioninsta = nil
+        end
+
+        if state then
+            AutoSellConnectioninsta = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
+                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
+                local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
+                local CurrentBelt = Plr.equippedBelt.Value
+
+                if CurrentNinjitsu.Value <= GroundBelts[CurrentBelt.Name].capacity.Value then
+                    local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
+                    firetouchinterest(sellPart, Plr.Character.Head, 1)
+                    task.wait(0.5)
+                    firetouchinterest(sellPart, Plr.Character.Head, 0)
+                end
+            end)
+        end
+    end
+})
+
+local AutoSellConnection = nil 
+
+local ToggleSell = Menu:CreateToggle({
+    Name = "Auto Sell (When bags full)",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSell = state
+
+
+        if not state then
+            AutoSellConnection = nil
+        end
+
+        if state then
+            AutoSellConnection = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
+                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
+                local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
+                local CurrentBelt = Plr.equippedBelt.Value
+
+                if CurrentNinjitsu.Value >= GroundBelts[CurrentBelt.Name].capacity.Value then
+                    local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
+                    firetouchinterest(sellPart, Plr.Character.Head, 1)
+                    task.wait(0.5)
+                    firetouchinterest(sellPart, Plr.Character.Head, 0)
+                end
+            end)
+        end
+    end
+})
+
+local AutofarmSection = Menu:CreateSection("Other")
+
+local ToggleAutoUpgradeSkills = Menu:CreateToggle({
+    Name = "Auto Upgrade Skills",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoUpgradeSkills = state
+
+        if state then
+            while getgenv().AutoUpgradeSkills do
+                pcall(function()
+                    NinjaEvent:FireServer("buyAllSkills", getgenv().IslandToPurchaseFrom)
+                end)
+
+                wait(0.5) 
+            end
+        else
+            getgenv().AutoUpgradeSkills = false
+        end
+    end
+})
+
+
+local ToggleHoops = Menu:CreateToggle({
+    Name = "Collect all Hoops (Auto)",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().FarmHoops = state
+        if state then
+            task.spawn(function()
+                while getgenv().FarmHoops do
+                    pcall(function()
+                        for _, hoop in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
+                            if getgenv().FarmHoops then
+                                local args = {
+                                    [1] = "useHoop",
+                                    [2] = hoop
+                                }
+
+                                game:GetService("ReplicatedStorage").rEvents.hoopEvent:FireServer(unpack(args))
+
+                                task.wait(tonumber(getgenv().HoopDelay) or 0.001) 
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+    end
+})
+
+
+
+local Player = Window:CreateTab("Player", "person-standing")
+local Section = Player:CreateSection("Weapon & Belt")
+
+local Dropdown = Player:CreateDropdown({
+    Name = "Select Island for auto weapon/belt",
+    Options = { 
+        "Ground", 
+        "Astral Island", 
+        "Space Island", 
+        "Tundra Island", 
+        "Eternal Island", 
+        "Sandstorm", 
+        "Thunderstorm Island", 
+        "Ancient Inferno Island", 
+        "Midnight Shadow Island", 
+        "Mythical Souls Island", 
+        "Winter Wonder Island", 
+        "Golden Master Island", 
+        "Dragon Legend Island", 
+        "Cybernetic Legends Island", 
+        "Skystorm Ultraus Island", 
+        "Chaos Legends Island", 
+        "Soul Fusion Island", 
+        "Inner Peace Island", 
+        "Blazing Vortex Island" 
+    },
+    CurrentOption = "Ground", 
+    Callback = function(currentOption)
+        getgenv().IslandToPurchaseFrom = currentOption
+    end
+})
+
+local TogglePurchaseSwords = Player:CreateToggle({
+    Name = "Auto Purchase Swords",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoPurchaseSwords = state
+        if state then
+            task.spawn(function()
+                while getgenv().AutoPurchaseSwords do
+                    pcall(function()
+                        NinjaEvent:FireServer("buyAllSwords", getgenv().IslandToPurchaseFrom)
+                    end)
+                    task.wait(0.5) 
+                end
+            end)
+        end
+    end
+})
+
+local TogglePurchaseBelts = Player:CreateToggle({
+    Name = "Auto Purchase Belts",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoPurchaseBelts = state
+        if state then
+            task.spawn(function()
+                while getgenv().AutoPurchaseBelts do
+                    pcall(function()
+                        NinjaEvent:FireServer("buyAllBelts", getgenv().IslandToPurchaseFrom)
+                    end)
+                    task.wait(0.5) 
+                end
+            end)
+        end
+    end
+})
+
+local Section = Player:CreateSection("Player stuff")
+
+local Input = Player:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "16",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	WalkSpeedText = Text
+   end,
+})
+local Toggle = Player:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	_G.SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
+})
+local Toggle = Player:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	_G.NoClip = Value
+   	NoClip()
+   end,
+})
+local Section = Player:CreateSection("Jump")
+local Input = Player:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	JumpPowerText = Text
+   end,
+})
+local Toggle = Player:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	_G.SetJumpPower = Value
+   	SetJumpPower()
+   end,
+})
+local Toggle = Player:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	_G.InfJump = Value
+   	InfJump()
+   end,
+})
+
+
+local Pet = Window:CreateTab("Pets", "paw-print")
+local Section = Pet:CreateSection("Auto stuff")
+
+local DropdownCrystal = Pet:CreateDropdown({
+    Name = "Chosen Crystal:",
+    Info = "Crystal to hatch pets from.",
+    Options = {
+        "Blue Crystal",
+        "Purple Crystal",
+        "Enchanted Crystal",
+        "Astral Crystal",
+        "Golden Crystal",
+        "Inferno Crystal",
+        "Galaxy Crystal",
+        "Frozen Crystal",
+        "Eternal Crystal",
+        "Storm Crystal",
+        "Thunder Crystal",
+        "Secret Blades Crystal",
+        "Infinity Void Crystal"
+    },
+    CurrentOption = getgenv().CrystalToHatch, 
+    Callback = function(currentOption)
+        getgenv().CrystalToHatch = currentOption
+        
+
+        if getgenv().AutoHatch then
+            getgenv().AutoHatch = false 
+            task.wait(0.1)  
+            getgenv().AutoHatch = true   
+        end
+    end
+})
+
+local ToggleAutoHatch = Pet:CreateToggle({
+    Name = "Auto Hatch",
+    CurrentValue = false,
+    Callback = function(state)
+        if state then
+            getgenv().AutoHatch = true
+
+            while getgenv().AutoHatch do
+                pcall(function()
+                    local args = {
+                        [1] = "openCrystal",
+                        [2] = getgenv().CrystalToHatch
+                    }
+
+                    game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer(unpack(args))
+                end)
+             end
+        else
+            getgenv().AutoHatch = false
+        end
+    end
+})
+
+local ToggleAutoEvolve = Pet:CreateToggle({
+    Name = "Auto Evolve",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoEvolve = state
+
+        if state then
+            while getgenv().AutoEvolve do
+                pcall(function()
+                    for i, type in pairs(Plr.petsFolder:GetChildren()) do
+                        for i2, pet in pairs(type:GetChildren()) do
+                            local evolutionOrder = "evolved"  
+                            game:GetService("ReplicatedStorage").rEvents.petNextEvolutionEvent:FireServer("evolvePet", pet, game:GetService("ReplicatedStorage").evolutionOrders[evolutionOrder])
+                        end
+                    end
+                end)
+
+                wait(1)
+            end
+        else
+            getgenv().AutoEvolve = false
+        end
+    end
+})
 
 local Menu = Window:CreateTab("Main", "home")
 local Section = Menu:CreateSection("Auto Farm")
