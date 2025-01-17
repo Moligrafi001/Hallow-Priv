@@ -38,4 +38,6 @@ elseif game.PlaceId == 72142739704679 then
   MyBigHotPenis("games/Evo Tycoon.lua")
 elseif game.PlaceId == 3261957210 then
   MyBigHotPenis("games/Thanos Simulator.lua")
+elseif game.PlaceId == 18606626051 then
+  MyBigHotPenis("games/Ice Tycoon.lua")
 end
