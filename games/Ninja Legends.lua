@@ -13,11 +13,13 @@ local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
+local Player = game.Players.LocalPlayer
 
 -- Globals
 getgenv().NL_Config = NL_Config
 getgenv().AutoSwing = false
 getgenv().AutoSell = false
+getgenv().AutoSellPets = false
 getgenv().AutoHatch = false
 getgenv().AutoEvolve = false
 getgenv().SwingDelay = "0.5"
@@ -29,6 +31,10 @@ getgenv().IslandToPurchaseFrom = "Ground"
 getgenv().CrystalToHatch = "Blue Crystal"
 getgenv().UnlockAllIslands = false 
 getgenv().TeleportToRandomCoin = false 
+getgenv().AutoJoinDuels = false
+getgenv().PetToSell = false
+getgenv().AutoTeleportToBoss = false
+getgenv().AutoCollectSouls = false
 
 -- Movement
 local WalkSpeedText = 16
@@ -84,40 +90,42 @@ local function NoClip()
 	end
 end
 
+local function AutoSwing()
+    task.spawn(function()
+        while getgenv().AutoSwing do
+            pcall(function()
+                local Weapon
+                for _, Tool in pairs(Plr.Backpack:GetChildren()) do
+                    if Tool:FindFirstChild("ninjitsuGain") then
+                        Weapon = Tool
+                    end
+                end
+
+                if Weapon then
+                    Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
+                end
+            end)
+
+            -- Fire the swing event
+            NinjaEvent:FireServer("swingKatana")
+            task.wait(tonumber(getgenv().SwingDelay) or 0)
+        end
+    end)
+end
 
 local Menu = Window:CreateTab("Main", "square-function")
 local AutofarmSection = Menu:CreateSection("Main Features")
 
-local AutoSwingConnection
 local ToggleSwing = Menu:CreateToggle({
     Name = "Auto Swing",
     CurrentValue = false,
     Callback = function(state)
         getgenv().AutoSwing = state
         if state then
-            task.spawn(function()
-                while getgenv().AutoSwing do
-                    pcall(function()
-                        local Weapon
-                        for _, Tool in pairs(Plr.Backpack:GetChildren()) do
-                            if Tool:FindFirstChild("ninjitsuGain") then
-                                Weapon = Tool
-                            end
-                        end
-
-                        if Weapon then
-                            Plr.Character:FindFirstChildOfClass("Humanoid"):EquipTool(Weapon)
-                        end
-                    end)
-
-                    NinjaEvent:FireServer("swingKatana")
-                    task.wait(tonumber(getgenv().SwingDelay) or 0)
-                end
-            end)
+            AutoSwing()
         end
     end
 })
-
 local ToggleAutoUpgradeSkills = Menu:CreateToggle({
     Name = "Auto Upgrade Skills",
     CurrentValue = false,
@@ -200,185 +208,6 @@ local ToggleAutoBuyRanks = Menu:CreateToggle({
     end
 })
 
-local ToggleHoops = Menu:CreateToggle({
-    Name = "Collect all Hoops (Auto)",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().FarmHoops = state
-        if state then
-            task.spawn(function()
-                while getgenv().FarmHoops do
-                    pcall(function()
-                        for _, hoop in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
-                            if getgenv().FarmHoops then
-                                local args = {
-                                    [1] = "useHoop",
-                                    [2] = hoop
-                                }
-
-                                game:GetService("ReplicatedStorage").rEvents.hoopEvent:FireServer(unpack(args))
-
-                                task.wait(tonumber(getgenv().HoopDelay) or 0.001) 
-                            end
-                        end
-                    end)
-                end
-            end)
-        end
-    end
-})
-
-local AutofarmSection = Menu:CreateSection("Auto Sell $")
-
-local AutoSellConnectioninsta = nil 
-
-local Toggle = Menu:CreateToggle({
-    Name = "Instant Auto Sell",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().AutoSell = state
-
-        if AutoSellConnectioninsta then
-            AutoSellConnectioninsta:Disconnect() 
-            AutoSellConnectioninsta = nil
-        end
-
-        if state then
-            AutoSellConnectioninsta = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
-                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
-                local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle16.circleInner
-
-                -- Only sell if Ninjitsu is greater than 0
-                if CurrentNinjitsu.Value > 0 then
-                    -- Trigger the sell action
-                    firetouchinterest(sellPart, Plr.Character.Head, 1)
-                    task.wait(0.5)
-                    firetouchinterest(sellPart, Plr.Character.Head, 0)
-                end
-            end)
-        end
-    end
-})
-
-
-local AutofarmSection = Menu:CreateSection("Other")
-
-local chestNames = {
-    "enchantedChest",
-    "magmaChest",
-    "MythicalChest",
-    "legendsChest",
-    "eternalChest",
-    "saharaChest",
-    "thunderChest",
-    "ancientChest",
-    "midnightShadowChest",
-    "wonderChest",
-    "goldenZenChest",
-    "ultraNinjitsuChest",
-    "skystormMastersChest",
-    "chaosLegendsChest",
-    "soulFusionChest"
-}
-
-local ToggleUnlockChests = Menu:CreateToggle({
-    Name = "Unlock All Chests",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().UnlockAllChests = state
-        
-        if state then
-            task.spawn(function()
-                for _, chestName in ipairs(chestNames) do
-                    if not getgenv().UnlockAllChests then break end
-
-                    -- Find the chest by name in the workspace
-                    local chest = game:GetService("Workspace"):FindFirstChild(chestName)
-                    if chest then
-                        -- Look for the circleInner part inside the chest
-                        local circleInnerPart = chest:FindFirstChild("circleInner")
-                        if circleInnerPart then
-                            -- Look for the TouchInterest inside the circleInner part
-                            local touchInterest = circleInnerPart:FindFirstChild("TouchInterest")
-                            if touchInterest then
-                                -- Ensure the player character and necessary parts are loaded
-                                local playerCharacter = game.Players.LocalPlayer.Character
-                                if playerCharacter and playerCharacter:FindFirstChild("HumanoidRootPart") then
-                                    -- Fire the touch interest to unlock the chest
-                                    pcall(function()
-                                        firetouchinterest(playerCharacter.HumanoidRootPart, touchInterest, 0)
-                                        wait(0.5)  -- Short delay to avoid firing too many interactions in a row
-                                        firetouchinterest(playerCharacter.HumanoidRootPart, touchInterest, 1)
-                                    end)
-                                else
-                                    warn("Player character or HumanoidRootPart is missing.")
-                                end
-                            else
-                                warn("TouchInterest not found inside circleInner of chest: " .. chestName)
-                            end
-                        else
-                            warn("circleInner part not found in chest: " .. chestName)
-                        end
-                    else
-                        warn("Chest not found: " .. chestName)
-                    end
-
-                    -- Wait for 2 seconds before moving to the next chest
-                    wait(2)
-                end
-            end)
-        end
-    end
-})
-
-
-local ToggleRandomCoinTeleport = Menu:CreateToggle({
-    Name = "Auto Collect Coin/weird circle thing Crates",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().TeleportToRandomCoin = state
-        if state then
-            task.spawn(function()
-                local coinSpawns = game:GetService("Workspace").spawnedCoins.Valley
-                
-
-                while getgenv().TeleportToRandomCoin do
-
-                    local coinSpawnsList = coinSpawns:GetChildren()
-
-                    if #coinSpawnsList > 0 then
-
-                        local randomCoinSpawn = coinSpawnsList[math.random(1, #coinSpawnsList)]
-
-                        if randomCoinSpawn:IsA("BasePart") then
-                            local playerHead = Plr.Character:WaitForChild("Head")
-
-                            Plr.Character:SetPrimaryPartCFrame(CFrame.new(randomCoinSpawn.Position))
-                        end
-                    end
-                    wait(0.35) 
-                end
-            end)
-        end
-    end
-})
-
-
-
-local Player = Window:CreateTab("Player", "person-standing")
-local Section = Player:CreateSection("Island things")
-
-local ToggleUnlockIslands = Player:CreateButton({
-    Name = "Unlock All Islands",
-    Callback = function()
-      for _, island in pairs(workspace.islandUnlockParts:GetChildren()) do
-        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 0)
-        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 1)
-      end
-    end
-})
-
-local Section = Player:CreateSection("Weapon & Belt")
 
 if not getgenv().NL_Config then
     getgenv().NL_Config = {
@@ -457,7 +286,7 @@ local function BuyBelts()
 end
 
 -- Toggle for Auto Purchase Swords
-local TogglePurchaseSwords = Player:CreateToggle({
+local TogglePurchaseSwords = Menu:CreateToggle({
     Name = "Auto Purchase Swords",
     CurrentValue = Config.BuySwords,  -- Set the initial value based on Config
     Callback = function(state)
@@ -475,7 +304,7 @@ local TogglePurchaseSwords = Player:CreateToggle({
 })
 
 -- Toggle for Auto Purchase Belts
-local TogglePurchaseBelts = Player:CreateToggle({
+local TogglePurchaseBelts = Menu:CreateToggle({
     Name = "Auto Purchase Belts",
     CurrentValue = Config.BuyBelts,  -- Set the initial value based on Config
     Callback = function(state)
@@ -491,6 +320,196 @@ local TogglePurchaseBelts = Player:CreateToggle({
         end
     end
 })
+
+local ToggleHoops = Menu:CreateToggle({
+    Name = "Collect all Hoops (Auto)",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().FarmHoops = state
+        if state then
+            task.spawn(function()
+                while getgenv().FarmHoops do
+                    pcall(function()
+                        for _, hoop in pairs(game:GetService("Workspace").Hoops:GetChildren()) do
+                            if getgenv().FarmHoops then
+                                local args = {
+                                    [1] = "useHoop",
+                                    [2] = hoop
+                                }
+
+                                game:GetService("ReplicatedStorage").rEvents.hoopEvent:FireServer(unpack(args))
+
+                                task.wait(tonumber(getgenv().HoopDelay) or 0.001) 
+                            end
+                        end
+                    end)
+                end
+            end)
+        end
+    end
+})
+
+local collectSoulsToggle = Menu:CreateToggle({
+    Name = "Auto Collect Souls",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoCollectSouls = state
+        
+        if state then
+            print("Auto Collect Souls enabled")
+            task.spawn(function()
+                while getgenv().AutoCollectSouls do
+                    local args = {
+                        [1] = "collectSoul",
+                        [2] = workspace:WaitForChild("soulPartsFolder"):WaitForChild("soulPart")
+                    }
+                    game:GetService("Players").LocalPlayer:WaitForChild("ninjaEvent"):FireServer(unpack(args))
+                    task.wait(0.5) 
+                end
+            end)
+        else
+            print("Auto Collect Souls disabled")
+        end
+    end
+})
+
+local AutofarmSection = Menu:CreateSection("Auto Sell $")
+
+local AutoSellConnectioninsta = nil 
+
+local Toggle = Menu:CreateToggle({
+    Name = "Instant Auto Sell",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSell = state
+
+        if AutoSellConnectioninsta then
+            AutoSellConnectioninsta:Disconnect() 
+            AutoSellConnectioninsta = nil
+        end
+
+        if state then
+            AutoSellConnectioninsta = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
+                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
+                local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle16.circleInner
+
+                -- Only sell if Ninjitsu is greater than 0
+                if CurrentNinjitsu.Value > 0 then
+                    -- Trigger the sell action
+                    firetouchinterest(sellPart, Plr.Character.Head, 1)
+                    task.wait(0.5)
+                    firetouchinterest(sellPart, Plr.Character.Head, 0)
+                end
+            end)
+        end
+    end
+})
+
+
+local AutofarmSection = Menu:CreateSection("Other")
+
+local chestNames = {
+    "enchantedChest",
+    "magmaChest",
+    "mythicalChest",
+    "legendsChest",
+    "eternalChest",
+    "saharaChest",
+    "thunderChest",
+    "ancientChest",
+    "midnightShadowChest",
+    "wonderChest",
+    "goldenZenChest",
+    "ultraNinjitsuChest",
+    "skystormMastersChest",
+    "chaosLegendsChest",
+    "soulFusionChest"
+}
+
+local ToggleUnlockChests = Menu:CreateToggle({
+    Name = "Unlock All Chests",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().UnlockAllChests = state
+        
+        if state then
+            task.spawn(function()
+                while getgenv().UnlockAllChests do
+                    for _, chestName in ipairs(chestNames) do
+                        local chest = workspace:FindFirstChild(chestName)
+                        if chest then
+                            local circleInner = chest:FindFirstChild("circleInner")
+                            if circleInner then
+                                local touchInterest = circleInner:FindFirstChild("TouchInterest")
+                                if touchInterest then
+                                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, circleInner, 0)
+                                    task.wait(0.1)
+                                    firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, circleInner, 1)
+                                else
+                                    print("TouchInterest not found in " .. chestName)
+                                end
+                            else
+                                print("circleInner not found in " .. chestName)
+                            end
+                        else
+                            print(chestName .. " not found in workspace")
+                        end
+                        task.wait(0.5) -- Wait half a second between each chest interaction
+                    end
+                    task.wait(1) -- Wait 1 second before starting the next cycle
+                end
+            end)
+        end
+    end
+})
+
+
+local ToggleRandomCoinTeleport = Menu:CreateToggle({
+    Name = "Auto Collect Coin/weird circle thing Crates",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().TeleportToRandomCoin = state
+        if state then
+            task.spawn(function()
+                local coinSpawns = game:GetService("Workspace").spawnedCoins.Valley
+                
+
+                while getgenv().TeleportToRandomCoin do
+
+                    local coinSpawnsList = coinSpawns:GetChildren()
+
+                    if #coinSpawnsList > 0 then
+
+                        local randomCoinSpawn = coinSpawnsList[math.random(1, #coinSpawnsList)]
+
+                        if randomCoinSpawn:IsA("BasePart") then
+                            local playerHead = Plr.Character:WaitForChild("Head")
+
+                            Plr.Character:SetPrimaryPartCFrame(CFrame.new(randomCoinSpawn.Position))
+                        end
+                    end
+                    wait(0.35) 
+                end
+            end)
+        end
+    end
+})
+
+
+
+local Player = Window:CreateTab("Player", "person-standing")
+local Section = Player:CreateSection("Island things")
+
+local ToggleUnlockIslands = Player:CreateButton({
+    Name = "Unlock All Islands",
+    Callback = function()
+      for _, island in pairs(workspace.islandUnlockParts:GetChildren()) do
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 0)
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 1)
+      end
+    end
+})
+
 
 
 local Section = Player:CreateSection("Player stuff")
@@ -554,6 +573,26 @@ local Toggle = Player:CreateToggle({
 })
 
 local TP = Window:CreateTab("Teleports", "shell")
+local Section = TP:CreateSection("Spawn")
+
+local Button = TP:CreateButton({
+    Name = "Teleport to Spawn",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+
+        local character = Player.Character or Player.CharacterAdded:Wait()
+
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        if humanoidRootPart then
+            humanoidRootPart.CFrame = CFrame.new(-58.8000031, 0.898000002, 30.0600014)
+        else
+            warn("HumanoidRootPart not found!")
+        end
+    end
+})
+
+
 local Section = TP:CreateSection("Map Teleports")
 
 local islandNames = {
@@ -640,63 +679,121 @@ local TeleportButton = TP:CreateButton({
     end
 })
 
-
 local Pet = Window:CreateTab("Pets", "paw-print")
 local Section = Pet:CreateSection("Auto stuff")
 
-local DropdownCrystal = Pet:CreateDropdown({
-    Name = "Chosen Crystal:",
-    Info = "Crystal to hatch pets from.",
-    Options = {
-        "Blue Crystal",
-        "Purple Crystal",
-        "Enchanted Crystal",
-        "Astral Crystal",
-        "Golden Crystal",
-        "Inferno Crystal",
-        "Galaxy Crystal",
-        "Frozen Crystal",
-        "Eternal Crystal",
-        "Storm Crystal",
-        "Thunder Crystal",
-        "Secret Blades Crystal",
-        "Infinity Void Crystal"
-    },
-    CurrentOption = getgenv().CrystalToHatch, 
-    Callback = function(currentOption)
-        getgenv().CrystalToHatch = currentOption
-        
+local crystalTypes = {
+    "Blue Crystal - 1K Chi",
+    "Purple Crystal - 2K Chi",
+    "Enchanted Crystal - 6K Chi",
+    "Astral Crystal - 10K Chi",
+    "Golden Crystal - 15K Chi",
+    "Inferno Crystal - 40K Chi",
+    "Galaxy Crystal - 75K Chi",
+    "Frozen Crystal - 300K Chi",
+    "Eternal Crystal - 600K Chi",
+    "Storm Crystal - 1.5M Chi",
+    "Thunder Crystal - 8M Chi",
+    "Secret Blades Crystal - 55Oc Chi",
+    "Infinity Void Crystal - 5Qi Chi"
+}
 
-        if getgenv().AutoHatch then
-            getgenv().AutoHatch = false 
-            task.wait(0.1)  
-            getgenv().AutoHatch = true   
+local selectedCrystal = "Blue Crystal"  
+
+local CrystalDropdown = Pet:CreateDropdown({
+    Name = "Select Crystal",
+    Options = crystalTypes,
+    CurrentOption = selectedCrystal,
+    Callback = function(Value)
+        if type(Value) == "table" then
+            selectedCrystal = Value[1] or "Blue Crystal"
+        else
+            selectedCrystal = Value
         end
+        print("Selected crystal changed to: " .. tostring(selectedCrystal))
     end
 })
 
-local ToggleAutoHatch = Pet:CreateToggle({
-    Name = "Auto Hatch",
+local crystalCosts = {
+    ["Blue Crystal"] = 1000,
+    ["Purple Crystal"] = 2000,
+    ["Enchanted Crystal"] = 6000,
+    ["Astral Crystal"] = 10000,
+    ["Golden Crystal"] = 15000,
+    ["Inferno Crystal"] = 40000,
+    ["Galaxy Crystal"] = 75000,
+    ["Frozen Crystal"] = 300000,
+    ["Eternal Crystal"] = 600000,
+    ["Storm Crystal"] = 1500000,
+    ["Thunder Crystal"] = 8000000,
+    ["Secret Blades Crystal"] = 55000000000, 
+    ["Infinity Void Crystal"] = 5000000000000 
+}
+
+local function openCrystal()
+    local args = {
+        [1] = "openCrystal",
+        [2] = selectedCrystal
+    }
+    local success, result = pcall(function()
+        return game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("openCrystalRemote"):InvokeServer(unpack(args))
+    end)
+    if success then
+        if result == nil then
+
+            local playerChi = game.Players.LocalPlayer.Chi.Value 
+            local crystalCost = crystalCosts[selectedCrystal] or 0
+            
+            if playerChi < crystalCost then
+                game.StarterGui:SetCore("SendNotification", {
+                    Title = "Insufficient Chi",
+                    Text = "You need " .. tostring(crystalCost) .. " Chi to open " .. tostring(selectedCrystal),
+                    Duration = 5
+                })
+            end
+            return false
+        else
+            print("Opened " .. tostring(selectedCrystal) .. ". Result: " .. tostring(result))
+            return true
+        end
+    else
+        warn("Failed to open " .. tostring(selectedCrystal) .. ". Error: " .. tostring(result))
+        return false
+    end
+end
+
+
+local OpenCrystalButton = Pet:CreateButton({
+    Name = "Open Crystal Once",
+    Callback = function()
+        openCrystal()
+    end
+})
+
+local ToggleAutoCrystal = Pet:CreateToggle({
+    Name = "Auto Open Crystal",
     CurrentValue = false,
     Callback = function(state)
+        getgenv().AutoOpenCrystal = state
+        
         if state then
-            getgenv().AutoHatch = true
-
-            while getgenv().AutoHatch do
-                pcall(function()
-                    local args = {
-                        [1] = "openCrystal",
-                        [2] = getgenv().CrystalToHatch
-                    }
-
-                    game:GetService("ReplicatedStorage").rEvents.openCrystalRemote:InvokeServer(unpack(args))
-                end)
-             end
+            print("Auto Open Crystal enabled for: " .. tostring(selectedCrystal))
+            task.spawn(function()
+                while getgenv().AutoOpenCrystal do
+                    local opened = openCrystal()
+                    if not opened then
+                        task.wait(1.5)
+                    else
+                        task.wait(1)
+                    end
+                end
+            end)
         else
-            getgenv().AutoHatch = false
+            print("Auto Open Crystal disabled")
         end
     end
 })
+
 
 local ToggleAutoEvolve = Pet:CreateToggle({
     Name = "Auto Evolve",
@@ -722,4 +819,212 @@ local ToggleAutoEvolve = Pet:CreateToggle({
         end
     end
 })
+
+local Section = Pet:CreateSection("Sell")
+
+local petTypes = {
+    "Basic", "Advanced", "Rare", "Epic", "Unique", "Omega", "Elite", "Infinity", 
+    "Awakened", "Master Legend", "BEAST", "Skystorm", "Soul Master", "Rising Hero", 
+    "Q-STRIKE", "Skyblade"
+}
+
+getgenv().PetToSell = "Basic" 
+
+local PetSellDropdown = Pet:CreateDropdown({
+    Name = "Select Pet to Sell",
+    Options = petTypes,
+    CurrentOption = "Basic",
+    Flag = "PetToSell",
+    Callback = function(Value)
+        if type(Value) == "table" then
+            getgenv().PetToSell = Value[1] 
+        else
+            getgenv().PetToSell = Value
+        end
+        print("Selected pet type to sell: " .. tostring(getgenv().PetToSell))
+    end
+})
+
+local AutoSellToggle = Pet:CreateToggle({
+    Name = "Auto Sell Selected Pets",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSellPets = state
+        
+        if state then
+            task.spawn(function()
+                while getgenv().AutoSellPets do
+                    local Plr = game.Players.LocalPlayer
+                    if not getgenv().PetToSell or getgenv().PetToSell == "" then
+                        game.StarterGui:SetCore("SendNotification", {
+                            Title = "Error",
+                            Text = "Please select a pet type to sell first",
+                            Duration = 5
+                        })
+                        getgenv().AutoSellPets = false
+                        break
+                    end
+
+                    local petsSold = 0
+                    for i, pet in pairs(Plr.petsFolder[getgenv().PetToSell]:GetChildren()) do
+                        game:GetService("ReplicatedStorage").rEvents.sellPetEvent:FireServer("sellPet", pet)
+                        petsSold = petsSold + 1
+                    end
+
+                    if petsSold > 0 then
+                        print("Sold " .. petsSold .. " " .. getgenv().PetToSell .. " pets")
+                    else
+                        print("No " .. getgenv().PetToSell .. " pets found to sell")
+                    end
+
+                    task.wait(1) 
+                end
+            end)
+        else
+            getgenv().AutoSellPets = false
+            print("Auto Sell Pets disabled")
+        end
+    end
+})
+
+local Boss = Window:CreateTab("Boss", "bot")
+local Section = Boss:CreateSection("Boss")
+
+local Player = game.Players.LocalPlayer
+local TeleportToggle = Boss:CreateToggle({
+    Name = "Auto Fight Robot Boss",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoTeleportToBoss = state
+        
+        if state then
+            print("Auto Teleport enabled")
+            getgenv().AutoSwing = true 
+            AutoSwing()
+            task.spawn(function()
+                while getgenv().AutoTeleportToBoss do
+                    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+                        local targetPart = workspace:FindFirstChild("bossFolder") and workspace.bossFolder:FindFirstChild("RobotBoss") and workspace.bossFolder.RobotBoss:FindFirstChild("LeftLowerLeg")
+                        
+                        if targetPart then
+                            Player.Character.HumanoidRootPart.CFrame = targetPart.CFrame
+                        else
+                            print("Target part not found!")
+                            break 
+                        end
+                    else
+                        task.wait(0.1) 
+                    end
+
+                    task.wait(0.1) 
+                end
+                getgenv().AutoSwing = false 
+            end)
+        else
+            print("Auto Teleport disabled")
+            getgenv().AutoSwing = false 
+        end
+    end
+})
+
+local TeleportToggle = Boss:CreateToggle({
+    Name = "Auto Fight Eternal Boss",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoTeleportToBoss = state
+        
+        if state then
+            print("Auto Teleport enabled")
+            getgenv().AutoSwing = true 
+            AutoSwing() 
+
+            task.spawn(function()
+                while getgenv().AutoTeleportToBoss do
+                    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+                        local targetPart = workspace:FindFirstChild("bossFolder") and workspace.bossFolder:FindFirstChild("EternalBoss") and workspace.bossFolder.EternalBoss:FindFirstChild("LeftLowerLeg")
+                        
+                        if targetPart then
+                            Player.Character.HumanoidRootPart.CFrame = targetPart.CFrame
+                        else
+                            print("Target part not found!")
+                            break 
+                        end
+                    else
+                        task.wait(0.1) 
+                    end
+
+                    task.wait(0.1) 
+                end
+                
+                getgenv().AutoSwing = false 
+            end)
+        else
+            print("Auto Teleport disabled")
+            getgenv().AutoSwing = false 
+        end
+    end
+})
+
+local TeleportToggle = Boss:CreateToggle({
+    Name = "Auto Fight Ancient Magma Boss",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoTeleportToBoss = state
+        
+        if state then
+            print("Auto Teleport enabled")
+            getgenv().AutoSwing = true 
+            AutoSwing() 
+
+            task.spawn(function()
+                while getgenv().AutoTeleportToBoss do
+                    if Player.Character and Player.Character:FindFirstChild("HumanoidRootPart") then
+                        local targetPart = workspace:FindFirstChild("bossFolder") and workspace.bossFolder:FindFirstChild("AncientMagmaBoss") and workspace.bossFolder.AncientMagmaBoss:FindFirstChild("LeftUpperLeg")
+                        
+                        if targetPart then
+                            Player.Character.HumanoidRootPart.CFrame = targetPart.CFrame
+                        else
+                            print("Target part not found!")
+                            break 
+                        end
+                    else
+                        task.wait(0.1) 
+                    end
+
+                    task.wait(0.1) 
+                end
+                
+                getgenv().AutoSwing = false 
+            end)
+        else
+            print("Auto Teleport disabled")
+            getgenv().AutoSwing = false 
+        end
+    end
+})
+
+local Misc = Window:CreateTab("Misc", "swatch-book")
+local Section = Misc:CreateSection("Misc")
+
+local ToggleAutoDuel = Misc:CreateToggle({
+    Name = "Auto Join Duels",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoJoinDuels = state
+        
+        if state then
+            task.spawn(function()
+                while getgenv().AutoJoinDuels do
+                    local args = {
+                        [1] = "joinDuel"
+                    }
+                    game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("duelEvent"):FireServer(unpack(args))
+                    
+                    task.wait(3) 
+                end
+            end)
+        end
+    end
+})
+
 
