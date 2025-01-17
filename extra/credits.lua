@@ -2,8 +2,8 @@
 local Credits = Window:CreateTab("Credits", "info")
 local Section = Credits:CreateSection("Creator")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-local Section = Credits:CreateSection("Co-Dev")
-local Label = Credits:CreateLabel("Discord: world_star_hacker", "at-sign")
+local Section = Credits:CreateSection("Co-Developer")
+local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
 local Section = Credits:CreateSection("Discord Server")
 local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
 local Button = Credits:CreateButton({
