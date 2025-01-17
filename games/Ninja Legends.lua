@@ -790,7 +790,7 @@ local CreditsTab = Window:CreateTab("Credits")
 -- Credits
 CreditsTab:CreateSection("Founder Developer")
 CreditsTab:CreateLabel("Discord: moligrafi")
-CreditsTab:CreateSection("Developer")
+CreditsTab:CreateSection("Main Developer")
 CreditsTab:CreateLabel("Discord: _prismx")
 CreditsTab:CreateSection("Discord Server")
 CreditsTab:CreateLabel("discord.gg/AESCuek87s")
