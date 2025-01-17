@@ -22,5 +22,3 @@ end
 if game.PlaceId == 123748395762873 then
   MyBigHotPenis("games/Fruit Reborn.lua")
 end
-
-MyBigHotPenis("extra/teste.lua")
