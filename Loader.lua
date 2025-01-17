@@ -54,8 +54,6 @@ elseif Place == 18606626051 then
   MyBigHotPenis("games/Ice Tycoon.lua")
 elseif Place == 3956818381 then
   MyBigHotPenis("games/Ninja Legends.lua")
-elseif Place == 3956818381 then
-  MyBigHotPenis("games/Ninja Legends.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
