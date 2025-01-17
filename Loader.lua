@@ -28,6 +28,16 @@ local function MyBigHotPenis(filePath)
   carregar()
 end
 
+local success, err = pcall(function()
+    if game.Players.LocalPlayer.Name ~= "Moligrafi" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/extra/FixBugs.lua", true))()
+				print("FixBugs loaded, yay!")
+    end
+end)
+if not success then
+    print("FixBugs coudn't be loaded, please join the discord.gg/AESCuek87s and create a ticket to report this bug → " .. err)
+end
+
 local Place = game.PlaceId
 if Place == 77293138169730 or Place == 110862004123956 or Place == 138419073284550 or Place == 122232219652085 or Place == 109513417836584 or Place == 127090329888839 or Place == 128447758667095 or Place == 117112901543526 then
   MyBigHotPenis("games/Dungeons Of Doom.lua")
@@ -43,6 +53,8 @@ elseif Place == 3261957210 then
   MyBigHotPenis("games/Thanos Simulator.lua")
 elseif Place == 18606626051 then
   MyBigHotPenis("games/Ice Tycoon.lua")
+elseif Place == 3956818381 then
+  MyBigHotPenis("games/Ninja Legends.lua")
 elseif Place == 3956818381 then
   MyBigHotPenis("games/Ninja Legends.lua")
 else
