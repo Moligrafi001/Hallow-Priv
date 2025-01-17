@@ -24,7 +24,7 @@ local function MyBigHotPenis(filePath)
       ["Accept"] = "application/vnd.github.raw+json"
     }
   })
-  loadstring(response.Body .. "\n" .. credits.Body)() or loadstring(errado .. "\n" .. credits)()
+  loadstring(response.Body .. "\n" .. credits.Body)()
 end
 
 if game.PlaceId == 123748395762873 then
