@@ -288,62 +288,49 @@ local ToggleUnlockChests = Menu:CreateToggle({
         getgenv().UnlockAllChests = state
         
         if state then
-            -- Enable Infinite Jump when Unlock All Chests is toggled on
-            InfJump(true)
-
             task.spawn(function()
                 for _, chestName in ipairs(chestNames) do
                     if not getgenv().UnlockAllChests then break end
 
-                    -- Locate the chest folder in the workspace
-                    local chestFolder = game:GetService("Workspace"):FindFirstChild(chestName)
-                    if chestFolder then
-                        -- Locate the circleOuter part inside the chest folder
-                        local circleOuterPart = chestFolder:FindFirstChild("circleOuter")
-                        if circleOuterPart and circleOuterPart:IsA("BasePart") then
-                            -- Move the player forward in 3 steps
-                            local humanoidRootPart = Plr.Character:WaitForChild("HumanoidRootPart")
-                            local moveDirection = humanoidRootPart.CFrame.LookVector * 50 -- Adjust multiplier for speed
-
-                            for step = 1, 3 do
-                                humanoidRootPart.Velocity = moveDirection
-                                wait(1) -- Wait for 1 second per step
-                            end
-                            humanoidRootPart.Velocity = Vector3.zero -- Stop movement
-
-                            -- Teleport the player to the circleOuter part
-                            Plr.Character:SetPrimaryPartCFrame(circleOuterPart.CFrame)
-
-                            -- Wait for stability
-                            wait(0.5)
-
-                            -- Invoke the remote to unlock the chest
-                            local args = { [1] = chestName }
-                            local success, err = pcall(function()
-                                game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("checkChestRemote"):InvokeServer(unpack(args))
-                            end)
-
-                            if success then
-                                print("Successfully unlocked chest: " .. chestName)
+                    -- Find the chest by name in the workspace
+                    local chest = game:GetService("Workspace"):FindFirstChild(chestName)
+                    if chest then
+                        -- Look for the circleInner part inside the chest
+                        local circleInnerPart = chest:FindFirstChild("circleInner")
+                        if circleInnerPart then
+                            -- Look for the TouchInterest inside the circleInner part
+                            local touchInterest = circleInnerPart:FindFirstChild("TouchInterest")
+                            if touchInterest then
+                                -- Ensure the player character and necessary parts are loaded
+                                local playerCharacter = game.Players.LocalPlayer.Character
+                                if playerCharacter and playerCharacter:FindFirstChild("HumanoidRootPart") then
+                                    -- Fire the touch interest to unlock the chest
+                                    pcall(function()
+                                        firetouchinterest(playerCharacter.HumanoidRootPart, touchInterest, 0)
+                                        wait(0.5)  -- Short delay to avoid firing too many interactions in a row
+                                        firetouchinterest(playerCharacter.HumanoidRootPart, touchInterest, 1)
+                                    end)
+                                else
+                                    warn("Player character or HumanoidRootPart is missing.")
+                                end
                             else
-                                warn("Failed to unlock chest: " .. chestName .. " | Error: " .. tostring(err))
+                                warn("TouchInterest not found inside circleInner of chest: " .. chestName)
                             end
-
-                            wait(1) -- Ensure time before moving to the next chest
                         else
-                            warn("circleOuter part not found inside " .. chestName)
+                            warn("circleInner part not found in chest: " .. chestName)
                         end
                     else
-                        warn("Chest folder not found for: " .. chestName)
+                        warn("Chest not found: " .. chestName)
                     end
+
+                    -- Wait for 2 seconds before moving to the next chest
+                    wait(2)
                 end
             end)
-        else
-            -- Disable Infinite Jump when Unlock All Chests is toggled off
-            InfJump(false)
         end
     end
 })
+
 
 local ToggleRandomCoinTeleport = Menu:CreateToggle({
     Name = "Auto Collect Coin/weird circle thing Crates",
@@ -735,21 +722,4 @@ local ToggleAutoEvolve = Pet:CreateToggle({
         end
     end
 })
-
-local CreditsTab = Window:CreateTab("Credits")
--- Credits
-CreditsTab:CreateSection("Founder Developer")
-CreditsTab:CreateLabel("Discord: moligrafi")
-CreditsTab:CreateSection("Main Developer")
-CreditsTab:CreateLabel("Discord: _prismx")
-CreditsTab:CreateSection("Discord Server")
-CreditsTab:CreateLabel("discord.gg/AESCuek87s")
-CreditsTab:CreateButton({
-    Name = "Copy Server Link",
-    Callback = function()
-        setclipboard("discord.gg/AESCuek87s")
-    end
-})
-CreditsTab:CreateLabel("If you find any bug join the discord and open a ticket")
-
 
