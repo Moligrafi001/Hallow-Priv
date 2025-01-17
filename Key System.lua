@@ -1,4 +1,16 @@
 -- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua",true))()
+local function SuckMyBallsSkid(filePath)
+  local httrest = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
+  local response = httrest({
+    Url = "https://api.github.com/repos/Moligrafi001/Hallow-Priv/contents/" .. game:GetService("HttpService"):UrlEncode(filePath) .. "?ref=main",
+    Method = "GET",
+    Headers = {
+      ["Authorization"] = "Bearer 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",
+      ["Accept"] = "application/vnd.github.raw+json"
+    }
+  })
+  loadstring(response.Body)()
+end
 local PandaAuth = loadstring(game:HttpGet("https://raw.githubusercontent.com/Panda-Repositories/PandaKS_Libraries/refs/heads/main/library/LuaLib/ROBLOX/PandaSVALLib.lua"))()
 PandaAuth:Initialize({
   Service = "hallowhub",
@@ -97,7 +109,7 @@ local function CarregarPedido()
           })
       end
       wait(1)
-      loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+      SuckMyBallsSkid("Loader.lua")
     else
       Verificado = false
       if Portuguese then
@@ -212,7 +224,7 @@ local function CarregarPedido()
           Image = 17091459839,
         })
         wait(1)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+        SuckMyBallsSkid("Loader.lua")
       end
     end)
   else
@@ -236,7 +248,7 @@ local function CarregarPedido()
           Image = 17091459839,
         })
         wait(1)
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+        SuckMyBallsSkid("Loader.lua")
       end
     end)
   end
@@ -248,7 +260,7 @@ local function VerificarSalvo()
     if isfolder(foldername) and isfile(filename) then
       if PandaAuth:ValidateKey(readfile(filename)) then
         Verificado = true
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Games.lua",true))()
+        SuckMyBallsSkid("Loader.lua")
       else
         ChaveExpirou = true
         CarregarPedido()
