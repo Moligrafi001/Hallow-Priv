@@ -7,10 +7,15 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
+local VirtualUser = game:GetService("VirtualUser")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
 local Plr = game:GetService("Players").LocalPlayer
 local NinjaEvent = Plr:FindFirstChild("ninjaEvent")
 
 -- Globals
+getgenv().NL_Config = NL_Config
 getgenv().AutoSwing = false
 getgenv().AutoSell = false
 getgenv().AutoHatch = false
@@ -18,6 +23,7 @@ getgenv().AutoEvolve = false
 getgenv().SwingDelay = "0.5"
 getgenv().FarmHoops = false
 getgenv().AutoPurchaseSwords = false
+getgenv().AutoPurchaseBelts = false
 getgenv().AutoUpgradeSkills = false
 getgenv().IslandToPurchaseFrom = "Ground"
 getgenv().CrystalToHatch = "Blue Crystal"
@@ -79,7 +85,6 @@ local function NoClip()
 end
 
 
-
 local Menu = Window:CreateTab("Main", "square-function")
 local AutofarmSection = Menu:CreateSection("Main Features")
 
@@ -113,70 +118,6 @@ local ToggleSwing = Menu:CreateToggle({
     end
 })
 
-local AutofarmSection = Menu:CreateSection("Auto Sell $")
-
-local AutoSellConnectioninsta = nil 
-
-local Toggle = Menu:CreateToggle({
-    Name = "Instant Auto Sell",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().AutoSell = state
-
-        if AutoSellConnectioninsta then
-            AutoSellConnectioninsta:Disconnect() 
-            AutoSellConnectioninsta = nil
-        end
-
-        if state then
-            AutoSellConnectioninsta = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
-                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
-                local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
-                local CurrentBelt = Plr.equippedBelt.Value
-
-                if CurrentNinjitsu.Value <= GroundBelts[CurrentBelt.Name].capacity.Value then
-                    local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
-                    firetouchinterest(sellPart, Plr.Character.Head, 1)
-                    task.wait(0.5)
-                    firetouchinterest(sellPart, Plr.Character.Head, 0)
-                end
-            end)
-        end
-    end
-})
-
-local AutoSellConnection = nil 
-
-local ToggleSell = Menu:CreateToggle({
-    Name = "Auto Sell (When bags full)",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().AutoSell = state
-
-
-        if not state then
-            AutoSellConnection = nil
-        end
-
-        if state then
-            AutoSellConnection = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
-                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
-                local GroundBelts = game:GetService("ReplicatedStorage").Belts.Ground
-                local CurrentBelt = Plr.equippedBelt.Value
-
-                if CurrentNinjitsu.Value >= GroundBelts[CurrentBelt.Name].capacity.Value then
-                    local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle.circleInner
-                    firetouchinterest(sellPart, Plr.Character.Head, 1)
-                    task.wait(0.5)
-                    firetouchinterest(sellPart, Plr.Character.Head, 0)
-                end
-            end)
-        end
-    end
-})
-
-local AutofarmSection = Menu:CreateSection("Other")
-
 local ToggleAutoUpgradeSkills = Menu:CreateToggle({
     Name = "Auto Upgrade Skills",
     CurrentValue = false,
@@ -197,6 +138,67 @@ local ToggleAutoUpgradeSkills = Menu:CreateToggle({
     end
 })
 
+local ranks = { 
+    "Rookie", "Grasshopper", "Apprentice", "Samurai", "Assassin", "Shadow", "Ninja", 
+    "Master Ninja", "Sensei", "Master Sensei", "Ninja Legend", "Master Of Shadows", 
+    "Immortal Assassin", "Eternity Hunter", "Shadow Legend", "Dragon Warrior", 
+    "Dragon Master", "Chaos Sensei", "Chaos Legend", "Master Of Elements", 
+    "Elemental Legend", "Ancient Battle Master", "Ancient Battle Legend", 
+    "Legendary Shadow Duelist", "Master Legend Assassin", "Mythic Shadowmaster", 
+    "Legendary Shadowmaster", "Awakened Scythemaster", "Awakened Scythe Legend", 
+    "Master Legend Zephyr", "Golden Sun Shuriken Master", "Golden Sun Shuriken Legend", 
+    "Dark Sun Samurai Legend", "Dragon Evolution Form I", "Dragon Evolution Form II", 
+    "Dragon Evolution Form III", "Dragon Evolution Form IV", "Dragon Evolution Form V", 
+    "Cybernetic Electro Master", "Cybernetic Electro Legend", "Shadow Chaos Assassin", 
+    "Shadow Chaos Legend", "Infinity Sensei", "Infinity Legend", 
+    "Aether Genesis Master Ninja", "Master Legend Sensei Hunter", 
+    "Skystorm Series Samurai Legend", "Master Elemental Hero", 
+    "Eclipse Series Soul Master", "Starstrike Master Sensei", 
+    "Evolved Series Master Ninja", "Dark Elements Guardian", 
+    "Elite Series Master Legend", "Infinity Shadows Master", "Lightning Storm Sensei", 
+    "Dark Elements Blademaster", "Rising Shadow Eternal Ninja", "Skyblade Ninja Master", 
+    "Shadow Storm Sensei", "Comet Strike Lion", "Cybernetic Azure Sensei", 
+    "Ultra Genesis Shadow" 
+}
+
+local ToggleAutoBuyRanks = Menu:CreateToggle({
+    Name = "Auto Buy Ranks",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoBuyRanks = state
+
+        if state then
+            task.spawn(function()
+                while getgenv().AutoBuyRanks do
+                    -- Get the player's current rank
+                    local currentRank = Plr.leaderstats.Rank.Value
+
+                    -- Find the next rank in the list
+                    local nextRankIndex = table.find(ranks, currentRank) + 1
+                    local nextRank = ranks[nextRankIndex]
+
+                    if not nextRank then
+                        print("All ranks purchased!")
+                        break
+                    end
+
+                    -- Attempt to buy the next rank
+                    local args = {
+                        [1] = "buyRank",
+                        [2] = nextRank
+                    }
+
+                    -- Fire the event to purchase the rank
+                    pcall(function()
+                        game:GetService("Players").LocalPlayer:WaitForChild("ninjaEvent"):FireServer(unpack(args))
+                    end)
+
+                    task.wait(1) -- Wait 1 second before trying again
+                end
+            end)
+        end
+    end
+})
 
 local ToggleHoops = Menu:CreateToggle({
     Name = "Collect all Hoops (Auto)",
@@ -222,6 +224,123 @@ local ToggleHoops = Menu:CreateToggle({
                     end)
                 end
             end)
+        end
+    end
+})
+
+local AutofarmSection = Menu:CreateSection("Auto Sell $")
+
+local AutoSellConnectioninsta = nil 
+
+local Toggle = Menu:CreateToggle({
+    Name = "Instant Auto Sell",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().AutoSell = state
+
+        if AutoSellConnectioninsta then
+            AutoSellConnectioninsta:Disconnect() 
+            AutoSellConnectioninsta = nil
+        end
+
+        if state then
+            AutoSellConnectioninsta = Plr.leaderstats.Ninjitsu:GetPropertyChangedSignal("Value"):Connect(function()
+                local CurrentNinjitsu = Plr.leaderstats.Ninjitsu
+                local sellPart = game:GetService("Workspace").sellAreaCircles.sellAreaCircle16.circleInner
+
+                -- Only sell if Ninjitsu is greater than 0
+                if CurrentNinjitsu.Value > 0 then
+                    -- Trigger the sell action
+                    firetouchinterest(sellPart, Plr.Character.Head, 1)
+                    task.wait(0.5)
+                    firetouchinterest(sellPart, Plr.Character.Head, 0)
+                end
+            end)
+        end
+    end
+})
+
+
+local AutofarmSection = Menu:CreateSection("Other")
+
+local chestNames = {
+    "enchantedChest",
+    "magmaChest",
+    "MythicalChest",
+    "legendsChest",
+    "eternalChest",
+    "saharaChest",
+    "thunderChest",
+    "ancientChest",
+    "midnightShadowChest",
+    "wonderChest",
+    "goldenZenChest",
+    "ultraNinjitsuChest",
+    "skystormMastersChest",
+    "chaosLegendsChest",
+    "soulFusionChest"
+}
+
+local ToggleUnlockChests = Menu:CreateToggle({
+    Name = "Unlock All Chests",
+    CurrentValue = false,
+    Callback = function(state)
+        getgenv().UnlockAllChests = state
+        
+        if state then
+            -- Enable Infinite Jump when Unlock All Chests is toggled on
+            InfJump(true)
+
+            task.spawn(function()
+                for _, chestName in ipairs(chestNames) do
+                    if not getgenv().UnlockAllChests then break end
+
+                    -- Locate the chest folder in the workspace
+                    local chestFolder = game:GetService("Workspace"):FindFirstChild(chestName)
+                    if chestFolder then
+                        -- Locate the circleOuter part inside the chest folder
+                        local circleOuterPart = chestFolder:FindFirstChild("circleOuter")
+                        if circleOuterPart and circleOuterPart:IsA("BasePart") then
+                            -- Move the player forward in 3 steps
+                            local humanoidRootPart = Plr.Character:WaitForChild("HumanoidRootPart")
+                            local moveDirection = humanoidRootPart.CFrame.LookVector * 50 -- Adjust multiplier for speed
+
+                            for step = 1, 3 do
+                                humanoidRootPart.Velocity = moveDirection
+                                wait(1) -- Wait for 1 second per step
+                            end
+                            humanoidRootPart.Velocity = Vector3.zero -- Stop movement
+
+                            -- Teleport the player to the circleOuter part
+                            Plr.Character:SetPrimaryPartCFrame(circleOuterPart.CFrame)
+
+                            -- Wait for stability
+                            wait(0.5)
+
+                            -- Invoke the remote to unlock the chest
+                            local args = { [1] = chestName }
+                            local success, err = pcall(function()
+                                game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("checkChestRemote"):InvokeServer(unpack(args))
+                            end)
+
+                            if success then
+                                print("Successfully unlocked chest: " .. chestName)
+                            else
+                                warn("Failed to unlock chest: " .. chestName .. " | Error: " .. tostring(err))
+                            end
+
+                            wait(1) -- Ensure time before moving to the next chest
+                        else
+                            warn("circleOuter part not found inside " .. chestName)
+                        end
+                    else
+                        warn("Chest folder not found for: " .. chestName)
+                    end
+                end
+            end)
+        else
+            -- Disable Infinite Jump when Unlock All Chests is toggled off
+            InfJump(false)
         end
     end
 })
@@ -262,136 +381,130 @@ local ToggleRandomCoinTeleport = Menu:CreateToggle({
 local Player = Window:CreateTab("Player", "person-standing")
 local Section = Player:CreateSection("Island things")
 
-local ToggleUnlockIslands = Player:CreateToggle({
+local ToggleUnlockIslands = Player:CreateButton({
     Name = "Unlock All Islands",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().UnlockAllIslands = state
-        if state then
-            task.spawn(function()
-                local islandUnlockParts = game:GetService("Workspace").islandUnlockParts -- This is where your islands' unlock parts are stored
-                
-                -- List of island names to iterate through in order
-                local islandNames = {
-                    "Enchanted Island",
-                    "Astral Island",
-                    "Mystical Island",
-                    "Space Island",
-                    "Tundra Island",
-                    "Eternal Island",
-                    "Sandstorm",
-                    "Thunderstorm Island",
-                    "Ancient Inferno Island",
-                    "Thunderstorm",
-                    "Midnight Shadow Island",
-                    "Mythical Souls Island",
-                    "Winter Wonder Island",
-                    "Golden Master Island",
-                    "Dragon Legend Island",
-                    "Cybernetic Legends Island",
-                    "Skystorm Ultraus Island",
-                    "Chaos Legends Island",
-                    "Soul Fusion Island",
-                    "Inner Peace Island",
-                    "Blazing Vortex Island"
-                }
-
-                -- Iterate over each island's name
-                for _, islandName in ipairs(islandNames) do
-                    if not getgenv().UnlockAllIslands then break end
-                    
-                    -- Find the specific unlock part for each island
-                    local island = islandUnlockParts:FindFirstChild(islandName)
-                    if island then
-                        local touchInterest = island:FindFirstChild("TouchInterest") -- Get the TouchInterest part
-                        if touchInterest then
-                            local parentPart = island -- The parent part is the one containing TouchInterest, which is a BasePart
-                            if parentPart and parentPart:IsA("BasePart") then
-                                -- Teleport the player to the parent part (the part containing TouchInterest)
-                                local playerHead = Plr.Character:WaitForChild("Head")
-                                Plr.Character:SetPrimaryPartCFrame(parentPart.CFrame) -- Teleport to the part
-                                wait(0.2) -- Delay before moving to the next island
-                            else
-                                warn("No valid part found for island " .. islandName)
-                            end
-                        else
-                            warn("No TouchInterest found in " .. islandName)
-                        end
-                    else
-                        warn("No unlock part found for " .. islandName)
-                    end
-                end
-            end)
-        end
+    Callback = function()
+      for _, island in pairs(workspace.islandUnlockParts:GetChildren()) do
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 0)
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 1)
+      end
     end
 })
 
 local Section = Player:CreateSection("Weapon & Belt")
 
-local Dropdown = Player:CreateDropdown({
-    Name = "Select Island for auto weapon/belt",
-    Options = { 
-        "Ground", 
-        "Astral Island", 
-        "Space Island", 
-        "Tundra Island", 
-        "Eternal Island", 
-        "Sandstorm", 
-        "Thunderstorm Island", 
-        "Ancient Inferno Island", 
-        "Midnight Shadow Island", 
-        "Mythical Souls Island", 
-        "Winter Wonder Island", 
-        "Golden Master Island", 
-        "Dragon Legend Island", 
-        "Cybernetic Legends Island", 
-        "Skystorm Ultraus Island", 
-        "Chaos Legends Island", 
-        "Soul Fusion Island", 
-        "Inner Peace Island", 
-        "Blazing Vortex Island" 
-    },
-    CurrentOption = "Ground", 
-    Callback = function(currentOption)
-        getgenv().IslandToPurchaseFrom = currentOption
-    end
-})
+if not getgenv().NL_Config then
+    getgenv().NL_Config = {
+        BuySwords = false,
+        BuyBelts = false,
+    }
+end
+    
+local Config = getgenv().NL_Config
 
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+
+if not LocalPlayer then
+    error("LocalPlayer is nil! Make sure the game has loaded.")
+end
+
+-- Define Islands
+local NL_Islands = {
+    "Enchanted Island",
+    "Astral Island",
+    "Mystical Island",
+    "Space Island",
+    "Tundra Island",
+    "Eternal Island",
+    "Sandstorm",
+    "Thunderstorm",
+    "Ancient Inferno Island",
+    "Midnight Shadow Island",
+    "Mythical Souls Island",
+    "Winter Wonder Island",
+    "Golden Master Island",
+    "Dragon Legend Island",
+    "Cybernetic Legends Island",
+    "Skystorm Ultraus Island",
+    "Chaos Legends Island",
+    "Soul Fusion Island",
+    "Inner Peace Island",
+    "Blazing Vortex Island"
+}
+
+local function GetLastIsland()
+    return NL_Islands[#NL_Islands]
+end
+local LastIsland = GetLastIsland()
+
+local function GameEvent(...)
+    local NinjaEvent = LocalPlayer:FindFirstChild("ninjaEvent")
+
+    if not NinjaEvent then
+        warn("NinjaEvent not found!")
+        return
+    end
+
+    NinjaEvent:FireServer(...)
+end
+
+local function BuySwords()
+    if not Config.BuySwords then
+        print("BuySwords is disabled")
+        return
+    end
+
+    print("Buying all swords for:", LastIsland)
+    GameEvent("buyAllSwords", LastIsland)
+end
+
+-- BuyBelts Function
+local function BuyBelts()
+    if not Config.BuyBelts then
+        print("BuyBelts is disabled")
+        return
+    end
+
+    GameEvent("buyAllBelts", LastIsland)
+end
+
+-- Toggle for Auto Purchase Swords
 local TogglePurchaseSwords = Player:CreateToggle({
     Name = "Auto Purchase Swords",
-    CurrentValue = false,
+    CurrentValue = Config.BuySwords,  -- Set the initial value based on Config
     Callback = function(state)
+        Config.BuySwords = state  -- Update Config with the current toggle state
         getgenv().AutoPurchaseSwords = state
         if state then
             task.spawn(function()
                 while getgenv().AutoPurchaseSwords do
-                    pcall(function()
-                        NinjaEvent:FireServer("buyAllSwords", getgenv().IslandToPurchaseFrom)
-                    end)
-                    task.wait(0.5) 
+                    BuySwords()
+                    task.wait(0.5)
                 end
             end)
         end
     end
 })
 
+-- Toggle for Auto Purchase Belts
 local TogglePurchaseBelts = Player:CreateToggle({
     Name = "Auto Purchase Belts",
-    CurrentValue = false,
+    CurrentValue = Config.BuyBelts,  -- Set the initial value based on Config
     Callback = function(state)
+        Config.BuyBelts = state  -- Update Config with the current toggle state
         getgenv().AutoPurchaseBelts = state
         if state then
             task.spawn(function()
                 while getgenv().AutoPurchaseBelts do
-                    pcall(function()
-                        NinjaEvent:FireServer("buyAllBelts", getgenv().IslandToPurchaseFrom)
-                    end)
-                    task.wait(0.5) 
+                    BuyBelts()
+                    task.wait(0.5)
                 end
             end)
         end
     end
 })
+
 
 local Section = Player:CreateSection("Player stuff")
 
@@ -455,6 +568,91 @@ local Toggle = Player:CreateToggle({
 
 local TP = Window:CreateTab("Teleports", "shell")
 local Section = TP:CreateSection("Map Teleports")
+
+local islandNames = {
+    "Enchanted Island",
+    "Astral Island",
+    "Mystical Island",
+    "Space Island",
+    "Tundra Island",
+    "Eternal Island",
+    "Sandstorm",
+    "Thunderstorm",
+    "Ancient Inferno Island",
+    "Midnight Shadow Island",
+    "Mythical Souls Island",
+    "Winter Wonder Island",
+    "Golden Master Island",
+    "Dragon Legend Island",
+    "Cybernetic Legends Island",
+    "Skystorm Ultraus Island",
+    "Chaos Legends Island",
+    "Soul Fusion Island",
+    "Inner Peace Island",
+    "Blazing Vortex Island"
+}
+
+local selectedIsland = nil 
+
+local IslandDropdown = TP:CreateDropdown({
+    Name = "Select Island",
+    Options = islandNames,
+    Callback = function(selected)
+        if typeof(selected) == "table" then
+            selectedIsland = selected[1]
+        elseif typeof(selected) == "string" then
+            selectedIsland = selected
+        else
+
+            selectedIsland = nil
+            print("Error: Dropdown returned an unexpected value type:", typeof(selected))
+        end
+
+        if selectedIsland then
+            print("Island selected: " .. selectedIsland)
+        else
+            print("Error: No valid island selected!")
+        end
+    end
+})
+
+local TeleportButton = TP:CreateButton({
+    Name = "Teleport to Selected Island",
+    Callback = function()
+        if not selectedIsland or type(selectedIsland) ~= "string" then
+            print("Error: No valid island selected!")
+            return
+        end
+
+        local islandUnlockParts = game:GetService("Workspace"):FindFirstChild("islandUnlockParts")
+        if not islandUnlockParts then
+            print("Error: islandUnlockParts not found in Workspace!")
+            return
+        end
+
+        local island = islandUnlockParts:FindFirstChild(selectedIsland)
+        if not island then
+            print("Error: Island not found: " .. selectedIsland)
+            return
+        end
+
+        local touchInterest = island:FindFirstChild("TouchInterest")
+        if not touchInterest then
+            print("Error: TouchInterest not found for island: " .. selectedIsland)
+            return
+        end
+
+        local parentPart = island
+        if parentPart and parentPart:IsA("BasePart") then
+            local playerHead = Plr.Character:WaitForChild("Head")
+            Plr.Character:SetPrimaryPartCFrame(parentPart.CFrame)
+            print("Teleported to island: " .. selectedIsland)
+        else
+            print("Error: No valid part to teleport for island: " .. selectedIsland)
+        end
+    end
+})
+
 
 local Pet = Window:CreateTab("Pets", "paw-print")
 local Section = Pet:CreateSection("Auto stuff")
@@ -537,21 +735,4 @@ local ToggleAutoEvolve = Pet:CreateToggle({
         end
     end
 })
-
-local CreditsTab = Window:CreateTab("Credits")
--- Credits
-CreditsTab:CreateSection("Founder Developer")
-CreditsTab:CreateLabel("Discord: moligrafi")
-CreditsTab:CreateSection("Developer")
-CreditsTab:CreateLabel("Discord: _prismx")
-CreditsTab:CreateSection("Discord Server")
-CreditsTab:CreateLabel("discord.gg/AESCuek87s")
-CreditsTab:CreateButton({
-    Name = "Copy Server Link",
-    Callback = function()
-        setclipboard("discord.gg/AESCuek87s")
-    end
-})
-CreditsTab:CreateLabel("If you find any bug join the discord and open a ticket")
-
 
