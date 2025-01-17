@@ -1,5 +1,5 @@
 -- Credits
-local Credits = Window:CreateTab("Credits", "info")
+local Pussy = Window:CreateTab("Credits", "info")
 local FounderSection = Pussy:CreateSection("Founder Developer")
 local Label = Pussy:CreateLabel("Discord: moligrafi", "at-sign")
 local DevSection = Pussy:CreateSection("Co-Developer")
