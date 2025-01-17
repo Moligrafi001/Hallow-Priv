@@ -28,19 +28,20 @@ local function MyBigHotPenis(filePath)
   carregar()
 end
 
-if game.PlaceId == 77293138169730 or game.PlaceId == 110862004123956 or game.PlaceId == 138419073284550 or game.PlaceId == 122232219652085 or game.PlaceId == 109513417836584 or game.PlaceId == 127090329888839 or game.PlaceId == 128447758667095 or game.PlaceId == 117112901543526 then
+local Place = game.PlaceId
+if Place == 77293138169730 or Place == 110862004123956 or Place == 138419073284550 or Place == 122232219652085 or Place == 109513417836584 or Place == 127090329888839 or Place == 128447758667095 or Place == 117112901543526 then
   MyBigHotPenis("games/Dungeons Of Doom.lua")
-elseif game.PlaceId == 123748395762873 then
+elseif Place == 123748395762873 then
   MyBigHotPenis("games/Fruit Reborn.lua")
-elseif game.PlaceId == 893973440 then
+elseif Place == 893973440 then
   MyBigHotPenis("games/Flee The Facility.lua")
-elseif game.PlaceId == 3101667897 or game.PlaceId == 3276265788 or game.PlaceId == 3232996272 then
+elseif Place == 3101667897 or Place == 3276265788 or Place == 3232996272 then
   MyBigHotPenis("games/Legends Of Speed.lua")
-elseif game.PlaceId == 72142739704679 then
+elseif Place == 72142739704679 then
   MyBigHotPenis("games/Evo Tycoon.lua")
-elseif game.PlaceId == 3261957210 then
+elseif Place == 3261957210 then
   MyBigHotPenis("games/Thanos Simulator.lua")
-elseif game.PlaceId == 18606626051 then
+elseif Place == 18606626051 then
   MyBigHotPenis("games/Ice Tycoon.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
