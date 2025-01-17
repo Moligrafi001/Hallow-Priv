@@ -27,7 +27,6 @@ local function MyBigHotPenis(filePath)
   local carregar = loadstring(response.Body .. "\n" .. credits.Body) or loadstring(errado.Body .. "\n" .. credits.Body)
   carregar()
 end
-
 local success, err = pcall(function()
     if game.Players.LocalPlayer.Name ~= "Moligrafi" then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/extra/FixBugs.lua", true))()
