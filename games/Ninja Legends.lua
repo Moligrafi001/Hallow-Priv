@@ -261,67 +261,13 @@ local ToggleRandomCoinTeleport = Menu:CreateToggle({
 local Player = Window:CreateTab("Player", "person-standing")
 local Section = Player:CreateSection("Island things")
 
-local ToggleUnlockIslands = Player:CreateToggle({
+local ToggleUnlockIslands = Player:CreateButton({
     Name = "Unlock All Islands",
-    CurrentValue = false,
-    Callback = function(state)
-        getgenv().UnlockAllIslands = state
-        if state then
-            task.spawn(function()
-                local islandUnlockParts = game:GetService("Workspace").islandUnlockParts -- This is where your islands' unlock parts are stored
-                
-                -- List of island names to iterate through in order
-                local islandNames = {
-                    "Enchanted Island",
-                    "Astral Island",
-                    "Mystical Island",
-                    "Space Island",
-                    "Tundra Island",
-                    "Eternal Island",
-                    "Sandstorm",
-                    "Thunderstorm Island",
-                    "Ancient Inferno Island",
-                    "Thunderstorm",
-                    "Midnight Shadow Island",
-                    "Mythical Souls Island",
-                    "Winter Wonder Island",
-                    "Golden Master Island",
-                    "Dragon Legend Island",
-                    "Cybernetic Legends Island",
-                    "Skystorm Ultraus Island",
-                    "Chaos Legends Island",
-                    "Soul Fusion Island",
-                    "Inner Peace Island",
-                    "Blazing Vortex Island"
-                }
-
-                -- Iterate over each island's name
-                for _, islandName in ipairs(islandNames) do
-                    if not getgenv().UnlockAllIslands then break end
-                    
-                    -- Find the specific unlock part for each island
-                    local island = islandUnlockParts:FindFirstChild(islandName)
-                    if island then
-                        local touchInterest = island:FindFirstChild("TouchInterest") -- Get the TouchInterest part
-                        if touchInterest then
-                            local parentPart = island -- The parent part is the one containing TouchInterest, which is a BasePart
-                            if parentPart and parentPart:IsA("BasePart") then
-                                -- Teleport the player to the parent part (the part containing TouchInterest)
-                                local playerHead = Plr.Character:WaitForChild("Head")
-                                Plr.Character:SetPrimaryPartCFrame(parentPart.CFrame) -- Teleport to the part
-                                wait(0.2) -- Delay before moving to the next island
-                            else
-                                warn("No valid part found for island " .. islandName)
-                            end
-                        else
-                            warn("No TouchInterest found in " .. islandName)
-                        end
-                    else
-                        warn("No unlock part found for " .. islandName)
-                    end
-                end
-            end)
-        end
+    Callback = function()
+      for _, island in pairs(workspace.islandUnlockParts:GetChildren()) do
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 0)
+        firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, island, 1)
+      end
     end
 })
 
