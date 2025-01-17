@@ -15,3 +15,4 @@ local ButtonServer = Pussy:CreateButton({
 })
 local NoteSection = Pussy:CreateSection("Note")
 local NoteLabel = Pussy:CreateLabel("If you find any bug join the discord and open a ticket")
+local DividerInstructions = Pussy:CreateDivider()
