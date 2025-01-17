@@ -28,7 +28,9 @@ local function MyBigHotPenis(filePath)
   carregar()
 end
 
-if game.PlaceId == 123748395762873 then
+if game.PlaceId == 77293138169730 or game.PlaceId == 110862004123956 or game.PlaceId == 138419073284550 or game.PlaceId == 122232219652085 or game.PlaceId == 109513417836584 or game.PlaceId == 127090329888839 or game.PlaceId == 128447758667095 or game.PlaceId == 117112901543526 then
+  MyBigHotPenis("games/Dungeons Of Doom.lua")
+elseif game.PlaceId == 123748395762873 then
   MyBigHotPenis("games/Fruit Reborn.lua")
 elseif game.PlaceId == 893973440 then
   MyBigHotPenis("games/Flee The Facility.lua")
