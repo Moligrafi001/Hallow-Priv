@@ -437,24 +437,3 @@ TP:CreateDropdown({
 
 local Pet = Window:CreateTab("Pets", "bone")
 local Section = Pet:CreateSection("Auto Hatch")
-
-
-
-
--- Credits
-local Credits = Window:CreateTab("Credits", "info")
-local Section = Credits:CreateSection("Founder Developer")
-local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
-local Section = Credits:CreateSection("Developer")
-local Label = Credits:CreateLabel("Discord: _prismx", "at-sign")
-local Section = Credits:CreateSection("Discord Server")
-local Label = Credits:CreateLabel("discord.gg/AESCuek87s")
-local Button = Credits:CreateButton({
-   Name = "Copy Server Link",
-   Callback = function()
-   	setclipboard("discord.gg/AESCuek87s")
-   	toclipboard("discord.gg/AESCuek87s")
-    end,
-})
-local Section = Credits:CreateSection("Note")
-local Label = Credits:CreateLabel("If you find any bug join the discord and open a ticket")
