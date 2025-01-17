@@ -1,6 +1,4 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/extra/Credits.lua",true))()
-
--- Credits.
+-- Credits
 local Credits = Window:CreateTab("Credits", "info")
 local Section = Credits:CreateSection("Creator")
 local Label = Credits:CreateLabel("Discord: moligrafi", "at-sign")
