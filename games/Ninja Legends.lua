@@ -536,21 +536,3 @@ local ToggleAutoEvolve = Pet:CreateToggle({
         end
     end
 })
-
-local CreditsTab = Window:CreateTab("Credits")
--- Credits
-CreditsTab:CreateSection("Founder Developer")
-CreditsTab:CreateLabel("Discord: moligrafi")
-CreditsTab:CreateSection("Developer")
-CreditsTab:CreateLabel("Discord: _prismx")
-CreditsTab:CreateSection("Discord Server")
-CreditsTab:CreateLabel("discord.gg/AESCuek87s")
-CreditsTab:CreateButton({
-    Name = "Copy Server Link",
-    Callback = function()
-        setclipboard("discord.gg/AESCuek87s")
-    end
-})
-CreditsTab:CreateLabel("If you find any bug join the discord and open a ticket")
-
-
