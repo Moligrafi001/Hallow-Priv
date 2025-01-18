@@ -108,6 +108,8 @@ elseif Place == 104584676217962 then
   MyBigHotPenis("games/Find Buttons.lua")
 elseif Place == 107400840408672 then
   MyBigHotPenis("games/Find Chicken Nuggets.lua")
+elseif Place == 18242944461 then
+  MyBigHotPenis("games/Computer Upgrade Tree.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
