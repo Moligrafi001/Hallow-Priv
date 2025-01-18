@@ -82,6 +82,8 @@ elseif Place == 11402943018 then
   MyBigHotPenis("games/The Ultimate Upgrade Tree Teamwork.lua")
 elseif Place == 130445780223499 then
   MyBigHotPenis("games/Ore Factory Tycoon.lua")
+elseif Place == 17622210552 then
+  MyBigHotPenis("games/Classic Tycoon.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
