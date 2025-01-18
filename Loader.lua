@@ -98,6 +98,8 @@ elseif Place == 8034886758 then
   MyBigHotPenis("games/Punch Monsters.lua")
 elseif Place == 81257648942232 then
   MyBigHotPenis("games/Slash Mobs Simulator.lua")
+elseif Place == 101162558216961 then
+  MyBigHotPenis("games/Rune Incremental.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
