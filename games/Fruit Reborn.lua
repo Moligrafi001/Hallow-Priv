@@ -492,5 +492,141 @@ local Toggle = MoveTab:CreateToggle({
    	SetJumpPower()
    end,
 })
+
+local ServersTab = Window:CreateTab("Server", "compass")
+local ServerSection = ServersTab:CreateSection("Server Actions", true)
+
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+local PlaceId = game.PlaceId  
+local JobId = game.JobId 
+
+-- Rejoin button
+ServersTab:CreateButton({
+    Name = "Rejoin Game",
+    Callback = function()
+        if #Players:GetPlayers() <= 1 then
+            Players.LocalPlayer:Kick("\nRejoining...")
+            wait(1) 
+            TeleportService:Teleport(PlaceId, Players.LocalPlayer)
+        else
+            TeleportService:TeleportToPlaceInstance(PlaceId, JobId, Players.LocalPlayer)
+        end
+    end,
+})
+                                                                                                    --end rejoin
+                                                                                                    --serverhop
+
+local PlaceId, JobId = game.PlaceId, game.JobId
+
+local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
+
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+local Players = game:GetService("Players")
+
+-- Server Hop Function
+local function serverHop()
+    if httprequest then
+        local servers = {}
+        local req = httprequest({
+            Url = string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", PlaceId),
+            Method = "GET"
+        })
+
+        local body = HttpService:JSONDecode(req.Body)
+
+        if body and body.data then
+            for _, v in next, body.data do
+                if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= JobId then
+                    table.insert(servers, 1, v.id)
+                end
+            end
+        end
+
+        if #servers > 0 then
+            local serverToJoin = servers[math.random(1, #servers)]
+            TeleportService:TeleportToPlaceInstance(PlaceId, serverToJoin, Players.LocalPlayer)
+        else
+            -- No servers found
+            Rayfield:Notify({
+                Title = "Serverhop",
+                Content = "Couldn't find a server.",
+                Duration = 6.5,
+                Image = 4483362458,
+                Actions = {
+                    Ignore = {
+                        Name = "Okay!",
+                        Callback = function()
+                            print("The user tapped Okay!")
+                        end
+                    },
+                },
+            })
+        end
+    else
+        -- Use HttpService fallback for request
+        local servers = {}
+        local success, req = pcall(function()
+            return HttpService:GetAsync(string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", PlaceId))
+        end)
+
+        if success and req then
+            local body = HttpService:JSONDecode(req)
+            if body and body.data then
+                for _, v in next, body.data do
+                    if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= JobId then
+                        table.insert(servers, 1, v.id)
+                    end
+                end
+            end
+
+            if #servers > 0 then
+                local serverToJoin = servers[math.random(1, #servers)]
+                TeleportService:TeleportToPlaceInstance(PlaceId, serverToJoin, Players.LocalPlayer)
+            else
+                Rayfield:Notify({
+                    Title = "Serverhop",
+                    Content = "Couldn't find a server.",
+                    Duration = 6.5,
+                    Image = 4483362458,
+                    Actions = {
+                        Ignore = {
+                            Name = "Okay!",
+                            Callback = function()
+                                print("The user tapped Okay!")
+                            end
+                        },
+                    },
+                })
+            end
+        else
+            Rayfield:Notify({
+                Title = "Incompatible Exploit",
+                Content = "Your exploit does not support HTTP requests.",
+                Duration = 6.5,
+                Image = 4483362458,
+                Actions = {
+                    Ignore = {
+                        Name = "Okay!",
+                        Callback = function()
+                            print("The user tapped Okay!")
+                        end
+                    },
+                },
+            })
+        end
+    end
+end
+
+-- Create a Rayfield button for server hopping
+ServersTab:CreateButton({
+    Name = "Server Hop",
+    Callback = function()
+        serverHop()
+    end,
+})
+
+
 local Section = MoveTab:CreateSection("More features coming soon...")
 local Label = MoveTab:CreateLabel("Join our discord in the credits tab!")
