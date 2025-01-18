@@ -115,7 +115,6 @@ end
 pcall(function()
   if game.Players.LocalPlayer.Name ~= "Moligrafi" then
     MyBigHotPenis("extra/executed.lua")
-    MyBigHotPenis("database/banneds.lua")
   end
 end)
 
