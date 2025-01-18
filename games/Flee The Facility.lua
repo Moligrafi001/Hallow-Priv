@@ -469,7 +469,6 @@ local Toggle =  Menu:CreateToggle({
    	_G.AutoInteract = Value
    end,
 })
-local Section = Menu:CreateSection("True Hacks")
 Button = Menu:CreateButton({
     Name = "Fling Beast (May have to try multiple times)",
     Info = "Flings the Beast.", 
@@ -503,7 +502,16 @@ Button = Menu:CreateButton({
         })
     end,
 })
-
+Menu:CreateButton({
+    Name = "Toggle Invisibility (You cannot interact)",
+    Callback = function()
+        if invisRunning then
+            makeVisible(Players.LocalPlayer)
+        else
+            makeInvisible(Players.LocalPlayer)
+        end
+    end,
+})
 local function notify(title, message)
     Rayfield:Notify({
         Title = title,
@@ -520,20 +528,6 @@ local function notify(title, message)
         }
     })
 end
-
-
-Menu:CreateButton({
-    Name = "Toggle Invisibility (You cannot interact)",
-    Callback = function()
-        if invisRunning then
-            makeVisible(Players.LocalPlayer)
-        else
-            makeInvisible(Players.LocalPlayer)
-        end
-    end,
-})
-
-
 local Section = Menu:CreateSection("Misc")
 local Button = Menu:CreateButton({
    Name = "TP to MAP",
