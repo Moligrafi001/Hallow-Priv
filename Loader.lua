@@ -70,6 +70,8 @@ elseif Place == 16148053600 then
   MyBigHotPenis("games/The Upgrade Tree Of Tree.lua")
 elseif Place == 114227554700907 then
   MyBigHotPenis("games/Click Fly.lua")
+elseif Place == 129159449618378 then
+  MyBigHotPenis("games/Cash Incremental.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
