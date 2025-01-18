@@ -102,6 +102,8 @@ elseif Place == 101162558216961 then
   MyBigHotPenis("games/Rune Incremental.lua")
 elseif Place == 109819539837829 then
   MyBigHotPenis("games/Make and Sell Cars.lua")
+elseif Place == 91314495602934 or Place == 107398627049290 then
+  MyBigHotPenis("games/Find The Buttons.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
