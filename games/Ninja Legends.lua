@@ -683,19 +683,19 @@ local Pet = Window:CreateTab("Pets", "paw-print")
 local Section = Pet:CreateSection("Auto stuff")
 
 local crystalTypes = {
-    "Blue Crystal - 1K Chi",
-    "Purple Crystal - 2K Chi",
-    "Enchanted Crystal - 6K Chi",
-    "Astral Crystal - 10K Chi",
-    "Golden Crystal - 15K Chi",
-    "Inferno Crystal - 40K Chi",
-    "Galaxy Crystal - 75K Chi",
-    "Frozen Crystal - 300K Chi",
-    "Eternal Crystal - 600K Chi",
-    "Storm Crystal - 1.5M Chi",
-    "Thunder Crystal - 8M Chi",
-    "Secret Blades Crystal - 55Oc Chi",
-    "Infinity Void Crystal - 5Qi Chi"
+    "Blue Crystal",
+    "Purple Crystal",
+    "Enchanted Crystal",
+    "Astral Crystal",
+    "Golden Crystal",
+    "Inferno Crystal",
+    "Galaxy Crystal",
+    "Frozen Crystal",
+    "Eternal Crystal",
+    "Storm Crystal",
+    "Thunder Crystal",
+    "Secret Blades Crystal",
+    "Infinity Void Crystal"
 }
 
 local selectedCrystal = "Blue Crystal"  
