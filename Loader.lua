@@ -27,15 +27,11 @@ local function MyBigHotPenis(filePath)
   local carregar = loadstring(response.Body .. "\n" .. credits.Body) or loadstring(errado.Body .. "\n" .. credits.Body)
   carregar()
 end
-local success, err = pcall(function()
-    if game.Players.LocalPlayer.Name ~= "Moligrafi" then
-        MyBigHotPenis("extra/executed.lua")
-				print("FixBugs loaded, yay!")
-    end
+pcall(function()
+  if game.Players.LocalPlayer.Name ~= "Moligrafi" then
+    MyBigHotPenis("extra/executed.lua")
+  end
 end)
-if not success then
-    print("FixBugs coudn't be loaded, please join the discord.gg/AESCuek87s and create a ticket to report this bug → " .. err)
-end
 
 local Place = game.PlaceId
 if Place == 77293138169730 or Place == 110862004123956 or Place == 138419073284550 or Place == 122232219652085 or Place == 109513417836584 or Place == 127090329888839 or Place == 128447758667095 or Place == 117112901543526 then
