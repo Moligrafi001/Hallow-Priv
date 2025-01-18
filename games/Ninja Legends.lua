@@ -35,6 +35,7 @@ getgenv().AutoJoinDuels = false
 getgenv().PetToSell = false
 getgenv().AutoTeleportToBoss = false
 getgenv().AutoCollectSouls = false
+getgenv().AutoMaster = false
 
 -- Movement
 local WalkSpeedText = 16
@@ -114,6 +115,36 @@ local function AutoSwing()
 end
 
 local Menu = Window:CreateTab("Main", "square-function")
+local Section = Menu:CreateSection("Mastery")
+
+local elements = {
+    "Inferno",
+    "Lightning",
+    "Frost",
+    "Shadow Charge",
+    "Masterful Wrath",
+    "Electral Chaos",
+    "Shadowfire",
+    "Eternity Storm",
+    "Blazing Entity"
+}
+
+local Button = Menu:CreateButton({
+    Name = "Master ALL Elements",
+    Info = "Resets ALL Ranks and Swords/Belts",
+    Callback = function()
+        for _, element in ipairs(elements) do
+            local args = {
+                [1] = element
+            }
+            game:GetService("ReplicatedStorage"):WaitForChild("rEvents"):WaitForChild("elementMasteryEvent"):FireServer(unpack(args))
+            print("Attempted to master " .. element .. " element")
+            task.wait(0.1)
+        end
+        print("Attempted to master ALL elements")
+    end
+})
+
 local AutofarmSection = Menu:CreateSection("Main Features")
 
 local ToggleSwing = Menu:CreateToggle({
@@ -1026,5 +1057,3 @@ local ToggleAutoDuel = Misc:CreateToggle({
         end
     end
 })
-
-
