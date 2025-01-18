@@ -62,6 +62,8 @@ elseif Place == 79274333046533 then
   MyBigHotPenis("games/Clicking Quest.lua")
 elseif Place == 80844431794988 then
   MyBigHotPenis("games/Bubble Gum Champions.lua")
+elseif Place == 6598746935 then
+  MyBigHotPenis("games/Farm for Fun.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
