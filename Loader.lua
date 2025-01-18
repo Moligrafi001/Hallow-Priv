@@ -112,6 +112,12 @@ elseif Place == 18242944461 then
   MyBigHotPenis("games/Computer Upgrade Tree.lua")
 elseif Place == 87643681021528 or Place == 75427975008245 then
   MyBigHotPenis("games/Buttone.lua")
+elseif Place == 112808176368279 then
+  MyBigHotPenis("games/Growth Incremental.lua")
+elseif Place == 12398408187 then
+  MyBigHotPenis("games/VYASA.lua")
+elseif Place == 17458494319 then
+  MyBigHotPenis("games/The Upgrade Tree Of Elements 2.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
