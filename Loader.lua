@@ -122,6 +122,8 @@ elseif Place == 18631989034 then
   MyBigHotPenis("games/Create Your Owm Army.lua")
 elseif Place == 112730892056697 then
   MyBigHotPenis("games/Spot Button.lua")
+elseif Place == 18972679050 then
+  MyBigHotPenis("games/Tech Support Tycoon.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
