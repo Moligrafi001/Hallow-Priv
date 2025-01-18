@@ -121,7 +121,6 @@ local Toggle =  Menu:CreateToggle({
    	AutoGems()
    end,
 })
-
 local Section = Menu:CreateSection("More")
 local Button = Menu:CreateButton({
    Name = "Reedem Codes",
@@ -130,9 +129,9 @@ local Button = Menu:CreateButton({
    end,
 })
 
+-- Teleport
 local TP = Window:CreateTab("Teleports", "shell")
 local Section = TP:CreateSection("Map Teleports")
-
 local islandNames = {
     "Azure",
     "Beyond",
@@ -142,9 +141,7 @@ local islandNames = {
     "The Floating Island",
     "The Void"
 }
-
 local selectedIsland = nil 
-
 local IslandDropdown = TP:CreateDropdown({
     Name = "Select Checkpoint (You have to have it unlocked)",
     Options = islandNames,
@@ -166,7 +163,6 @@ local IslandDropdown = TP:CreateDropdown({
         end
     end
 })
-
 local TeleportButton = TP:CreateButton({
     Name = "Teleport to First Model in Selected Checkpoint",
     Callback = function()
@@ -220,14 +216,13 @@ local TeleportButton = TP:CreateButton({
     end
 })
 
+-- Servers
 local ServersTab = Window:CreateTab("Server", "compass")
 local ServerSection = ServersTab:CreateSection("Server Actions", true)
-
 local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 local PlaceId = game.PlaceId  
 local JobId = game.JobId 
-
 ServersTab:CreateButton({
     Name = "Rejoin Game",
     Callback = function()
@@ -240,17 +235,11 @@ ServersTab:CreateButton({
         end
     end,
 })
-                                                                                                    --end rejoin
-                                                                                                    --serverhop
-
 local PlaceId, JobId = game.PlaceId, game.JobId
-
 local httprequest = (syn and syn.request) or (http and http.request) or http_request or (fluxus and fluxus.request) or request
-
 local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
-
 local function serverHop()
     if httprequest then
         local servers = {}
@@ -341,7 +330,6 @@ local function serverHop()
         end
     end
 end
-
 ServersTab:CreateButton({
     Name = "Server Hop",
     Callback = function()
