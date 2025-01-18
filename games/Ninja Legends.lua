@@ -36,6 +36,7 @@ getgenv().PetToSell = false
 getgenv().AutoTeleportToBoss = false
 getgenv().AutoCollectSouls = false
 getgenv().AutoMaster = false
+getgenv().AutoPurchaseShurs = false
 
 -- Movement
 local WalkSpeedText = 16
@@ -209,10 +210,10 @@ local ToggleAutoBuyRanks = Menu:CreateToggle({
         if state then
             task.spawn(function()
                 while getgenv().AutoBuyRanks do
-                    -- Get the player's current rank
+   
                     local currentRank = Plr.leaderstats.Rank.Value
 
-                    -- Find the next rank in the list
+
                     local nextRankIndex = table.find(ranks, currentRank) + 1
                     local nextRank = ranks[nextRankIndex]
 
@@ -221,18 +222,16 @@ local ToggleAutoBuyRanks = Menu:CreateToggle({
                         break
                     end
 
-                    -- Attempt to buy the next rank
                     local args = {
                         [1] = "buyRank",
                         [2] = nextRank
                     }
 
-                    -- Fire the event to purchase the rank
                     pcall(function()
                         game:GetService("Players").LocalPlayer:WaitForChild("ninjaEvent"):FireServer(unpack(args))
                     end)
 
-                    task.wait(1) -- Wait 1 second before trying again
+                    task.wait(1) 
                 end
             end)
         end
@@ -244,6 +243,7 @@ if not getgenv().NL_Config then
     getgenv().NL_Config = {
         BuySwords = false,
         BuyBelts = false,
+        BuyShurs = false,
     }
 end
     
@@ -316,12 +316,20 @@ local function BuyBelts()
     GameEvent("buyAllBelts", LastIsland)
 end
 
--- Toggle for Auto Purchase Swords
+local function BuyShurs()
+    if not Config.BuyShurs then
+        print("BuyShurs is disabled")
+        return
+    end
+
+    GameEvent("buyAllShurikens", LastIsland)
+end
+
 local TogglePurchaseSwords = Menu:CreateToggle({
     Name = "Auto Purchase Swords",
-    CurrentValue = Config.BuySwords,  -- Set the initial value based on Config
+    CurrentValue = Config.BuySwords,  
     Callback = function(state)
-        Config.BuySwords = state  -- Update Config with the current toggle state
+        Config.BuySwords = state  
         getgenv().AutoPurchaseSwords = state
         if state then
             task.spawn(function()
@@ -337,15 +345,32 @@ local TogglePurchaseSwords = Menu:CreateToggle({
 -- Toggle for Auto Purchase Belts
 local TogglePurchaseBelts = Menu:CreateToggle({
     Name = "Auto Purchase Belts",
-    CurrentValue = Config.BuyBelts,  -- Set the initial value based on Config
+    CurrentValue = Config.BuyBelts, 
     Callback = function(state)
-        Config.BuyBelts = state  -- Update Config with the current toggle state
+        Config.BuyBelts = state 
         getgenv().AutoPurchaseBelts = state
         if state then
             task.spawn(function()
                 while getgenv().AutoPurchaseBelts do
                     BuyBelts()
                     task.wait(0.5)
+                end
+            end)
+        end
+    end
+})
+
+local TogglePurchaseShurikens = Menu:CreateToggle({
+    Name = "Auto Purchase Shurikens",
+    CurrentValue = Config.BuyShurs, 
+    Callback = function(state)
+        Config.BuyShurs = state 
+        getgenv().AutoPurchaseShurs = state
+        if state then
+            task.spawn(function()
+                while getgenv().AutoPurchaseShurs do
+                    BuyShurs()
+                    task.wait(0.45)
                 end
             end)
         end
