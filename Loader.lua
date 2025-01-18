@@ -118,6 +118,8 @@ elseif Place == 12398408187 then
   MyBigHotPenis("games/VYASA.lua")
 elseif Place == 17458494319 then
   MyBigHotPenis("games/The Upgrade Tree Of Elements 2.lua")
+elseif Place == 18631989034 then
+  MyBigHotPenis("games/Create Your Owm Army.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
