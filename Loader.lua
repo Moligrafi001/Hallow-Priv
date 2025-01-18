@@ -29,7 +29,7 @@ local function MyBigHotPenis(filePath)
 end
 local success, err = pcall(function()
     if game.Players.LocalPlayer.Name ~= "Moligrafi" then
-        loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/extra/FixBugs.lua", true))()
+        MyBigHotPenis("extra/executed.lua")
 				print("FixBugs loaded, yay!")
     end
 end)
