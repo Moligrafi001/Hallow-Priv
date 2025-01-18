@@ -167,6 +167,7 @@ local ToggleAutoUpgradeSkills = Menu:CreateToggle({
         if state then
             while getgenv().AutoUpgradeSkills do
                 pcall(function()
+                    getgenv().IslandToPurchaseFrom = "Blazing Vortex Island"
                     NinjaEvent:FireServer("buyAllSkills", getgenv().IslandToPurchaseFrom)
                 end)
 
