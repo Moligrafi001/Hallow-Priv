@@ -851,7 +851,6 @@ local ToggleAutoCrystal = Pet:CreateToggle({
     end
 })
 
-
 local ToggleAutoEvolve = Pet:CreateToggle({
     Name = "Auto Evolve",
     CurrentValue = false,
@@ -859,23 +858,19 @@ local ToggleAutoEvolve = Pet:CreateToggle({
         getgenv().AutoEvolve = state
 
         if state then
-            while getgenv().AutoEvolve do
-                pcall(function()
-                    for i, type in pairs(Plr.petsFolder:GetChildren()) do
-                        for i2, pet in pairs(type:GetChildren()) do
-                            local evolutionOrder = "evolved"  
-                            game:GetService("ReplicatedStorage").rEvents.petNextEvolutionEvent:FireServer("evolvePet", pet, game:GetService("ReplicatedStorage").evolutionOrders[evolutionOrder])
-                        end
-                    end
-                end)
-
-                wait(1)
-            end
+            coroutine.wrap(function()
+                while getgenv().AutoEvolve do
+                    local ohString1 = "autoEvolvePets"
+                    game:GetService("ReplicatedStorage").rEvents.autoEvolveRemote:InvokeServer(ohString1)
+                    wait(1)  
+                end
+            end)()
         else
             getgenv().AutoEvolve = false
         end
     end
 })
+
 
 local Section = Pet:CreateSection("Sell")
 
