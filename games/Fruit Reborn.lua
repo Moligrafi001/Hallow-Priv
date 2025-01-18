@@ -525,7 +525,6 @@ local HttpService = game:GetService("HttpService")
 local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 
--- Server Hop Function
 local function serverHop()
     if httprequest then
         local servers = {}
@@ -548,7 +547,6 @@ local function serverHop()
             local serverToJoin = servers[math.random(1, #servers)]
             TeleportService:TeleportToPlaceInstance(PlaceId, serverToJoin, Players.LocalPlayer)
         else
-            -- No servers found
             Rayfield:Notify({
                 Title = "Serverhop",
                 Content = "Couldn't find a server.",
@@ -565,7 +563,6 @@ local function serverHop()
             })
         end
     else
-        -- Use HttpService fallback for request
         local servers = {}
         local success, req = pcall(function()
             return HttpService:GetAsync(string.format("https://games.roblox.com/v1/games/%d/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true", PlaceId))
@@ -619,7 +616,6 @@ local function serverHop()
     end
 end
 
--- Create a Rayfield button for server hopping
 ServersTab:CreateButton({
     Name = "Server Hop",
     Callback = function()
