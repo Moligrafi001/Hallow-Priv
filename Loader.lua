@@ -96,6 +96,8 @@ elseif Place == 88753558907731 then
   MyBigHotPenis("games/Upgrade Tree Incremental.lua")
 elseif Place == 8034886758 then
   MyBigHotPenis("games/Punch Monsters.lua")
+elseif Place == 81257648942232 then
+  MyBigHotPenis("games/Slash Mobs Simulator.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
