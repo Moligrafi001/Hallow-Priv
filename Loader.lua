@@ -74,6 +74,8 @@ elseif Place == 129159449618378 then
   MyBigHotPenis("games/Cash Incremental.lua")
 elseif Place == 7070810903 then
   MyBigHotPenis("games/Crying Simulator.lua")
+elseif Place == 105628647191901 then
+  MyBigHotPenis("games/Swords Battle Simulator.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
