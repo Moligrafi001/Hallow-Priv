@@ -12,7 +12,7 @@ local Window = Rayfield:CreateWindow({
 getgenv().AutoColStars = false
 getgenv().AutoHatch = false
 getgenv().SelectedEgg = nil
-
+_G.selectedMap = nil
 -- Services
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
@@ -30,7 +30,6 @@ local function AutoCollectStars(mapName)
         return
     end
 
-
     isAutoCollecting = true
     currentMap = mapName  
 
@@ -38,20 +37,18 @@ local function AutoCollectStars(mapName)
         local player = Players.LocalPlayer
         local character = player.Character or player.CharacterAdded:Wait()
 
-        -- Check if the character exists and has a HumanoidRootPart
         if not character or not character:FindFirstChild("HumanoidRootPart") then
             warn("Character or HumanoidRootPart not found!")
             wait(1) 
             continue
         end
 
-        local humanoidRootPart = character.HumanoidRootPart
         local localStars = Workspace:FindFirstChild("LocalStars")
         local spawnFolder = localStars and localStars:FindFirstChild(mapName)
 
         if not localStars or not spawnFolder then
             warn("Map " .. mapName .. " or SPAWN folder not found in LocalStars!")
-            wait(1) -- Avoid spamming warnings
+            wait(1)
             continue
         end
 
@@ -62,28 +59,40 @@ local function AutoCollectStars(mapName)
             continue
         end
 
-        local randomStar = stars[math.random(1, #stars)]
+        for _, star in ipairs(stars) do
+            local primaryPart = star:FindFirstChild("Primary")
+            if primaryPart and primaryPart:IsA("BasePart") then
+                local touchInterest = primaryPart:FindFirstChild("TouchInterest")
+                if touchInterest and touchInterest:IsA("TouchTransmitter") then
+                    -- Simulate touch event with the TouchInterest
+                    if touchInterest and touchInterest.Parent then
+                        firetouchinterest(character.HumanoidRootPart, touchInterest.Parent, 0)
+                        task.wait()  -- Use task.wait() for a shorter, more consistent wait
+                        if touchInterest and touchInterest.Parent then
+                            firetouchinterest(character.HumanoidRootPart, touchInterest.Parent, 1)
+                            
+                            print("Touched star's TouchInterest in map " .. mapName .. ": " .. star.Name)
 
-        -- Check if the random star has a part named "Primary"
-        local primaryPart = randomStar:FindFirstChild("Primary")
-        if not primaryPart or not primaryPart:IsA("BasePart") then
-            warn("No valid 'Primary' part found in random star!")
-            wait(0.1)
-            continue
+                            local collectStarRemote = ReplicatedStorage:FindFirstChild("Core") and ReplicatedStorage.Core:FindFirstChild("Remote") and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
+                            if collectStarRemote then
+                                collectStarRemote:FireServer(star)  
+                                print("Collected star: " .. star.Name)
+                            else
+                                warn("RemoteEvent 'collectStar' not found in ReplicatedStorage.Core.Remote!")
+                            end
+                        end
+                    end
+                    
+                    task.wait(0.05)
+                else
+                    warn("TouchInterest not found in Primary part of star: " .. star.Name)
+                end
+            else
+                warn("Primary part not found in star: " .. star.Name)
+            end
         end
 
-        humanoidRootPart.CFrame = primaryPart.CFrame
-        print("Teleported to star in map " .. mapName .. ": " .. randomStar.Name)
-
-        local collectStarRemote = ReplicatedStorage:FindFirstChild("Core") and ReplicatedStorage.Core:FindFirstChild("Remote") and ReplicatedStorage.Core.Remote:FindFirstChild("collectStar")
-        if collectStarRemote then
-            collectStarRemote:FireServer(randomStar)  
-            print("Collected star: " .. randomStar.Name)
-        else
-            warn("RemoteEvent 'collectStar' not found in ReplicatedStorage.Core.Remote!")
-        end
-
-        wait(0.05) 
+        task.wait(0.01) 
     end
 
     isAutoCollecting = false
@@ -156,7 +165,6 @@ local function NoClip()
 	end
 end
 
-local selectedMap = nil
 
 local mapPositions = {
     ["SPAWN"] = CFrame.new(13.6210747, 4.00057125, -563.520813, 0.847098291, -9.54145136e-08, 0.531436265, 7.91322776e-08, 1, 5.34056461e-08, -0.531436265, -3.1860703e-09, 0.847098291),
@@ -170,6 +178,8 @@ local mapPositions = {
     ["Sakura Forest"] = CFrame.new(9.63525772, 3.9999578, -2126.64038, 0.998708427, -4.76508255e-09, 0.0508081615, 3.2844083e-10, 1, 8.73297878e-08, -0.0508081615, -8.72003056e-08, 0.998708427),
     ["Sakura Ravine"] = CFrame.new(10.4414206, 3.99438834, -2321.14819, 0.997639, 5.84764166e-08, -0.0686761737, -6.19572944e-08, 1, -4.85553642e-08, 0.0686761737, 5.26957145e-08, 0.997639),
     ["Magma Ravine"] = CFrame.new(8.24645805, 3.97864127, -2515.40601, 0.999063671, -2.30366226e-10, -0.0432639308, 4.2857784e-10, 1, 4.57217642e-09, 0.0432639308, -4.58643745e-09, 0.999063671),
+    ["Cloud Road"] = CFrame.new(8.24593353, 3.97864127, -2521.6958, 0.380393147, -3.80988112e-08, 0.924824893, 1.88804683e-09, 1, 4.0419124e-08, -0.924824893, -1.36290446e-08, 0.380393147),
+    ["Heaven"] = CFrame.new(8.67521954, 3.99617362, -2712.61621, 0.99999994, -3.22287153e-09, -0.000329909031, 3.19627369e-09, 1, -8.06222431e-08, 0.000329909031, 8.06211844e-08, 0.99999994),
 }
 
 local function TeleportMap()
@@ -206,15 +216,13 @@ local function autoOpenEgg(eggType)
 
     local hatchRemote = game:GetService("ReplicatedStorage"):WaitForChild("PetSystem"):WaitForChild("Remote"):WaitForChild("Hatch")
     
-    -- Attempt to bypass currency check
     local oldNamecall
     oldNamecall = hookmetamethod(game, "__namecall", function(self, ...)
         local method = getnamecallmethod()
         local args = {...}
         
         if self == hatchRemote and method == "InvokeServer" then
-            -- Modify args here if needed to bypass currency check
-            return true -- Return a successful result
+            return true
         end
         
         return oldNamecall(self, ...)
@@ -237,11 +245,11 @@ local ToggleEnabled = false
 
 local Dropdown = Menu:CreateDropdown({
     Name = "Select Map (If not unlocked it will NOT work.)",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
-        if getgenv().AutoColStars then  -- Assuming you use getgenv().AutoColStars for the toggle state
+        if getgenv().AutoColStars then 
             Rayfield:Notify({
                 Title = "Action Blocked",
                 Content = "Cannot change the map while Auto Collect Stars is enabled. Please disable it first.",
@@ -376,6 +384,10 @@ local function Teleport()
             teleportPosition = CFrame.new(71.7752457, 4.50232172, -2372.65015)
         elseif selectedEgg == "Devil Egg" then
             teleportPosition = CFrame.new(72.6531219, 4.50232172, -2563.57422)
+        elseif selectedEgg == "Cloud Egg" then
+            teleportPosition = CFrame.new(72.6568451, 4.50232172, -2762.99146)
+        elseif selectedEgg == "Heaven Egg" then
+            teleportPosition = CFrame.new(73.6565552, 4.50232172, -2957.67847)
         end
 
         character.HumanoidRootPart.CFrame = teleportPosition
@@ -401,7 +413,9 @@ TP:CreateDropdown({
         "Magical Egg",
         "Sakura Egg",
         "Split Egg",
-        "Devil Egg"
+        "Devil Egg",
+        "Cloud Egg",
+        "Heaven Egg"
     },
     CurrentOption = "Basic Egg",
     MultipleOptions = false,
@@ -412,26 +426,24 @@ TP:CreateDropdown({
 })
 local Section = TP:CreateSection("Map Teleports")
 
-TP:CreateDropdown({
-    Name = "Select Map",
-    Options = {
-        "SPAWN",
-        "Autumn Forest",
-        "Flower Garden",
-        "Snow Forest",
-        "Tropical Palms",
-        "Mine Shaft",
-        "Diamond Mine",
-        "Magical Forest",
-        "Sakura Forest",
-        "Sakura Ravine",
-        "Magma Ravine"
-    },
-    CurrentOption = "SPAWN",
+local Dropdown = TP:CreateDropdown({
+    Name = "Map Teleports",
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven"},
+    CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
-        getgenv().SelectedMap = Option[1] 
-        TeleportMap()  
+        if getgenv().AutoColStars then 
+            Rayfield:Notify({
+                Title = "Action Blocked",
+                Content = "You messed somthing up",
+                Duration = 2.5,
+                Image = 17091459839,
+            })
+            return
+        end
+
+        selectedMap = Options[1]
+        TeleportMap()
     end,
 })
 
