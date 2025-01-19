@@ -69,6 +69,7 @@ getgenv().AutoUpg = false
 getgenv().AutoCollect = false
 getgenv().AutoNPC = false
 getgenv().NoCdNPC = false
+getgenv().AutoTrash = false
 
 -- Funções
 local function AutoUpg()
@@ -167,6 +168,31 @@ local function NoCdNPC()
     wait()
   end
 end
+local function AutoTrash()
+  while getgenv().AutoTrash == true do
+    for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
+      if tycoon.OwnerId.Value == eu.UserId then
+        for _, build in pairs(tycoon.Purchases:GetChildren()) do
+          for _, lixo in pairs(build:GetChildren()) do
+            if lixo:IsA("Part") and lixo.Name == "trash" then
+              for _, pp in pairs(lixo:GetDescendants()) do
+                if pp:IsA("ProximityPrompt") and pp.Enabled == true then
+                  pcall(function()
+                    local distance = (eu.Character.HumanoidRootPart.Position - lixo.Position).Magnitude
+                    if distance <= 9 then
+                      fireproximityprompt(pp)
+                    end
+                  end)
+                end
+              end
+            end
+          end
+        end
+      end
+    end
+    wait()
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
@@ -206,6 +232,15 @@ Toggle =  InteractTab:CreateToggle({
    Callback = function(Value)
    	getgenv().NoCdNPC = Value
    	NoCdNPC()
+   end,
+})
+Section = InteractTab:CreateSection("Trash")
+Toggle =  InteractTab:CreateToggle({
+   Name = "Auto Interact",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoTrash = Value
+   	AutoTrash()
    end,
 })
 
