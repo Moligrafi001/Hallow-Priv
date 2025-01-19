@@ -149,8 +149,8 @@ end
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
-local Section = Menu:CreateSection("Auto Farm")
-local Toggle =  Menu:CreateToggle({
+Section = Menu:CreateSection("Auto Farm")
+Toggle =  Menu:CreateToggle({
    Name = "Auto Collect Money",
    CurrentValue = false,
    Callback = function(Value)
@@ -158,8 +158,8 @@ local Toggle =  Menu:CreateToggle({
    	AutoCollect()
    end,
 })
-local Section = Menu:CreateSection("Upgrade")
-local Toggle =  Menu:CreateToggle({
+Section = Menu:CreateSection("Upgrade")
+Toggle =  Menu:CreateToggle({
    Name = "Auto Buy Upgrades",
    CurrentValue = false,
    Callback = function(Value)
@@ -190,8 +190,8 @@ Toggle =  InteractTab:CreateToggle({
 
 -- Movement
 local MoveTab = Window:CreateTab("Movement", "chevrons-up")
-local Section = MoveTab:CreateSection("Walk")
-local Input = MoveTab:CreateInput({
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
    Name = "Player Walk Speed",
    CurrentValue = "",
    Flag = "WalkSpeedInput",
@@ -201,7 +201,7 @@ local Input = MoveTab:CreateInput({
    	WalkSpeedText = Text
    end,
 })
-local Toggle = MoveTab:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Toggle Walk Speed",
    CurrentValue = false,
    Flag = "WalkSpeedToggle", 
@@ -210,7 +210,7 @@ local Toggle = MoveTab:CreateToggle({
    	SetWalkSpeed()
    end,
 })
-local Toggle = MoveTab:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "No Clip",
    CurrentValue = false,
    Flag = "NoClipToggle",
@@ -219,8 +219,8 @@ local Toggle = MoveTab:CreateToggle({
    	NoClip()
    end,
 })
-local Section = MoveTab:CreateSection("Jump")
-local Input = MoveTab:CreateInput({
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
    Name = "Player Jump Power",
    CurrentValue = "",
    Flag = "JumpPowerInput",
@@ -230,7 +230,7 @@ local Input = MoveTab:CreateInput({
    	JumpPowerText = Text
    end,
 })
-local Toggle = MoveTab:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Toggle Jump Power",
    CurrentValue = false,
    Flag = "JumpPowerToggle",
@@ -239,7 +239,7 @@ local Toggle = MoveTab:CreateToggle({
    	SetJumpPower()
    end,
 })
-local Toggle = MoveTab:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Inf Jump",
    CurrentValue = false,
    Flag = "InfJumpToggle",
