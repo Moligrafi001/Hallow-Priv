@@ -78,8 +78,10 @@ local function AutoUpg()
        if tycoon.OwnerId.Value == eu.UserId then
          for _, button in pairs(tycoon.Buttons:GetChildren()) do
             if button.ShopId.Value == 0 and button.Price.Value <= eu.leaderstats.Cash.Value then
-             firetouchinterest(eu.Character.HumanoidRootPart, button.Hit, 0)
-             firetouchinterest(eu.Character.HumanoidRootPart, button.Hit, 1)
+              pcall(function()
+               firetouchinterest(eu.Character.HumanoidRootPart, button.Hit, 0)
+               firetouchinterest(eu.Character.HumanoidRootPart, button.Hit, 1)
+             end)
             end
           end
         end
@@ -93,19 +95,32 @@ local function AutoCollect()
     pcall(function()
       for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
         if tycoon.OwnerId.Value == eu.UserId then
-          firetouchinterest(eu.Character.HumanoidRootPart, tycoon.StarterProps.Mailbox.Hitpart, 0)
-          firetouchinterest(eu.Character.HumanoidRootPart, tycoon.StarterProps.Mailbox.Hitpart, 1)
+          pcall(function()
+            firetouchinterest(eu.Character.HumanoidRootPart, tycoon.StarterProps.Mailbox.Hitpart, 0)
+            firetouchinterest(eu.Character.HumanoidRootPart, tycoon.StarterProps.Mailbox.Hitpart, 1)
+          end)
         end
       end
     end)
     wait(1)
   end
 end
+-- workspace.Tycoons["1"].Purchases.restaurantcashier.restaurantcashier
 local function AutoNPC()
   while getgenv().AutoNPC == true do
     for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
       if tycoon.OwnerId.Value == eu.UserId then
         for _, build in pairs(tycoon.Purchases:GetChildren()) do
+          if build:IsA("Model") and build:FindFirstChild(build.Name) then
+            for _, pp in pairs(build:GetDescendants()) do
+              if pp:IsA("ProximityPrompt") and pp.Enabled == true then
+                local distance = (eu.Character.HumanoidRootPart.Position - pp.Parent.Position).Magnitude
+                if distance <= 7 then
+                  fireproximityprompt(pp)
+                end
+              end
+            end
+          end
           if build:IsA("Model") and build:FindFirstChild("NPCs") then
             for _, npc in pairs(build.NPCs:GetChildren()) do
               pcall(function()
@@ -131,6 +146,13 @@ local function NoCdNPC()
     for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
       if tycoon.OwnerId.Value == eu.UserId then
         for _, build in pairs(tycoon.Purchases:GetChildren()) do
+          if build:IsA("Model") and build:FindFirstChild(build.Name) then
+            for _, pp in pairs(build:GetDescendants()) do
+              if pp:IsA("ProximityPrompt") and pp.Enabled == false then
+                pp.Enabled = true
+              end
+            end
+          end
           if build:IsA("Model") and build:FindFirstChild("NPCs") then
             for _, npc in pairs(build.NPCs:GetChildren()) do
               for _, pp in pairs(npc:GetDescendants()) do
