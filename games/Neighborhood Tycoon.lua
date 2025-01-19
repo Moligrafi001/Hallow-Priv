@@ -105,7 +105,6 @@ local function AutoCollect()
     wait(1)
   end
 end
--- workspace.Tycoons["1"].Purchases.restaurantcashier.restaurantcashier
 local function AutoNPC()
   while getgenv().AutoNPC == true do
     for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
