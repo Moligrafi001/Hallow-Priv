@@ -75,12 +75,18 @@ local function AntiKill()
       if v:FindFirstChild("TouchInterest") and v.CanTouch == true and v.Name == "Player Refresher" then
         v.CanTouch = false
       end
+      if v:FindFirstChild("TouchInterest") and v.CanTouch == true and v.Name == "Player Refresher Cylinder" then
+        v.CanTouch = false
+      end
     end
     wait(1)
   end
   if getgenv().AntiKill == false then
     for _, v in pairs(workspace:GetChildren()) do
       if v:FindFirstChild("TouchInterest") and v.CanTouch == false and v.Name == "Player Refresher" then
+        v.CanTouch = true
+      end
+      if v:FindFirstChild("TouchInterest") and v.CanTouch == false and v.Name == "Player Refresher Cylinder" then
         v.CanTouch = true
       end
     end
