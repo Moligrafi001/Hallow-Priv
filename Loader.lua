@@ -211,6 +211,8 @@ elseif Place == 114810591267203 then
   MyBigHotPenis("games/Money Empire Tycoon.lua")
 elseif Place == 8472851459 then
   MyBigHotPenis("games/Really Easy Obby.lua")
+elseif Place == 13414164497 then
+  MyBigHotPenis("games/Neighborhood Tycoon.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
