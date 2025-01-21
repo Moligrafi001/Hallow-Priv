@@ -14,13 +14,6 @@ _G.AntiPcError = false
 _G.AutoInteract = false
 _G.SpyExecuted = false
 
-local invisRunning = false
-local RunService = game:GetService("RunService")
-local Lighting = game:GetService("Lighting")
-local Players = game:GetService("Players")
-local workspace = game:GetService("Workspace")
-
-
 -- ESP
 _G.PlayerESP = false
 local CorInocente = Color3.fromRGB(255, 125, 0)
@@ -361,95 +354,6 @@ local function NoSlow()
 		wait(0.01)
 	end
 end
-local function findBeast()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        -- Check if the player is the beast using TempPlayerStatsModule
-        local isBeast = player:FindFirstChild("TempPlayerStatsModule") and player.TempPlayerStatsModule:FindFirstChild("IsBeast")
-        if isBeast and isBeast.Value then
-            print("Beast found: " .. player.Name) 
-            return player
-        end
-    end
-
-    if playerData then
-        for playerName, data in pairs(playerData) do
-            if data.Role == "Beast" then
-                local beastPlayer = game.Players:FindFirstChild(playerName)
-                if beastPlayer then
-                    print("Beast found in playerData: " .. beastPlayer.Name) 
-                    return beastPlayer
-                end
-            end
-        end
-    end
-
-    return nil
-end
-
-function miniFling(playerToFling)
-		local a=game.Players.LocalPlayer;local b=a:GetMouse()local c={playerToFling}local d=game:GetService("Players")local e=d.LocalPlayer;local f=false;local g=function(h)local i=e.Character;local j=i and i:FindFirstChildOfClass("Humanoid")local k=j and j.RootPart;local l=h.Character;local m;local n;local o;local p;local q;if l:FindFirstChildOfClass("Humanoid")then m=l:FindFirstChildOfClass("Humanoid")end;if m and m.RootPart then n=m.RootPart end;if l:FindFirstChild("Head")then o=l.Head end;if l:FindFirstChildOfClass("Accessory")then p=l:FindFirstChildOfClass("Accessory")end;if p and p:FindFirstChild("Handle")then q=p.Handle end;if i and j and k then if k.Velocity.Magnitude<50 then getgenv().OldPos=k.CFrame end;if m and m.Sit and not f then end;if o then if o.Velocity.Magnitude>500 then fu.dialog("Player flung","Player is already flung. Fling again?",{"Fling again","No"})if fu.waitfordialog()=="No"then return fu.closedialog()end;fu.closedialog()end elseif not o and q then if q.Velocity.Magnitude>500 then fu.dialog("Player flung","Player is already flung. Fling again?",{"Fling again","No"})if fu.waitfordialog()=="No"then return fu.closedialog()end;fu.closedialog()end end;if o then workspace.CurrentCamera.CameraSubject=o elseif not o and q then workspace.CurrentCamera.CameraSubject=q elseif m and n then workspace.CurrentCamera.CameraSubject=m end;if not l:FindFirstChildWhichIsA("BasePart")then return end;local r=function(s,t,u)k.CFrame=CFrame.new(s.Position)*t*u;i:SetPrimaryPartCFrame(CFrame.new(s.Position)*t*u)k.Velocity=Vector3.new(9e7,9e7*10,9e7)k.RotVelocity=Vector3.new(9e8,9e8,9e8)end;local v=function(s)local w=2;local x=tick()local y=0;repeat if k and m then if s.Velocity.Magnitude<50 then y=y+100;r(s,CFrame.new(0,1.5,0)+m.MoveDirection*s.Velocity.Magnitude/1.25,CFrame.Angles(math.rad(y),0,0))task.wait()r(s,CFrame.new(0,-1.5,0)+m.MoveDirection*s.Velocity.Magnitude/1.25,CFrame.Angles(math.rad(y),0,0))task.wait()r(s,CFrame.new(2.25,1.5,-2.25)+m.MoveDirection*s.Velocity.Magnitude/1.25,CFrame.Angles(math.rad(y),0,0))task.wait()r(s,CFrame.new(-2.25,-1.5,2.25)+m.MoveDirection*s.Velocity.Magnitude/1.25,CFrame.Angles(math.rad(y),0,0))task.wait()r(s,CFrame.new(0,1.5,0)+m.MoveDirection,CFrame.Angles(math.rad(y),0,0))task.wait()r(s,CFrame.new(0,-1.5,0)+m.MoveDirection,CFrame.Angles(math.rad(y),0,0))task.wait()else r(s,CFrame.new(0,1.5,m.WalkSpeed),CFrame.Angles(math.rad(90),0,0))task.wait()r(s,CFrame.new(0,-1.5,-m.WalkSpeed),CFrame.Angles(0,0,0))task.wait()r(s,CFrame.new(0,1.5,m.WalkSpeed),CFrame.Angles(math.rad(90),0,0))task.wait()r(s,CFrame.new(0,1.5,n.Velocity.Magnitude/1.25),CFrame.Angles(math.rad(90),0,0))task.wait()r(s,CFrame.new(0,-1.5,-n.Velocity.Magnitude/1.25),CFrame.Angles(0,0,0))task.wait()r(s,CFrame.new(0,1.5,n.Velocity.Magnitude/1.25),CFrame.Angles(math.rad(90),0,0))task.wait()r(s,CFrame.new(0,-1.5,0),CFrame.Angles(math.rad(90),0,0))task.wait()r(s,CFrame.new(0,-1.5,0),CFrame.Angles(0,0,0))task.wait()r(s,CFrame.new(0,-1.5,0),CFrame.Angles(math.rad(-90),0,0))task.wait()r(s,CFrame.new(0,-1.5,0),CFrame.Angles(0,0,0))task.wait()end else break end until s.Velocity.Magnitude>500 or s.Parent~=h.Character or h.Parent~=d or h.Character~=l or m.Sit or j.Health<=0 or tick()>x+w end;workspace.FallenPartsDestroyHeight=0/0;local z=Instance.new("BodyVelocity")z.Name="EpixVel"z.Parent=k;z.Velocity=Vector3.new(9e8,9e8,9e8)z.MaxForce=Vector3.new(1/0,1/0,1/0)j:SetStateEnabled(Enum.HumanoidStateType.Seated,false)if n and o then if(n.CFrame.p-o.CFrame.p).Magnitude>5 then v(o)else v(n)end elseif n and not o then v(n)elseif not n and o then v(o)elseif not n and not o and p and q then v(q)else fu.notification("Can't find a proper part of target player to fling.")end;z:Destroy()j:SetStateEnabled(Enum.HumanoidStateType.Seated,true)workspace.CurrentCamera.CameraSubject=j;repeat k.CFrame=getgenv().OldPos*CFrame.new(0,.5,0)i:SetPrimaryPartCFrame(getgenv().OldPos*CFrame.new(0,.5,0))j:ChangeState("GettingUp")table.foreach(i:GetChildren(),function(A,B)if B:IsA("BasePart")then B.Velocity,B.RotVelocity=Vector3.new(),Vector3.new()end end)task.wait()until(k.Position-getgenv().OldPos.p).Magnitude<25;workspace.FallenPartsDestroyHeight=getgenv().FPDH else fu.notification("No valid character of said target player. May have died.")end end;g(c[1])
-	end
-
-local function makeInvisible(speaker)
-    if invisRunning then return end
-    invisRunning = true
-
-    local Player = speaker
-    repeat wait(0.1) until Player.Character
-    local Character = Player.Character
-    Character.Archivable = true
-
-    local InvisibleCharacter = Character:Clone()
-    InvisibleCharacter.Parent = workspace
-    InvisibleCharacter.HumanoidRootPart.CFrame = Character.HumanoidRootPart.CFrame
-
-
-    for _, part in pairs(InvisibleCharacter:GetDescendants()) do
-        if part:IsA("BasePart") then
-            if part.Name == "HumanoidRootPart" then
-                part.Transparency = 1
-            else
-                part.Transparency = 0.5 
-            end
-            part.CanCollide = true 
-        end
-    end
-
-    Player.Character = InvisibleCharacter
-    Character.Parent = Lighting
-
-    -- Camera adjustment
-    workspace.CurrentCamera.CameraSubject = InvisibleCharacter:FindFirstChild("Humanoid")
-
-    InvisibleCharacter.Animate.Disabled = true
-    InvisibleCharacter.Animate.Disabled = false
-
-end
-
-local function makeVisible(speaker)
-    if not invisRunning then return end
-
-    local Player = speaker
-    local InvisibleCharacter = Player.Character
-    local OriginalCharacter = Lighting:FindFirstChild(Player.Name)
-
-    if not OriginalCharacter then
-        notify("Error", "Original character not found!")
-        return
-    end
-
-    Player.Character = OriginalCharacter
-    OriginalCharacter.Parent = workspace
-    OriginalCharacter.HumanoidRootPart.CFrame = InvisibleCharacter.HumanoidRootPart.CFrame
-
-
-    InvisibleCharacter:Destroy()
-
-    workspace.CurrentCamera.CameraSubject = OriginalCharacter:FindFirstChild("Humanoid")
-
-
-    invisRunning = false
-end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -467,67 +371,9 @@ local Toggle =  Menu:CreateToggle({
    CurrentValue = false,
    Callback = function(Value)
    	_G.AutoInteract = Value
+   	AutoInteract()
    end,
 })
-Button = Menu:CreateButton({
-    Name = "Fling Beast (May have to try multiple times)",
-    Info = "Flings the Beast.", 
-    Interact = 'Changable', 
-    Callback = function()
-        if not findBeast() then
-            Rayfield:Notify({
-                Title = "No Beast",
-                Content = "No Beast to fling.",
-                Duration = 5.0,
-                Image = 4483362458, 
-                Actions = {
-                    Ignore = {
-                        Name = "Okay!",
-                        Callback = function()
-                            print("The user tapped Okay!")
-                        end
-                    },
-                },
-            })
-            return
-        end
-
-        miniFling(findBeast())
-        
-        Rayfield:Notify({
-            Title = "Beast Flinged",
-            Content = "The Beast has been flung!",
-            Duration = 5.0,
-            Image = 4483362458,
-        })
-    end,
-})
-Menu:CreateButton({
-    Name = "Toggle Invisibility (You cannot interact)",
-    Callback = function()
-        if invisRunning then
-            makeVisible(Players.LocalPlayer)
-        else
-            makeInvisible(Players.LocalPlayer)
-        end
-    end,
-})
-local function notify(title, message)
-    Rayfield:Notify({
-        Title = title,
-        Content = message,
-        Duration = 6.5,
-        Image = 4483362458, 
-        Actions = {
-            Ignore = {
-                Name = "Okay!",
-                Callback = function()
-                    print("The user tapped Okay!")
-                end
-            }
-        }
-    })
-end
 local Section = Menu:CreateSection("Misc")
 local Button = Menu:CreateButton({
    Name = "TP to MAP",
