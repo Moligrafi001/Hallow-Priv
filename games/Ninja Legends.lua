@@ -484,7 +484,7 @@ local chestNames = {
 }
 
 local ToggleUnlockChests = Menu:CreateToggle({
-    Name = "Unlock All Chests",
+    Name = "Unlock All Chests (take a little bit of time)",
     CurrentValue = false,
     Callback = function(state)
         getgenv().UnlockAllChests = state
@@ -511,7 +511,7 @@ local ToggleUnlockChests = Menu:CreateToggle({
                         else
                             print(chestName .. " not found in workspace")
                         end
-                        task.wait(0.5) -- Wait half a second between each chest interaction
+                        task.wait(2) -- Wait half a second between each chest interaction
                     end
                     task.wait(1) -- Wait 1 second before starting the next cycle
                 end
