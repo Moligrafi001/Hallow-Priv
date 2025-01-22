@@ -3,9 +3,10 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 
 -- Create a new Rayfield UI window
 local Window = Rayfield:CreateWindow({
-    Name = "Hallow Hub | Masters DCO👑",
+    Name = "Hallow Hub | Masters DCO",
+    Icon = 17091459839,
     LoadingTitle = "Hallow Hub",
-    LoadingSubtitle = "By Moligrafi & PrismX",
+    LoadingSubtitle = "By Moligrafi",
     Theme = "Amethyst"
 })
 
@@ -26,62 +27,58 @@ _G.currentCheckpoint = game.Players.LocalPlayer.leaderstats.Stage.Value
 -- List of specific checkpoints to move to (21, 41, 61, etc.)
 local checkpointsToTeleport = {21, 41, 61, 81, 101, 121, 141, 161, 181, 201, 221, 241, 261, 281, 301, 321, 341, 361, 381}
 
+-- Movement
 local WalkSpeedText = 16
 local JumpPowerText = 50
-_G.SetWalkSpeed = false
-_G.SetJumpPower = false
-_G.InfJump = false
-_G.NoClip = false
-
--- Functions
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
 local function SetWalkSpeed()
-    while _G.SetWalkSpeed == true do
-        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
-        end
-        wait(0.01)
-    end
-    if _G.SetWalkSpeed == false then
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
-    end
+	while getgenv().SetWalkSpeed == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+		end
+		wait(0.01)
+	end
+	if getgenv().SetWalkSpeed == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+	end
 end
-
 local function SetJumpPower()
-    while _G.SetJumpPower == true do
-        if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
-            game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
-        end
-        wait(0.01)
-    end
-    if _G.SetJumpPower == false then
-        game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
-    end
+	while getgenv().SetJumpPower == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
+		end
+		wait(0.01)
+		end
+	if getgenv().SetJumpPower == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
+	end
 end
-
 local function InfJump()
-    while _G.InfJump == true do
-        game:GetService("UserInputService").JumpRequest:connect(function()
-            if _G.InfJump == true then
-                game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
-            end
-        end)
-        wait(0.1)
-    end
+	while getgenv().InfJump == true do
+		game:GetService("UserInputService").JumpRequest:connect(function()
+			if getgenv().InfJump == true then
+				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+			end
+		end)
+		wait(0.1)
+	end
 end
-
 local function NoClip()
-    while _G.NoClip == true do
-        for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-            if part:IsA("BasePart") then
-                if _G.NoClip then
-                    part.CanCollide = false
-                else
-                    part.CanCollide = true
-                end
-            end
-        end
-        wait(0.1)
-    end
+	while getgenv().NoClip == true do
+		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if getgenv().NoClip then
+					part.CanCollide = false
+				else
+					part.CanCollide = true
+				end
+			end
+		end
+		wait(0.1)
+	end
 end
 
 local teleportingActive = false 
@@ -147,19 +144,16 @@ local function moveToNextCheckpoint()
 end
 
 
-local Menu = Window:CreateTab("Main", "badge-check")
-local Section = Menu:CreateSection("Game things")
-local divider = Menu:CreateDivider(true)
-
+local Menu = Window:CreateTab("Main", "home")
+local Section = Menu:CreateSection("Auto Farm")
 local Button = Menu:CreateButton({
-   Name = "OP Auto Win!!!",
+   Name = "Auto Win",
    Interact = 'Changable',
    Callback = function()
        toggleTeleportation()
    end,
 })
-local divider = Menu:CreateDivider(true)
-
+local Section = Menu:CreateSection("Stage")
 Menu:CreateButton({
    Name = "Skip Stage",
    Callback = function()
@@ -202,9 +196,7 @@ Menu:CreateButton({
       moveToNextCheckpoint()
    end,
 })
-
-local divider = Menu:CreateDivider(true)
-
+local Section = Menu:CreateSection("Helpful")
 Menu:CreateButton({
     Name = "Teleport Tool",
     Callback = function()       
@@ -235,85 +227,63 @@ Menu:CreateButton({
     end,
 })
 
-local divider = Menu:CreateDivider(true)
-local Player = Window:CreateTab("Player", "person-standing")
-local Section = Player:CreateSection("Player stuff")
-
--- Create an input field for walk speed
-local Input = Player:CreateInput({
-    Name = "Player Walk Speed",
-    CurrentValue = "16",
-    Flag = "WalkSpeedInput",
-    PlaceholderText = "Default Walk Speed = 16",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(Text)
-        WalkSpeedText = tonumber(Text)
-    end,
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	WalkSpeedText = Text
+   end,
 })
-
--- Create a toggle for walk speed
-local Toggle = Player:CreateToggle({
-    Name = "Toggle Walk Speed",
-    CurrentValue = false,
-    Flag = "WalkSpeedToggle",
-    Callback = function(Value)
-        _G.SetWalkSpeed = Value
-        if Value then
-            SetWalkSpeed()
-        end
-    end,
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	getgenv().SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
 })
-
--- Create a toggle for no clip
-local Toggle = Player:CreateToggle({
-    Name = "No Clip",
-    CurrentValue = false,
-    Flag = "NoClipToggle",
-    Callback = function(Value)
-        _G.NoClip = Value
-        if Value then
-            NoClip()
-        end
-    end,
+Toggle = MoveTab:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	getgenv().NoClip = Value
+   	NoClip()
+   end,
 })
-
--- Create a section for jump
-local Section = Player:CreateSection("Jump")
-
--- Create an input field for jump power
-local Input = Player:CreateInput({
-    Name = "Player Jump Power",
-    CurrentValue = "50",
-    Flag = "JumpPowerInput",
-    PlaceholderText = "Default Jump Power = 50",
-    RemoveTextAfterFocusLost = false,
-    Callback = function(Text)
-        JumpPowerText = tonumber(Text)
-    end,
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	JumpPowerText = Text
+   end,
 })
-
--- Create a toggle for jump power
-local Toggle = Player:CreateToggle({
-    Name = "Toggle Jump Power",
-    CurrentValue = false,
-    Flag = "JumpPowerToggle",
-    Callback = function(Value)
-        _G.SetJumpPower = Value
-        if Value then
-            SetJumpPower()
-        end
-    end,
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	getgenv().SetJumpPower = Value
+   	SetJumpPower()
+   end,
 })
-
--- Create a toggle for inf jump
-local Toggle = Player:CreateToggle({
-    Name = "Inf Jump",
-    CurrentValue = false,
-    Flag = "InfJumpToggle",
-    Callback = function(Value)
-        _G.InfJump = Value
-        if Value then
-            InfJump()
-        end
-    end,
+Toggle = MoveTab:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	getgenv().InfJump = Value
+   	InfJump()
+   end,
 })
