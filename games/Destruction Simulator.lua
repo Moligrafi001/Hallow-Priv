@@ -1,14 +1,14 @@
--- loadstring(game:HttpGet(''))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
-
 local Window = Rayfield:CreateWindow({
-    Name = "HallowHub | Destruction Simulator",
+    Name = "Hallow Hub | Destruction Simulator",
     Icon = 17091459839,
     LoadingTitle = "HallowHub",
     LoadingSubtitle = "By Moligrafi",
     Theme = "Amethyst"
 })
 
+
+-- Locais
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = game.Players.LocalPlayer
 local lplr = game:GetService("Players").LocalPlayer
@@ -18,36 +18,36 @@ local workspace = game:GetService("Workspace")
 -- Movement
 local WalkSpeedText = 16
 local JumpPowerText = 50
-_G.SetWalkSpeed = false
-_G.SetJumpPower = false
-_G.InfJump = false
-_G.NoClip = false
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
 local function SetWalkSpeed()
-	while _G.SetWalkSpeed == true do
+	while getgenv().SetWalkSpeed == true do
 		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
 			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
 		end
 		wait(0.01)
 	end
-	if _G.SetWalkSpeed == false then
+	if getgenv().SetWalkSpeed == false then
 		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
 	end
 end
 local function SetJumpPower()
-	while _G.SetJumpPower == true do
+	while getgenv().SetJumpPower == true do
 		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
 			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
 		end
 		wait(0.01)
 		end
-	if _G.SetJumpPower == false then
+	if getgenv().SetJumpPower == false then
 		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
 	end
 end
 local function InfJump()
-	while _G.InfJump == true do
+	while getgenv().InfJump == true do
 		game:GetService("UserInputService").JumpRequest:connect(function()
-			if _G.InfJump == true then
+			if getgenv().InfJump == true then
 				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
 			end
 		end)
@@ -55,10 +55,10 @@ local function InfJump()
 	end
 end
 local function NoClip()
-	while _G.NoClip == true do
+	while getgenv().NoClip == true do
 		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
 			if part:IsA("BasePart") then
-				if _G.NoClip then
+				if getgenv().NoClip then
 					part.CanCollide = false
 				else
 					part.CanCollide = true
@@ -69,11 +69,10 @@ local function NoClip()
 	end
 end
 
-local windowTab = Window:CreateTab("Main", "medal")
+-- Window 
+local windowTab = Window:CreateTab("Main", "home")
 local section = windowTab:CreateSection("OP auto coin", true)
-
 local isAutoAddingCoins = false
-
 local coin = windowTab:CreateToggle({
     Name = "Auto Coin (OP)",
     Callback = function()
@@ -90,7 +89,6 @@ local coin = windowTab:CreateToggle({
     end
 })
 local section = windowTab:CreateSection("Area Destroyer", true)
-
 local AddLevelButton = windowTab:CreateButton({
     Name = "Explode Area You Are Standing In (must be in a area)",
     Callback = function()
@@ -144,15 +142,12 @@ local AddLevelButton = windowTab:CreateButton({
         })
     end
 })
-
-
 local RankUpButton = windowTab:CreateButton({
     Name = "Rank Up (must be max level)",
     Callback = function()
         game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("rankUp"):FireServer()
     end
 })
-
 local GiveAllBoostsButton = windowTab:CreateButton({
     Name = "Get All Boosts",
     Callback = function()
@@ -179,13 +174,12 @@ local GiveAllBoostsButton = windowTab:CreateButton({
     end
 })
 
-local Menu = Window:CreateTab("Player", "person-standing")
-
-local Section = Menu:CreateSection("Player", "person-standing")
-
-local Input = Menu:CreateInput({
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
    Name = "Player Walk Speed",
-   CurrentValue = "16",
+   CurrentValue = "",
    Flag = "WalkSpeedInput",
    PlaceholderText = "Default Walk Speed = 16",
    RemoveTextAfterFocusLost = false,
@@ -193,26 +187,26 @@ local Input = Menu:CreateInput({
    	WalkSpeedText = Text
    end,
 })
-local Toggle = Menu:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Toggle Walk Speed",
    CurrentValue = false,
    Flag = "WalkSpeedToggle", 
    Callback = function(Value)
-   	_G.SetWalkSpeed = Value
+   	getgenv().SetWalkSpeed = Value
    	SetWalkSpeed()
    end,
 })
-local Toggle = Menu:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "No Clip",
    CurrentValue = false,
    Flag = "NoClipToggle",
    Callback = function(Value)
-   	_G.NoClip = Value
+   	getgenv().NoClip = Value
    	NoClip()
    end,
 })
-local Section = Menu:CreateSection("Jump")
-local Input = Menu:CreateInput({
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
    Name = "Player Jump Power",
    CurrentValue = "",
    Flag = "JumpPowerInput",
@@ -222,22 +216,21 @@ local Input = Menu:CreateInput({
    	JumpPowerText = Text
    end,
 })
-local Toggle = Menu:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Toggle Jump Power",
    CurrentValue = false,
    Flag = "JumpPowerToggle",
    Callback = function(Value)
-   	_G.SetJumpPower = Value
+   	getgenv().SetJumpPower = Value
    	SetJumpPower()
    end,
 })
-local Toggle = Menu:CreateToggle({
+Toggle = MoveTab:CreateToggle({
    Name = "Inf Jump",
    CurrentValue = false,
    Flag = "InfJumpToggle",
    Callback = function(Value)
-   	_G.InfJump = Value
+   	getgenv().InfJump = Value
    	InfJump()
    end,
 })
-
