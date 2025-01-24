@@ -16,9 +16,11 @@ getgenv().InfJump = false
 getgenv().NoClip = false
 local function SetWalkSpeed()
 	while getgenv().SetWalkSpeed == true do
-		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
-			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
-		end
+	  pcall(function()
+  		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+  			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+  		end
+		end)
 		wait(0.01)
 	end
 	if getgenv().SetWalkSpeed == false then
@@ -64,9 +66,12 @@ end
 -- Valores
 getgenv().AutoGun = false
 getgenv().PullGun = false
-
+getgenv().HitBox = false
+getgenv().PlayerESP = false
 -- Locais
-local eu = game.Players.LocalPlayer
+local eu = game:GetService("Players").LocalPlayer
+local HitSize = 5
+local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
 local function KillGun()
@@ -100,6 +105,78 @@ local function PullGun()
     wait(0.25)
   end
 end
+local function HitBox()
+	while getgenv().HitBox == true do
+	  pcall(function()
+		for _, player in pairs(game.Players:GetPlayers()) do
+			if player ~= eu and player:GetAttribute("Game") == eu:GetAttribute("Game") and player:GetAttribute("Team") ~= eu:GetAttribute("Team") then
+				if player.Character then
+					if player.Character:FindFirstChild("HumanoidRootPart") then
+						if player.Character.HumanoidRootPart.Size ~= Vector3.new(HitSize, HitSize, HitSize) or player.Character.HumanoidRootPart.Transparency ~= 0.6 then
+							player.Character.HumanoidRootPart.Size = Vector3.new(HitSize, HitSize, HitSize)
+							player.Character.HumanoidRootPart.Transparency = 0.6
+							player.Character.HumanoidRootPart.CanCollide = false
+						end
+					end
+				end
+			end
+		end
+	  end)
+		wait()
+	end
+	if getgenv().HitBox == false then
+		for _, player in pairs(game.Players:GetPlayers()) do
+			if player ~= game.Players.LocalPlayer then
+				if player.Character and game.Players.LocalPlayer.Character then
+					if player.Character:FindFirstChild("HumanoidRootPart") then
+						if player.Character.HumanoidRootPart.Size ~= Vector3.new(2, 2, 1) or player.Character.HumanoidRootPart.Transparency ~= 0 then
+							player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 1)
+							player.Character.HumanoidRootPart.Transparency = 0
+						end
+					end
+				end
+			end
+		end
+	end
+end
+local function PlayerESP()
+	while getgenv().PlayerESP == true do
+		for _, players in pairs(game.Players:GetPlayers()) do
+			local player = players.Character
+			if player and player.Parent and players:GetAttribute("Game") == eu:GetAttribute("Game") and players:GetAttribute("Team") ~= eu:GetAttribute("Team") then
+				if player ~= game.Players.LocalPlayer.Character then
+					if player:FindFirstChild("Highlight") then
+						if player.Highlight.Enabled == false then
+							player.Highlight.Enabled = true
+						end
+						if player.Highlight.FillColor ~= CorInocente or player.Highlight.OutlineColor ~= CorInocente then
+						  player.Highlight.FillColor = CorInocente
+						  player.Highlight.OutlineColor = CorInocente
+						end
+					else
+						local highlight = Instance.new("Highlight")
+						highlight.FillColor = CorInocente
+						highlight.OutlineColor = CorInocente
+						highlight.FillTransparency = 0.6
+						highlight.Adornee = player
+						highlight.Parent = player
+					end
+				end
+			end
+		end
+		wait(0.33)
+	end
+	if getgenv().PlayerESP == false then
+		for _, players in pairs(game.Players:GetPlayers()) do
+			local player = players.Character
+			if player and players:GetAttribute("Game") == eu:GetAttribute("Game") and players:GetAttribute("Team") ~= eu:GetAttribute("Team") and player:FindFirstChild("Highlight") then
+				if player.Highlight.Enabled == true then
+					player.Highlight.Enabled = false
+				end
+			end
+		end
+	end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
@@ -131,6 +208,43 @@ Button = Menu:CreateButton({
    Name = "Inf Money",
    Callback = function()
      game:GetService("ReplicatedStorage").Buy:InvokeServer("BasicSai", -9999999)
+   end,
+})
+
+-- Combat
+local CombatTab = Window:CreateTab("Combat", "swords")
+Toggle =  CombatTab:CreateToggle({
+   Name = "Player ESP",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().PlayerESP = Value
+   	PlayerESP()
+   end,
+})
+ColorPicker = CombatTab:CreateColorPicker({
+    Name = "ESP Color",
+    Color = CorInocente,
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+    	CorInocente = Value
+    end
+})
+Section = CombatTab:CreateSection("Hitbox Expander")
+Input = CombatTab:CreateInput({
+   Name = "Hitbox Size",
+   CurrentValue = "",
+   PlaceholderText = "Default HitBox Size = 5",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	HitSize = Text
+   end,
+})
+Toggle =  CombatTab:CreateToggle({
+   Name = "Expand Hitboxes",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().HitBox = Value
+   	HitBox()
    end,
 })
 
