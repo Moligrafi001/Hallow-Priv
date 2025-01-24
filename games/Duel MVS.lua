@@ -126,6 +126,13 @@ Toggle =  Menu:CreateToggle({
    	PullGun()
    end,
 })
+Section = Menu:CreateSection("Helpful")
+Button = Menu:CreateButton({
+   Name = "Inf Money",
+   Callback = function()
+     game:GetService("ReplicatedStorage").Buy:InvokeServer("BasicSai", -9999999)
+   end,
+})
 
 -- Movement
 local MoveTab = Window:CreateTab("Movement", "chevrons-up")
