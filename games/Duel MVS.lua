@@ -141,6 +141,7 @@ local function HitBox()
 end
 local function PlayerESP()
 	while getgenv().PlayerESP == true do
+	  pcall(function()
 		for _, players in pairs(game.Players:GetPlayers()) do
 			local player = players.Character
 			if player and player.Parent and players:GetAttribute("Game") == eu:GetAttribute("Game") and players:GetAttribute("Team") ~= eu:GetAttribute("Team") then
@@ -164,6 +165,7 @@ local function PlayerESP()
 				end
 			end
 		end
+		end)
 		wait(0.33)
 	end
 	if getgenv().PlayerESP == false then
