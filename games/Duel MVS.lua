@@ -212,6 +212,13 @@ Button = Menu:CreateButton({
      game:GetService("ReplicatedStorage").Buy:InvokeServer("BasicSai", -9999999)
    end,
 })
+Button = Menu:CreateButton({
+   Name = "Get Gamepass Items",
+   Callback = function()
+     game:GetService("ReplicatedStorage").Buy:InvokeServer("DragonGun", "0")
+     game:GetService("ReplicatedStorage").Buy:InvokeServer("DragonSword", "0")
+   end,
+})
 
 -- Combat
 local CombatTab = Window:CreateTab("Combat", "swords")
