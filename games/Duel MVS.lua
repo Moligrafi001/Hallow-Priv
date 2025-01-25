@@ -186,7 +186,7 @@ local function GunSound()
     pcall(function()
       game:GetService("Players").LocalPlayer.Character.DragonGun.fire:FireServer()
     end)
-    wait(0.25)
+    wait(0.20)
   end
 end
 
@@ -216,7 +216,7 @@ Toggle =  Menu:CreateToggle({
    end,
 })
 Toggle =  Menu:CreateToggle({
-   Name = "Spam Gun Sound (FE)",
+   Name = "Spam Sound (FE)",
    CurrentValue = false,
    Callback = function(Value)
    	getgenv().GunSound = Value
