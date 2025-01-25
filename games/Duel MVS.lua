@@ -68,6 +68,8 @@ getgenv().AutoGun = false
 getgenv().PullGun = false
 getgenv().HitBox = false
 getgenv().PlayerESP = false
+getgenv().GunSound = false
+
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
 local HitSize = 5
@@ -179,6 +181,14 @@ local function PlayerESP()
 		end
 	end
 end
+local function GunSound()
+  while getgenv().GunSound == true do
+    pcall(function()
+      game:GetService("Players").LocalPlayer.Character.DragonGun.fire:FireServer()
+    end)
+    wait(0.25)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
@@ -203,6 +213,14 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().PullGun = Value
    	PullGun()
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "Spam Gun Sound (FE)",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().GunSound = Value
+   	GunSound()
    end,
 })
 Section = Menu:CreateSection("Helpful")
