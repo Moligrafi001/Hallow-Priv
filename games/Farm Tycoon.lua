@@ -49,10 +49,21 @@ end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-Section = Menu:CreateSection("Gun Features")
-Button = Menu:CreateButton({
-   Name = "Kill All",
-   Callback = function()
-   	KillGun()
+Section = Menu:CreateSection("Auto Farm")
+Toggle = Menu:CreateToggle({
+   Name = "Auto Collect",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoCollect = Value
+   	AutoCollect()
+   end,
+})
+Section = Menu:CreateSection("Upgrade")
+Toggle = Menu:CreateToggle({
+   Name = "Auto Buy Upgrades",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoBuy = Value
+   	AutoBuy()
    end,
 })
