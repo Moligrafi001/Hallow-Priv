@@ -118,7 +118,7 @@ local function TrollInv()
 end
 
 -- Menu
-local Menu = Window:CreateTab("Menu", "home")
+local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Helpful")
 Toggle =  Menu:CreateToggle({
    Name = "Anti Lasers",
