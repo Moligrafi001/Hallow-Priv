@@ -191,7 +191,7 @@ local function GunSound()
 end
 
 -- Menu
-local Menu = Window:CreateTab("Menu", "home")
+local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Gun Features")
 Button = Menu:CreateButton({
    Name = "Kill All",
