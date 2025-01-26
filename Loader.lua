@@ -219,7 +219,7 @@ elseif Place == 6429911702 then
   MyBigHotPenis("games/Masters DCO.lua")
 elseif Place == 83352503841142 then
   MyBigHotPenis("games/Duel MVS.lua")
-elseif Place == 18146116994 or Place == 1737900466618 then
+elseif Place == 18146116994 or Place == 73448987153473 then
   MyBigHotPenis("games/Farm Tycoon.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
