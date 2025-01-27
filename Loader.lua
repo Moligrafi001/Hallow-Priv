@@ -119,6 +119,7 @@ pcall(function()
 end)
 
 local Place = game.PlaceId
+local Game = game.GameId
 if Place == 77293138169730 or Place == 110862004123956 or Place == 138419073284550 or Place == 122232219652085 or Place == 109513417836584 or Place == 127090329888839 or Place == 128447758667095 or Place == 117112901543526 then
   MyBigHotPenis("games/Dungeons Of Doom.lua")
 elseif Place == 123748395762873 then
@@ -221,6 +222,8 @@ elseif Place == 83352503841142 then
   MyBigHotPenis("games/Duel MVS.lua")
 elseif Place == 18146116994 or Place == 73448987153473 then
   MyBigHotPenis("games/Farm Tycoon.lua")
+elseif Game == 5287018898 then
+  MyBigHotPenis("games/Escape Chicken Nuggets.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
