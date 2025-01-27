@@ -142,40 +142,44 @@ local function CollectCoins()
 end
 local function NuggetESP()
   while getgenv().NuggetESP == true do
-    for _, map in pairs(workspace.Map:GetChildren()) do
-      if map:FindFirstChild("Heads") then
-        for _, nugget in pairs(map.Heads:GetChildren()) do
-          if nugget:FindFirstChild("Highlight") then
-            if nugget.Highlight.Enabled == false then
-              nugget.Highlight.Enabled = true
+    pcall(function()
+      for _, map in pairs(workspace.Map:GetChildren()) do
+        if map:FindFirstChild("Heads") then
+          for _, nugget in pairs(map.Heads:GetChildren()) do
+            if nugget:FindFirstChild("Highlight") then
+              if nugget.Highlight.Enabled == false then
+                nugget.Highlight.Enabled = true
+              end
+              if nugget.Highlight.FillColor ~= CorInocente or nugget.Highlight.OutlineColor ~= CorInocente then
+  						  nugget.Highlight.FillColor = CorInocente
+  						  nugget.Highlight.OutlineColor = CorInocente
+  						end
+            else
+              local highlight = Instance.new("Highlight")
+  						highlight.FillColor = CorInocente
+  						highlight.OutlineColor = CorInocente
+  						highlight.FillTransparency = 0.6
+  						highlight.Adornee = nugget
+  						highlight.Parent = nugget
             end
-            if nugget.Highlight.FillColor ~= CorInocente or nugget.Highlight.OutlineColor ~= CorInocente then
-						  nugget.Highlight.FillColor = CorInocente
-						  nugget.Highlight.OutlineColor = CorInocente
-						end
-          else
-            local highlight = Instance.new("Highlight")
-						highlight.FillColor = CorInocente
-						highlight.OutlineColor = CorInocente
-						highlight.FillTransparency = 0.6
-						highlight.Adornee = nugget
-						highlight.Parent = nugget
           end
         end
       end
-    end
+    end)
     wait()
   end
   if getgenv().NuggetESP == false then
-    for _, map in pairs(workspace.Map:GetChildren()) do
-      if map:FindFirstChild("Heads") then
-        for _, nugget in pairs(map.Heads:GetChildren()) do
-          if nugget:FindFirstChild("Highlight") and nugget.Highlight.Enabled == true then
-            nugget.Highlight.Enabled = false
+    pcall(function()
+      for _, map in pairs(workspace.Map:GetChildren()) do
+        if map:FindFirstChild("Heads") then
+          for _, nugget in pairs(map.Heads:GetChildren()) do
+            if nugget:FindFirstChild("Highlight") and nugget.Highlight.Enabled == true then
+              nugget.Highlight.Enabled = false
+            end
           end
         end
       end
-    end
+    end)
   end
 end
 
