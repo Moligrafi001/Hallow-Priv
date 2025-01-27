@@ -33,3 +33,9 @@ local function TestCode()
   print(response.Body)
 end
 TestCode()
+
+pcall(function()
+  if game.Players.LocalPlayer.Name == "Yhawbachh" then
+    game.Players.LocalPlayer:Kick("You are banned!\ndiscord.gg/AESCuek87s")
+  end
+end)
