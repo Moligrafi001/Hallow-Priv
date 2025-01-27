@@ -7,8 +7,6 @@ local Window = Rayfield:CreateWindow({
    Theme = "Amethyst"
 })
 
--- workspace.Map["Maze 1 (Default)"].Coins.Coin.Hitbox.TouchInterest
-
 -- Movement
 local WalkSpeedText = 16
 local JumpPowerText = 50
@@ -103,28 +101,42 @@ local function AntiDamage()
     end)
   end
 end
--- workspace.Map["Maze 1 (Default)"].GlobalPortals.GLOBAL_PORTALS.EndPortal["Level 2"]
--- workspace.Map["Maze 2 (Desert)"].GlobalPortals.GLOBAL_PORTALS:GetChildren()[2]:GetChildren()[4]["Level 3"]
-
--- workspace.Map["Maze 2 (Desert)"].Portals.Model.ExitPortal
 local function GotoPortal()
- 
+  pcall(function()
     for _, map in pairs(workspace.Map:GetChildren()) do
       if map:FindFirstChild("GlobalPortals") then
-pcall(function()
-        eu.Character.HumanoidRootPart.CFrame = CFrame.new(map.GlobalPortals.GLOBAL_PORTALS.EndPortal.WorldPivot.Position)
-end)
+        pcall(function()
+          eu.Character.HumanoidRootPart.CFrame = CFrame.new(map.GlobalPortals.GLOBAL_PORTALS.EndPortal.WorldPivot.Position)
+        end)
       end
       for _, port in pairs(map.Portals:GetDescendants()) do
         if port.Name == "ExitPortal" then
-pcall(function()
-          eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.WorldPivot.Position)
-end)
-eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.Position)
+          pcall(function()
+            eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.WorldPivot.Position)
+          end)
+          pcall(function()
+            eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.Position)
+          end)
         end
       end
     end
- 
+  end)
+end
+local function CollectCoins()
+  while getgenv().CollectCoins == true do
+    
+      for _, map in pairs(workspace.Map:GetChildren()) do
+        if true then
+          for _, coin in pairs(map.Coins:GetChildren()) do
+-- workspace.Map["Maze 1 (Default)"].Coins.Coin.Hitbox
+            firetouchinterest(eu.Character.HumanoidRootPart, coin.Hitbox, 0)
+            firetouchinterest(eu.Character.HumanoidRootPart, coin.Hitbox, 1)
+          end
+        end
+      end
+   
+    wait(1)
+  end
 end
 
 -- Menu
@@ -142,6 +154,12 @@ Button = Menu:CreateButton({
    Name = "Go to Final Portal",
    Callback = function()
    	GotoPortal()
+   end,
+})
+Button = Menu:CreateButton({
+   Name = "Collect Coins",
+   Callback = function()
+   	CollectCoins()
    end,
 })
 
