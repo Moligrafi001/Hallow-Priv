@@ -67,6 +67,7 @@ end
 
 -- Valores
 getgenv().AntiDamage = false
+getgenv().CollectCoins = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -124,17 +125,16 @@ local function GotoPortal()
 end
 local function CollectCoins()
   while getgenv().CollectCoins == true do
-    
-      for _, map in pairs(workspace.Map:GetChildren()) do
-        if true then
-          for _, coin in pairs(map.Coins:GetChildren()) do
--- workspace.Map["Maze 1 (Default)"].Coins.Coin.Hitbox
+    for _, map in pairs(workspace.Map:GetChildren()) do
+      if map:FindFirstChild("Coins") then
+        for _, coin in pairs(map.Coins:GetChildren()) do
+          if coin:FindFirstChild("Hitbox") then
             firetouchinterest(eu.Character.HumanoidRootPart, coin.Hitbox, 0)
             firetouchinterest(eu.Character.HumanoidRootPart, coin.Hitbox, 1)
           end
         end
       end
-   
+    end
     wait(1)
   end
 end
@@ -156,9 +156,11 @@ Button = Menu:CreateButton({
    	GotoPortal()
    end,
 })
-Button = Menu:CreateButton({
+Toggle =  Menu:CreateToggle({
    Name = "Collect Coins",
-   Callback = function()
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().CollectCoins = Value
    	CollectCoins()
    end,
 })
