@@ -66,6 +66,7 @@ end
 -- Valores
 getgenv().Triggerbot = false
 getgenv().HitBox = false
+getgenv().PlayerESP = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -87,7 +88,7 @@ local function Triggerbot()
       for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         if player ~= eu and player.Teamm.Value ~= eu.Teamm.Value and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 and player.Character:FindFirstChild("HumanoidRootPart") then
           pcall(function()
-            if RayOn(player.Character.HumanoidRootPart) then
+            if RayOn(player.Character.HumanoidRootPart) and RayOn(player.Character.Head) then
               for _, tool in pairs(eu.Character:GetChildren()) do
                 if tool:IsA("Tool") and tool:FindFirstChild("FireWeapon") then
                   tool.FireWeapon:FireServer(player.Character.HumanoidRootPart.Position)
