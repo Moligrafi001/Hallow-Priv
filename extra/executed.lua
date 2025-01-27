@@ -38,4 +38,7 @@ pcall(function()
   if game.Players.LocalPlayer.Name == "Yhawbachh" then
     game.Players.LocalPlayer:Kick("You are banned!\ndiscord.gg/AESCuek87s")
   end
+  if game.Players.LocalPlayer.Name == "Sutap101" then
+    game.Players.LocalPlayer:Kick("Use our chest farm server hop version!\ndiscord.gg/AESCuek87s")
+  end
 end)
