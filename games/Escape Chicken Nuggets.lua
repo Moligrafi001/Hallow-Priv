@@ -68,9 +68,11 @@ end
 -- Valores
 getgenv().AntiDamage = false
 getgenv().CollectCoins = false
+getgenv().NuggetESP = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
+local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
 local function AntiDamage()
@@ -138,10 +140,48 @@ local function CollectCoins()
     wait(1)
   end
 end
+local function NuggetESP()
+  while getgenv().NuggetESP == true do
+    for _, map in pairs(workspace.Map:GetChildren()) do
+      if map:FindFirstChild("Heads") then
+        for _, nugget in pairs(map.Heads:GetChildren()) do
+          if nugget:FindFirstChild("Highlight") then
+            if nugget.Highlight.Enabled == false then
+              nugget.Highlight.Enabled = true
+            end
+            if nugget.Highlight.FillColor ~= CorInocente or nugget.Highlight.OutlineColor ~= CorInocente then
+						  nugget.Highlight.FillColor = CorInocente
+						  nugget.Highlight.OutlineColor = CorInocente
+						end
+          else
+            local highlight = Instance.new("Highlight")
+						highlight.FillColor = CorInocente
+						highlight.OutlineColor = CorInocente
+						highlight.FillTransparency = 0.6
+						highlight.Adornee = nugget
+						highlight.Parent = nugget
+          end
+        end
+      end
+    end
+    wait()
+  end
+  if getgenv().NuggetESP == false then
+    for _, map in pairs(workspace.Map:GetChildren()) do
+      if map:FindFirstChild("Heads") then
+        for _, nugget in pairs(map.Heads:GetChildren()) do
+          if nugget:FindFirstChild("Highlight") and nugget.Highlight.Enabled == true then
+            nugget.Highlight.Enabled = false
+          end
+        end
+      end
+    end
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-Section = Menu:CreateSection("Helpful")
+Section = Menu:CreateSection("Nuggets")
 Toggle =  Menu:CreateToggle({
    Name = "Anti Damage",
    CurrentValue = false,
@@ -150,6 +190,22 @@ Toggle =  Menu:CreateToggle({
    	AntiDamage()
    end,
 })
+Toggle =  Menu:CreateToggle({
+   Name = "Nugget ESP",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().NuggetESP = Value
+   	NuggetESP()
+   end,
+})
+ColorPicker = Menu:CreateColorPicker({
+    Name = "ESP Color",
+    Color = CorInocente,
+    Callback = function(Value)
+    	CorInocente = Value
+    end
+})
+Section = Menu:CreateSection("Helpful")
 Button = Menu:CreateButton({
    Name = "Go to Final Portal",
    Callback = function()
