@@ -1,27 +1,24 @@
 local function MyBigHotPenis(filePath)
   local httrest = http_request or request or (syn and syn.request) or (fluxus and fluxus.request) or (http and http.request)
   local response = httrest({
-    Url = "https://api.github.com/repos/Moligrafi001/Hallow-Priv/contents/" .. game:GetService("HttpService"):UrlEncode(filePath) .. "?ref=main",
+    Url = "https://hallow-hub.squareweb.app/api/load/" .. game:GetService("HttpService"):UrlEncode(filePath),
     Method = "GET",
     Headers = {
-      ["Authorization"] = "Bearer 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",
-      ["Accept"] = "application/vnd.github.raw+json"
+      ["pass"] = "SuperSecretHallowHubKey090609"
     }
   })
   local credits = httrest({
-    Url = "https://api.github.com/repos/Moligrafi001/Hallow-Priv/contents/extra/credits.lua?ref=main",
+    Url = "https://hallow-hub.squareweb.app/api/load/extra/credits.lua",
     Method = "GET",
     Headers = {
-      ["Authorization"] = "Bearer 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",
-      ["Accept"] = "application/vnd.github.raw+json"
+      ["pass"] = "SuperSecretHallowHubKey090609"
     }
   })
   local errado = httrest({
-    Url = "https://api.github.com/repos/Moligrafi001/Hallow-Priv/contents/extra/error.lua?ref=main",
+    Url = "https://hallow-hub.squareweb.app/api/load/extra/error.lua",
     Method = "GET",
     Headers = {
-      ["Authorization"] = "Bearer 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",
-      ["Accept"] = "application/vnd.github.raw+json"
+            ["pass"] = "SuperSecretHallowHubKey090609"
     }
   })
   local function isFuckingSkidShit()
@@ -36,7 +33,7 @@ local function MyBigHotPenis(filePath)
     return false
   end
   if isFuckingSkidShit() then
-    local carregar = loadstring(response.Body .. "\n" .. credits.Body) or loadstring(errado.Body .. "\n" .. credits.Body)
+    local carregar = loadstring(game:GetService("HttpService"):JSONDecode(response.Body)["script"] .. "\n" .. game:GetService("HttpService"):JSONDecode(credits.Body)["script"]) or loadstring(game:GetService("HttpService"):JSONDecode(errado.Body)["script"] .. "\n" .. game:GetService("HttpService"):JSONDecode(credits.Body)["script"])
     carregar()
   else
     local function AlertSkid()
