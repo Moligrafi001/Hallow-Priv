@@ -7,7 +7,6 @@ local Window = Rayfield:CreateWindow({
    Theme = "Amethyst"
 })
 
--- workspace.Map["Maze 1 (Default)"].GlobalPortals.GLOBAL_PORTALS.EndPortal["Level 2"]
 -- workspace.Map["Maze 1 (Default)"].Coins.Coin.Hitbox.TouchInterest
 
 -- Movement
@@ -75,7 +74,6 @@ getgenv().AntiDamage = false
 local eu = game:GetService("Players").LocalPlayer
 
 -- Funções
--- workspace.Map["Maze 1 (Default)"].Heads:GetChildren()[13].Head
 local function AntiDamage()
   while getgenv().AntiDamage == true do
     pcall(function()
@@ -105,6 +103,29 @@ local function AntiDamage()
     end)
   end
 end
+-- workspace.Map["Maze 1 (Default)"].GlobalPortals.GLOBAL_PORTALS.EndPortal["Level 2"]
+-- workspace.Map["Maze 2 (Desert)"].GlobalPortals.GLOBAL_PORTALS:GetChildren()[2]:GetChildren()[4]["Level 3"]
+
+-- workspace.Map["Maze 2 (Desert)"].Portals.Model.ExitPortal
+local function GotoPortal()
+ 
+    for _, map in pairs(workspace.Map:GetChildren()) do
+      if map:FindFirstChild("GlobalPortals") then
+pcall(function()
+        eu.Character.HumanoidRootPart.CFrame = CFrame.new(map.GlobalPortals.GLOBAL_PORTALS.EndPortal.WorldPivot.Position)
+end)
+      end
+      for _, port in pairs(map.Portals:GetDescendants()) do
+        if port.Name == "ExitPortal" then
+pcall(function()
+          eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.WorldPivot.Position)
+end)
+eu.Character.HumanoidRootPart.CFrame = CFrame.new(port.Position)
+        end
+      end
+    end
+ 
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -115,6 +136,12 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().AntiDamage = Value
    	AntiDamage()
+   end,
+})
+Button = Menu:CreateButton({
+   Name = "Go to Final Portal",
+   Callback = function()
+   	GotoPortal()
    end,
 })
 
