@@ -17,7 +17,7 @@ getgenv().AutoGun = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
-local SelectedQueue = "1v1"
+local SelectedQueue = "Nenhum"
 local InCooldown = false
 local HitSize = 9
 
@@ -51,27 +51,39 @@ local function Triggerbot()
     return nil
   end
   while getgenv().Triggerbot and not InCooldown do
-    for _, player in pairs(Players:GetPlayers()) do
-      if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 then
-        if RayOn(player.Character.LowerTorso) then
-          for _, tool in pairs(eu.Character:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Fire") then
-              local toolPosition = GetToolPosition(tool)
-              if toolPosition and not InCooldown then
-                ReplicatedStorage.Remotes.Shoot:FireServer(
-                  player.Character.HumanoidRootPart.Position,
-                  toolPosition,
-                  player.Character.Head,
-                  toolPosition
-                )
-                SetCooldown()
-                break
+    pcall(function()
+      for _, player in pairs(Players:GetPlayers()) do
+        if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 then
+          if RayOn(player.Character.LowerTorso) then
+            for _, tool in pairs(eu.Character:GetChildren()) do
+              if tool:IsA("Tool") and tool:FindFirstChild("Fire") then
+                local toolPosition = GetToolPosition(tool)
+                if toolPosition and not InCooldown then
+                  ReplicatedStorage.Remotes.Shoot:FireServer(
+                    player.Character.HumanoidRootPart.Position,
+                    toolPosition,
+                    player.Character.Head,
+                    toolPosition
+                  )
+                  SetCooldown()
+                  break
+                end
               end
             end
           end
         end
       end
-    end
+      if not getgenv().HitBox then
+        for _, player in pairs(Players:GetPlayers()) do
+          if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 then
+            local partSize = player.Character.HumanoidRootPart.Size
+            if partSize.X < 2 or partSize.Y < 2 or partSize.Z < 2 then
+              player.Character.HumanoidRootPart.Size = Vector3.new(2, 2, 2)
+            end
+          end
+        end
+      end
+    end)
     wait(0.1)
   end
 end
@@ -273,7 +285,16 @@ Input = Menu:CreateInput({
    PlaceholderText = "Default HitBox Size = 9",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
-   	HitSize = Text
+    if tonumber(Text) < 2 then
+      Rayfield:Notify({
+		   Title = "Bigger!",
+		   Content = "The hitbox value needs to be atleast 2.",
+		   Duration = 2.6,
+		   Image = 17091459839,
+      })
+   	else
+   	  HitSize = tonumber(Text)
+   	end
    end,
 })
 Toggle =  Menu:CreateToggle({
