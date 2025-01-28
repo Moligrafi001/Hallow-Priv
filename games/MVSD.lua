@@ -26,11 +26,10 @@ local function Triggerbot()
   local Players = game:GetService("Players")
   local ReplicatedStorage = game:GetService("ReplicatedStorage")
   local CurrentCamera = workspace.CurrentCamera
-  local InCooldown = false
   local function SetCooldown()
     if not InCooldown then
       InCooldown = true
-      task.wait(2.5)
+      task.wait(3)
       InCooldown = false
     end
   end
@@ -38,34 +37,42 @@ local function Triggerbot()
     local origin = CurrentCamera.CFrame.Position
     local direction = (part.Position - origin).Unit * 1000
     local rayParams = RaycastParams.new()
-    rayParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character}
+    rayParams.FilterDescendantsInstances = {eu.Character:GetChildren()}
     rayParams.FilterType = Enum.RaycastFilterType.Blacklist
-  
     local result = workspace:Raycast(origin, direction, rayParams)
-    if result and result.Instance and result.Instance.Parent == part.Parent then
-      return true
+    return result and result.Instance and result.Instance.Parent == part.Parent
     end
-    return false
+  local function GetToolPosition(tool)
+    for _, child in pairs(tool:GetChildren()) do
+      if child:IsA("BasePart") then
+        return child.Position
+      end
+    end
+    return nil
   end
   while getgenv().Triggerbot and not InCooldown do
     for _, player in pairs(Players:GetPlayers()) do
-      if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and 
-         player.Team ~= eu.Team and player.Character and 
-         player.Character:FindFirstChild("Humanoid") and 
-         player.Character.Humanoid.Health >= 1 then
-
-        if not InCooldown and RayOn(player.Character.Head) then
-          ReplicatedStorage.Remotes.Shoot:FireServer(
-            Vector3.new(-117.687, 179.375, -29.734), 
-            Vector3.new(-108.699, 171.277, -33.298), 
-            player.Character.Head,
-            Vector3.new(-113.910, 178.863, -29.015)
-          )
-          SetCooldown()
+      if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 then
+        if RayOn(player.Character.LowerTorso) then
+          for _, tool in pairs(eu.Character:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Fire") then
+              local toolPosition = GetToolPosition(tool)
+              if toolPosition and not InCooldown then
+                ReplicatedStorage.Remotes.Shoot:FireServer(
+                  player.Character.HumanoidRootPart.Position,
+                  toolPosition,
+                  player.Character.Head,
+                  toolPosition
+                )
+                SetCooldown()
+                break
+              end
+            end
+          end
         end
       end
     end
-    wait()
+    wait(0.1)
   end
 end
 local function OutlineESP()
