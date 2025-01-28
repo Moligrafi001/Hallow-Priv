@@ -265,6 +265,9 @@ local function AutoQueue()
     end
     wait(3)
   end
+  if not getgenv().AutoQueue then
+    game:GetService("ReplicatedStorage").GlobalMatchmaking.Remotes.LeaveQueue:FireServer()
+  end
 end
 
 -- Menu
