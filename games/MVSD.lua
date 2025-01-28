@@ -17,32 +17,56 @@ local InCooldown = false
 local HitSize = 9
 
 -- Funções
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local CurrentCamera = workspace.CurrentCamera
+local InCooldown = false
+
 local function SetCooldown()
   if not InCooldown then
     InCooldown = true
-    wait(3)
+    task.wait(3) -- Substituindo `wait` por `task.wait`, que é mais preciso
     InCooldown = false
   end
 end
+
 local function RayOn(part)
-  local ray = Ray.new(game.Workspace.CurrentCamera.CFrame.Position, (part.Position - game.Workspace.CurrentCamera.CFrame.Position).unit * 1000)
-  local hitPart, hitPosition = workspace:FindPartOnRay(ray, eu.Character)
-  if hitPart and hitPart.Parent == part.Parent then
+  local origin = CurrentCamera.CFrame.Position
+  local direction = (part.Position - origin).Unit * 1000
+
+  -- Usando o novo sistema de Raycast
+  local rayParams = RaycastParams.new()
+  rayParams.FilterDescendantsInstances = {game.Players.LocalPlayer.Character} -- Ignorar o próprio personagem
+  rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+
+  local result = workspace:Raycast(origin, direction, rayParams)
+  if result and result.Instance and result.Instance.Parent == part.Parent then
     return true
   end
-    return false
+  return false
 end
+
 local function Triggerbot()
   while getgenv().Triggerbot and not InCooldown do
-    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-      if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team and player.Character and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health >= 1 then
+    for _, player in pairs(Players:GetPlayers()) do
+      if player ~= eu and player:GetAttribute("Match") == eu:GetAttribute("Match") and 
+         player.Team ~= eu.Team and player.Character and 
+         player.Character:FindFirstChild("Humanoid") and 
+         player.Character.Humanoid.Health >= 1 then
+
         if not InCooldown and RayOn(player.Character.Head) then
-          game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(Vector3.new(-117.68785858154297, 179.37501525878906, -29.733983993530273), Vector3.new(-108.69889831542969, 171.27725219726562, -33.298301696777344), player.Character.Head.Part, Vector3.new(-113.90995788574219, 178.8629608154297, -29.014850616455078))
+          -- Certifique-se de usar coordenadas corretas e válidas
+          ReplicatedStorage.Remotes.Shoot:FireServer(
+            Vector3.new(-117.687, 179.375, -29.734), 
+            Vector3.new(-108.699, 171.277, -33.298), 
+            player.Character.Head, -- Removendo `.Part`
+            Vector3.new(-113.910, 178.863, -29.015)
+          )
           SetCooldown()
         end
       end
     end
-    wait(1)
+    task.wait(1) -- Substituindo `wait`
   end
 end
 local function HitBox()
