@@ -13,6 +13,7 @@ getgenv().Triggerbot = false
 getgenv().NameESP = false
 getgenv().OutlineESP = false
 getgenv().AutoKill = false
+getgenv().AutoGun = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -191,11 +192,13 @@ local function HitBox()
 	end
 end
 local function KillAll()
-  for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-    if player and player.Character and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team then
-      game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(player.Character.HumanoidRootPart.Position, player.Character.HumanoidRootPart.Position, player.Character.Head, player.Character.HumanoidRootPart.Position)
+  pcall(function()
+    for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+      if player and player.Character and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team then
+        game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(player.Character.HumanoidRootPart.Position, player.Character.HumanoidRootPart.Position, player.Character.Head, player.Character.HumanoidRootPart.Position)
+      end
     end
-  end
+  end)
 end
 local function AutoKill()
   while getgenv().AutoKill do
@@ -205,10 +208,20 @@ local function AutoKill()
     wait(0.1)
   end
 end
+local function AutoGun()
+  while getgenv().AutoGun == true do
+    for _, tool in pairs(eu.Backpack:GetChildren()) do
+      if tool:IsA("Tool") and tool:FindFirstChild("Fire") then
+        tool.Parent = eu.Character
+      end
+    end
+    wait()
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-Section = Menu:CreateSection("Blatant")
+Section = Menu:CreateSection("Auto Farm")
 Toggle =  Menu:CreateButton({
    Name = "Kill All",
    CurrentValue = false,
@@ -222,6 +235,14 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().AutoKill = Value
    	AutoKill()
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "Auto Equip Gun",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoGun = Value
+   	AutoGun()
    end,
 })
 Section = Menu:CreateSection("Aim Assistant")
@@ -272,7 +293,6 @@ Toggle =  VisualTab:CreateToggle({
    end,
 })
 
--- workspace.TheMoneyBeaster.Default.Fire
 local args = {
     [1] = Vector3.new(278.50396728515625, 60.77000427246094, -56.05403518676758),
     [2] = Vector3.new(255.29518127441406, 64.43893432617188, 75.72250366210938),
