@@ -17,6 +17,7 @@ getgenv().AutoGun = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
+local SelectedQueue = "1v1"
 local InCooldown = false
 local HitSize = 9
 
@@ -218,6 +219,10 @@ local function AutoGun()
     wait()
   end
 end
+local function AutoQueue()
+  while getgenv().AutoQueue do
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -290,6 +295,27 @@ Toggle =  VisualTab:CreateToggle({
    Callback = function(Value)
    	getgenv().NameESP = Value
    	NameESP()
+   end,
+})
+
+-- Queue
+local QueueTab = Window:CreateTab("Queue", "circle-ellipsis")
+Section = QueueTab:CreateSection("Auto Farm")
+Dropdown = QueueTab:CreateDropdown({
+   Name = "Queue Type",
+   Options = {"1v1", "2v2", "3v3", "4v4"},
+   CurrentOption = {"No Type Selected"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		SelectedQueue = Options[1]
+   end,
+})
+Toggle =  QueueTab:CreateToggle({
+   Name = "Auto Queue",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoQueue = Value
+   	AutoQueue()
    end,
 })
 
