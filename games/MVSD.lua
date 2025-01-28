@@ -193,7 +193,7 @@ end
 local function KillAll()
   for _, player in pairs(game:GetService("Players"):GetPlayers()) do
     if player and player.Character and player:GetAttribute("Match") == eu:GetAttribute("Match") and player.Team ~= eu.Team then
-      game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(Vector3.new(0, 0, 0), Vector3.new(0, 0, 0), player.Character.Head, Vector3.new(0, 0, 0))
+      game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(player.Character.HumanoidRootPart.Position, player.Character.HumanoidRootPart.Position, player.Character.Head, player.Character.HumanoidRootPart.Position)
     end
   end
 end
