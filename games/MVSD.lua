@@ -4,7 +4,13 @@ local Window = Rayfield:CreateWindow({
    Icon = 17091459839,
    LoadingTitle = "Hallow Hub",
    LoadingSubtitle = "By Moligrafi",
-   Theme = "Amethyst"
+   Theme = "Amethyst",
+   
+   ConfigurationSaving = {
+   Enabled = true,
+   FolderName = "🎃 Hallow Hub",
+   FileName = "MVSD"
+   }
 })
 
 -- Valores
@@ -14,6 +20,7 @@ getgenv().NameESP = false
 getgenv().OutlineESP = false
 getgenv().AutoKill = false
 getgenv().AutoGun = false
+getgenv().AutoQueue = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -240,6 +247,23 @@ local function AutoGun()
 end
 local function AutoQueue()
   while getgenv().AutoQueue do
+    if SelectedQueue == "1v1" then
+      game:GetService("ReplicatedStorage").GlobalMatchmaking.Remotes.JoinQueue:InvokeServer("Solo")
+    elseif SelectedQueue == "2v2" then
+      game:GetService("ReplicatedStorage").GlobalMatchmaking.Remotes.JoinQueue:InvokeServer("Duo")
+    elseif SelectedQueue == "3v3" then
+      game:GetService("ReplicatedStorage").GlobalMatchmaking.Remotes.JoinQueue:InvokeServer("Trio")
+    elseif SelectedQueue == "4v4" then
+      game:GetService("ReplicatedStorage").GlobalMatchmaking.Remotes.JoinQueue:InvokeServer("Squad")
+    else
+      Rayfield:Notify({
+		   Title = "No Type Selected!",
+		   Content = "You need to select it before you turn it on!",
+		   Duration = 3,
+		   Image = 17091459839,
+      })
+    end
+    wait(3)
   end
 end
 
@@ -256,6 +280,7 @@ Toggle =  Menu:CreateButton({
 Toggle =  Menu:CreateToggle({
    Name = "Auto Kill All",
    CurrentValue = false,
+   Flag = "AutoKillToggle",
    Callback = function(Value)
    	getgenv().AutoKill = Value
    	AutoKill()
@@ -264,6 +289,7 @@ Toggle =  Menu:CreateToggle({
 Toggle =  Menu:CreateToggle({
    Name = "Auto Equip Gun",
    CurrentValue = false,
+   Flag = "AutoGunToggle",
    Callback = function(Value)
    	getgenv().AutoGun = Value
    	AutoGun()
@@ -273,6 +299,7 @@ Section = Menu:CreateSection("Aim Assistant")
 Toggle =  Menu:CreateToggle({
    Name = "Triggerbot",
    CurrentValue = false,
+   Flag = "TriggerbotToggle",
    Callback = function(Value)
    	getgenv().Triggerbot = Value
    	Triggerbot()
@@ -300,6 +327,7 @@ Input = Menu:CreateInput({
 Toggle =  Menu:CreateToggle({
    Name = "Expand Hitboxes",
    CurrentValue = false,
+   Flag = "HitBoxToggle",
    Callback = function(Value)
    	getgenv().HitBox = Value
    	HitBox()
@@ -312,6 +340,7 @@ Section = VisualTab:CreateSection("Player ESP")
 Toggle =  VisualTab:CreateToggle({
    Name = "Outline ESP",
    CurrentValue = false,
+   Flag = "OutlineToggle",
    Callback = function(Value)
    	getgenv().OutlineESP = Value
    	OutlineESP()
@@ -320,6 +349,7 @@ Toggle =  VisualTab:CreateToggle({
 Toggle =  VisualTab:CreateToggle({
    Name = "Name ESP",
    CurrentValue = false,
+   Flag = "NameToggle",
    Callback = function(Value)
    	getgenv().NameESP = Value
    	NameESP()
@@ -334,6 +364,7 @@ Dropdown = QueueTab:CreateDropdown({
    Options = {"1v1", "2v2", "3v3", "4v4"},
    CurrentOption = {"No Type Selected"},
    MultipleOptions = false,
+   Flag = "QueueDropdown",
    Callback = function(Options)
    		SelectedQueue = Options[1]
    end,
@@ -341,17 +372,13 @@ Dropdown = QueueTab:CreateDropdown({
 Toggle =  QueueTab:CreateToggle({
    Name = "Auto Queue",
    CurrentValue = false,
+   Flag = "QueueToggle",
    Callback = function(Value)
    	getgenv().AutoQueue = Value
    	AutoQueue()
    end,
 })
-
-local args = {
-    [1] = Vector3.new(278.50396728515625, 60.77000427246094, -56.05403518676758),
-    [2] = Vector3.new(255.29518127441406, 64.43893432617188, 75.72250366210938),
-    [3] = workspace.House.Walls.MajorWall,
-    [4] = Vector3.new(257.0283203125, 64.28755950927734, 65.875)
-}
-
--- game:GetService("ReplicatedStorage").Remotes.Shoot:FireServer(unpack(args))
+Paragraph = QueueTab:CreateParagraph({
+  Title = "Guide to Use",
+  Content = "Turn on all the toggles in the Main tab before Auto Queue if you want to AFK farm (not 100%)"
+})
