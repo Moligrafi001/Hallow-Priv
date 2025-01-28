@@ -13,6 +13,8 @@ local Window = Rayfield:CreateWindow({
    }
 })
 
+Rayfield:LoadConfiguration()
+
 -- Movement
 local WalkSpeedText = 16
 local JumpPowerText = 50
