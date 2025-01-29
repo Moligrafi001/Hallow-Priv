@@ -28,37 +28,45 @@ local function AutoAttack()
       Duration = 3,
       Image = 17091459839,
     })
+    return
   end
+  local lastAttackTime = 0
   while getgenv().AutoAttack do
-    pcall(function()
-      for _, mob in pairs(workspace:GetChildren()) do
-        if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.MaxHealth <= VidaMax and mob.Humanoid.MaxHealth >= VidaMin then
-          if ModoAtaque == "Aura" then
-            local distance = (eu.Character.HumanoidRootPart.CFrame.Position - mob.HumanoidRootPart.CFrame.Position).Magnitude
-            if distance <= LongeMax then
+    if tick() - lastAttackTime >= 1 then
+      pcall(function()
+        for _, mob in pairs(workspace:GetChildren()) do
+          if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.MaxHealth <= VidaMax and mob.Humanoid.MaxHealth >= VidaMin then
+            if ModoAtaque == "Aura" then
+              local distance = (eu.Character.HumanoidRootPart.CFrame.Position - mob.HumanoidRootPart.CFrame.Position).Magnitude
+              if distance <= LongeMax then
+                game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
+                lastAttackTime = tick()
+                break
+              end
+            elseif ModoAtaque == "Teleport" then
+              eu.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
+              wait(0.1)
               game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
+              lastAttackTime = tick()
               break
             end
-          elseif ModoAtaque == "Teleport" then
-            eu.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
-            wait(0.1)
-            game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
-            break
           end
         end
-      end
-    end)
+      end)
+    end
     wait(0.1)
   end
 end
 local function AutoRebirth()
   while getgenv().AutoRebirth do
     pcall(function()
-      if eu.leaderstats.Level.Value >= RebirthMin then
-        game:GetService("ReplicatedStorage").Packages.Knit.Services.RebirthService.RF.RequestRebirth:InvokeServer()
+      if tonumber(eu.leaderstats.Level.Value) >= RebirthMin then
+        pcall(function()
+          game:GetService("ReplicatedStorage").Packages.Knit.Services.RebirthService.RF.RequestRebirth:InvokeServer()
+        end)
       end
     end)
-    wait(0.33)
+    wait(1)
   end
 end
 
