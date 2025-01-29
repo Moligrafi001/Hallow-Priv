@@ -28,22 +28,24 @@ local function AutoAttack()
     })
   end
   while getgenv().AutoAttack do
-    for _, mob in pairs(workspace:GetChildren()) do
-      if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.MaxHealth <= VidaMax and mob.Humanoid.MaxHealth >= VidaMin then
-        if ModoAtaque == "Aura" then
-          local distance = (eu.Character.HumanoidRootPart.CFrame.Position - mob.HumanoidRootPart.CFrame.Position).Magnitude
-          if distance <= 9 then
+    pcall(function()
+      for _, mob in pairs(workspace:GetChildren()) do
+        if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.MaxHealth <= VidaMax and mob.Humanoid.MaxHealth >= VidaMin then
+          if ModoAtaque == "Aura" then
+            local distance = (eu.Character.HumanoidRootPart.CFrame.Position - mob.HumanoidRootPart.CFrame.Position).Magnitude
+            if distance <= 9 then
+              game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
+              break
+            end
+          elseif ModoAtaque == "Teleport" then
+            eu.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
+            wait(0.1)
             game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
             break
           end
-        elseif ModoAtaque == "Teleport" then
-          eu.Character.HumanoidRootPart.CFrame = mob.HumanoidRootPart.CFrame
-          wait(0.1)
-          game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
-          break
         end
       end
-    end
+    end)
     wait(0.1)
   end
 end
