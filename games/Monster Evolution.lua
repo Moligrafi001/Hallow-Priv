@@ -87,3 +87,12 @@ Input = Menu:CreateInput({
    	VidaMin = tonumber(Text)
    end,
 })
+Input = Menu:CreateInput({
+   Name = "Max Aura Distance",
+   CurrentValue = "15",
+   PlaceholderText = "Number here",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	LongeMax = tonumber(Text)
+   end,
+})
