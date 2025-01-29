@@ -15,6 +15,7 @@ getgenv().AutoRebirth = false
 local LongeMax = 15
 local VidaMax = 300
 local VidaMin = 0
+local RebirthMin = 30
 local ModoAtaque = "Nenhum"
 local eu = game:GetService("Players").LocalPlayer
 
@@ -52,7 +53,11 @@ local function AutoAttack()
 end
 local function AutoRebirth()
   while getgenv().AutoRebirth do
-    game:GetService("ReplicatedStorage").Packages.Knit.Services.RebirthService.RF.RequestRebirth:InvokeServer()
+    pcall(function()
+      if eu.leaderstats.Level.Value >= RebirthMin then
+        game:GetService("ReplicatedStorage").Packages.Knit.Services.RebirthService.RF.RequestRebirth:InvokeServer()
+      end
+    end)
     wait(0.33)
   end
 end
@@ -111,5 +116,14 @@ Input = Menu:CreateInput({
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
    	LongeMax = tonumber(Text)
+   end,
+})
+Input = Menu:CreateInput({
+   Name = "Min Level to Rebirth",
+   CurrentValue = "30",
+   PlaceholderText = "Number here",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	RebirthMin = tonumber(Text)
    end,
 })
