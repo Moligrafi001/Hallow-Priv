@@ -33,7 +33,7 @@ local function AutoAttack()
         if mob:IsA("Model") and mob:FindFirstChild("HumanoidRootPart") and mob:FindFirstChild("Humanoid") and mob.Humanoid.MaxHealth <= VidaMax and mob.Humanoid.MaxHealth >= VidaMin then
           if ModoAtaque == "Aura" then
             local distance = (eu.Character.HumanoidRootPart.CFrame.Position - mob.HumanoidRootPart.CFrame.Position).Magnitude
-            if distance <= 9 then
+            if distance <= LongeMax then
               game:GetService("ReplicatedStorage").Packages.Knit.Services.MonsterService.RF.RequestAttack:InvokeServer(mob.HumanoidRootPart.CFrame)
               break
             end
