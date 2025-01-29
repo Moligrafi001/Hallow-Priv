@@ -9,6 +9,7 @@ local Window = Rayfield:CreateWindow({
 
 -- Valores
 getgenv().AutoAttack = false
+getgenv().AutoRebirth = false
 
 -- Locais
 local LongeMax = 15
@@ -49,6 +50,12 @@ local function AutoAttack()
     wait(0.1)
   end
 end
+local function AutoRebirth()
+  while getgenv().AutoRebirth do
+    game:GetService("ReplicatedStorage").Packages.Knit.Services.RebirthService.RF.RequestRebirth:InvokeServer()
+    wait(0.33)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -68,6 +75,14 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().AutoAttack = Value
    	AutoAttack()
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "Auto Rebirth",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoRebirth = Value
+   	AutoRebirth()
    end,
 })
 Section = Menu:CreateSection("Settings")
