@@ -10,6 +10,8 @@ local Window = Rayfield:CreateWindow({
 -- Valores
 getgenv().AutoTrain = false
 getgenv().AutoBuy = false
+getgenv().Win1 = false
+getgenv().Win2 = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -21,7 +23,6 @@ local function AutoTrain()
     wait(0.1)
   end
 end
--- workspace.Tycoons["3"].Buttons["Pullups Fanum"].Touch.Attachment.ParticleEmitter
 local function AutoBuy()
   while getgenv().AutoBuy do
     for _, tycoon in pairs(workspace.Tycoons:GetChildren()) do
@@ -37,6 +38,42 @@ local function AutoBuy()
     end
     wait(1)
   end
+end
+local function Win1()
+	local Busy = false
+	while getgenv().Win1 == true do
+		if Busy == false then
+			game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("EasyPosition", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+		end
+		if workspace.Obbystuff["3MinCD"].SurfaceGui.Enabled == false then
+			Busy = true
+			wait(0.25)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Obbystuff["3Min"], 0)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Obbystuff["3Min"], 1)
+			wait(0.25)
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("EasyPosition")
+			Busy = false
+		end
+		wait(0.50)
+	end
+end
+local function Win2()
+	local Busy = false
+	while getgenv().Win2 == true do
+		if Busy == false then
+			game.Players.LocalPlayer.Character.HumanoidRootPart:SetAttribute("MediumPosition", game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame)
+		end
+		if workspace.Obbystuff["5MinCD"].SurfaceGui.Enabled == false then
+			Busy = true
+			wait(0.25)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Obbystuff["5Min"], 0)
+			firetouchinterest(game.Players.LocalPlayer.Character.HumanoidRootPart, workspace.Obbystuff["5Min"], 1)
+			wait(0.25)
+			game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart:GetAttribute("MediumPosition")
+			Busy = false
+		end
+		wait(0.50)
+	end
 end
 
 -- Menu
@@ -57,5 +94,22 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().AutoBuy = Value
    	AutoBuy()
+   end,
+})
+Section = Menu:CreateSection("Auto Obby")
+Toggle =  Menu:CreateToggle({
+   Name = "3 Min Obby",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().Win1 = Value
+   	Win1()
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "5 Min Obby",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().Win2 = Value
+   	Win2()
    end,
 })
