@@ -221,7 +221,7 @@ elseif Place == 18146116994 or Place == 73448987153473 then
   MyBigHotPenis("games/Farm Tycoon.lua")
 elseif Game == 5287018898 then
   MyBigHotPenis("games/Escape Chicken Nuggets.lua")
-elseif Game == 83352503841142 then
+elseif Game == 6969033074 then
   MyBigHotPenis("games/MVS.lua")
 elseif Game == 4348829796 then
   MyBigHotPenis("games/MVSD.lua")
