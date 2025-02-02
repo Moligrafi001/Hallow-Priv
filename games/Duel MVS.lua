@@ -69,6 +69,8 @@ getgenv().PullGun = false
 getgenv().HitBox = false
 getgenv().PlayerESP = false
 getgenv().GunSound = false
+getgenv().AnnoyTrade = false
+getgenv().CancelTrade = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -76,6 +78,26 @@ local HitSize = 5
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
+local function AnnoyTrade()
+  while getgenv().AnnoyTrade do
+    pcall(function()
+      for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        game:GetService("ReplicatedStorage").Trade:FireServer("SENT", player)
+      end
+    end)
+    wait(0.25)
+  end
+end
+local function CancelTrade()
+  while getgenv().CancelTrade do
+    pcall(function()
+      for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+        game:GetService("ReplicatedStorage").Trade:FireServer("CANCEL_TRADE", player)
+      end
+    end)
+    wait(0.25)
+  end
+end
 local function KillGun()
   pcall(function()
     for _, player in pairs(game.Players:GetPlayers()) do
@@ -223,18 +245,21 @@ Toggle =  Menu:CreateToggle({
    	GunSound()
    end,
 })
-Section = Menu:CreateSection("Helpful")
-Button = Menu:CreateButton({
-   Name = "Inf Money",
-   Callback = function()
-     game:GetService("ReplicatedStorage").Buy:InvokeServer("BasicSai", -9999999)
+Section = Menu:CreateSection("Misc")
+Toggle =  Menu:CreateToggle({
+   Name = "Annoy Trade",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AnnoyTrade = Value
+   	AnnoyTrade()
    end,
 })
-Button = Menu:CreateButton({
-   Name = "Get Gamepass Items",
-   Callback = function()
-     game:GetService("ReplicatedStorage").Buy:InvokeServer("DragonGun", "0")
-     game:GetService("ReplicatedStorage").Buy:InvokeServer("DragonSword", "0")
+Toggle =  Menu:CreateToggle({
+   Name = "Cancel Trade",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().CancelTrade = Value
+   	CancelTrade()
    end,
 })
 
