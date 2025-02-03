@@ -10,4 +10,4 @@ local function TestCode(caminho)
   loadstring(game:GetService("HttpService"):JSONDecode(response.Body)["script"])()
 end
 
-TestCode("games/Ninja Legends.lua")
+TestCode("Loader.lua")
