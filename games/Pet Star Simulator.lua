@@ -178,9 +178,19 @@ local mapPositions = {
     ["Sakura Forest"] = CFrame.new(9.63525772, 3.9999578, -2126.64038, 0.998708427, -4.76508255e-09, 0.0508081615, 3.2844083e-10, 1, 8.73297878e-08, -0.0508081615, -8.72003056e-08, 0.998708427),
     ["Sakura Ravine"] = CFrame.new(10.4414206, 3.99438834, -2321.14819, 0.997639, 5.84764166e-08, -0.0686761737, -6.19572944e-08, 1, -4.85553642e-08, 0.0686761737, 5.26957145e-08, 0.997639),
     ["Magma Ravine"] = CFrame.new(8.24645805, 3.97864127, -2515.40601, 0.999063671, -2.30366226e-10, -0.0432639308, 4.2857784e-10, 1, 4.57217642e-09, 0.0432639308, -4.58643745e-09, 0.999063671),
-    ["Cloud Road"] = CFrame.new(8.24593353, 3.97864127, -2521.6958, 0.380393147, -3.80988112e-08, 0.924824893, 1.88804683e-09, 1, 4.0419124e-08, -0.924824893, -1.36290446e-08, 0.380393147),
-    ["Heaven"] = CFrame.new(8.67521954, 3.99617362, -2712.61621, 0.99999994, -3.22287153e-09, -0.000329909031, 3.19627369e-09, 1, -8.06222431e-08, 0.000329909031, 8.06211844e-08, 0.99999994),
+    ["Cloud Road"] = CFrame.new(11.6605415, 3.99617362, -2709.56128, 0.915485322, -1.99193924e-08, 0.402351379, 7.09648607e-09, 1, 3.33605499e-08, -0.402351379, -2.76858128e-08, 0.915485322),
+    ["Heaven"] = CFrame.new(8.83816242, 4.01350689, -2904.34009, 0.455204368, 8.88061038e-08, -0.890386999, -1.81342088e-08, 1, 9.0467779e-08, 0.890386999, -2.50348648e-08, 0.455204368),
+    ["Toxic Wasteland"] = CFrame.new(9.13585186, 3.86399436, -3100.13184, 0.954481244, 1.05871003e-07, -0.298270911, -1.03311663e-07, 1, 2.43468374e-08, 0.298270911, 7.57626406e-09, 0.954481244),
+    ["Dark1"] = CFrame.new(-3153.53345, 3.39824271, -402.869019, -0.884720683, -3.10261292e-08, -0.466121525, -1.57162336e-08, 1, -3.67321604e-08, 0.466121525, -2.5172028e-08, -0.884720683),
+    ["Dark2"] = CFrame.new(-3154.89575, 3.39824271, -610.529358, 0.967531264, 4.12644052e-09, 0.25275141, -2.14540941e-09, 1, -8.11346634e-09, -0.25275141, 7.30777705e-09, 0.967531264),
+    ["Dark3"] = CFrame.new(-3159.72266, 3.39824271, -806.266724, 0.685260892, -4.07395042e-08, -0.72829771, 7.85649448e-08, 1, 1.79843767e-08, 0.72829771, -6.95426579e-08, 0.685260892),
+    ["Dark4"] = CFrame.new(-3158.15698, 3.39824271, -983.460022, -0.995008826, 4.6121162e-08, 0.0997871161, 4.40223111e-08, 1, -2.32352164e-08, -0.0997871161, -1.87263858e-08, -0.995008826),
+    ["Light1"] = CFrame.new(-3231.92432, 3.39824271, -398.904999, -0.0746290982, -2.37228068e-08, 0.997211337, -1.23650512e-08, 1, 2.28637731e-08, -0.997211337, -1.06242668e-08, -0.0746290982),
+    ["Light2"] = CFrame.new(-3231.21802, 3.39824271, -600.883179, -0.991306663, -3.44640156e-08, -0.131571561, -2.47072833e-08, 1, -7.57878098e-08, 0.131571561, -7.18781905e-08, -0.991306663),
+    ["Light3"] = CFrame.new(-3227.93311, 3.39824247, -822.378479, 0.997868001, -2.68472728e-08, -0.0652645528, 2.0409658e-08, 1, -9.93055025e-08, 0.0652645528, 9.7761756e-08, 0.997868001),
+    ["Light4"] = CFrame.new(-3228.51733, 3.39824271, -991.515625, 0.972551823, -4.34344329e-08, 0.232686415, 5.82078243e-08, 1, -5.6624252e-08, -0.232686415, 6.86141917e-08, 0.972551823),
 }
+
 
 local function TeleportMap()
     local character = game.Players.LocalPlayer.Character or game.Players.LocalPlayer.CharacterAdded:Wait()
@@ -390,7 +400,7 @@ local ToggleEnabled = false
 
 local Dropdown = Menu:CreateDropdown({
     Name = "Select Map (If not unlocked it will NOT work.)",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven","Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Light1", "Light2", "Light3", "Light4"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
@@ -533,6 +543,10 @@ local function Teleport()
             teleportPosition = CFrame.new(72.6568451, 4.50232172, -2762.99146)
         elseif selectedEgg == "Heaven Egg" then
             teleportPosition = CFrame.new(73.6565552, 4.50232172, -2957.67847)
+        elseif selectedEgg == "Nuclear Egg" then
+            teleportPosition = CFrame.new(70.2078857, 4.36399746, -3151.0415)
+        elseif selectedEgg == "Beach Egg" then
+            teleportPosition = CFrame.new(70.0440216, 4.41396236, -3347.3291)
         end
 
         character.HumanoidRootPart.CFrame = teleportPosition
@@ -560,7 +574,9 @@ TP:CreateDropdown({
         "Split Egg",
         "Devil Egg",
         "Cloud Egg",
-        "Heaven Egg"
+        "Heaven Egg",
+        "Nuclear Egg",
+        "Beach Egg"
     },
     CurrentOption = "Basic Egg",
     MultipleOptions = false,
@@ -573,7 +589,7 @@ local Section = TP:CreateSection("Map Teleports")
 
 local Dropdown = TP:CreateDropdown({
     Name = "Map Teleports",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven", "Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Light1", "Light2", "Light3", "Light4"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
