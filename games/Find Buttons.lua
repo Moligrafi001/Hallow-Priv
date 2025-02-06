@@ -14,7 +14,7 @@ _G.AutoSkip = false
 -- Funções
 local function SkipStage()
 	local PlayerStage = game.Players.LocalPlayer.leaderstats.Easy.Value
-  for _, button in pairs(workspace.Game.Buttons:GetChildren()) do
+  for _, button in pairs(workspace.Game.Worlds.1.Buttons:GetChildren()) do
   	if button:FindFirstChild("ButtonLevel") and button.ButtonLevel.Value == PlayerStage then
   		local clickPart = button:FindFirstChild("ClickPart")
   		if clickPart and clickPart:FindFirstChild("ClickDetector") then
