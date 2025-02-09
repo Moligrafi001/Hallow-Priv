@@ -181,14 +181,21 @@ local mapPositions = {
     ["Cloud Road"] = CFrame.new(11.6605415, 3.99617362, -2709.56128, 0.915485322, -1.99193924e-08, 0.402351379, 7.09648607e-09, 1, 3.33605499e-08, -0.402351379, -2.76858128e-08, 0.915485322),
     ["Heaven"] = CFrame.new(8.83816242, 4.01350689, -2904.34009, 0.455204368, 8.88061038e-08, -0.890386999, -1.81342088e-08, 1, 9.0467779e-08, 0.890386999, -2.50348648e-08, 0.455204368),
     ["Toxic Wasteland"] = CFrame.new(9.13585186, 3.86399436, -3100.13184, 0.954481244, 1.05871003e-07, -0.298270911, -1.03311663e-07, 1, 2.43468374e-08, 0.298270911, 7.57626406e-09, 0.954481244),
+    ["Sandy Star Bay"] = CFrame.new(6.66705036, 3.91395926, -3312.83228, -0.7931813, 1.77182642e-08, -0.608985543, -1.03644213e-08, 1, 4.25939959e-08, 0.608985543, 4.00965448e-08, -0.7931813),
     ["Dark1"] = CFrame.new(-3153.53345, 3.39824271, -402.869019, -0.884720683, -3.10261292e-08, -0.466121525, -1.57162336e-08, 1, -3.67321604e-08, 0.466121525, -2.5172028e-08, -0.884720683),
     ["Dark2"] = CFrame.new(-3154.89575, 3.39824271, -610.529358, 0.967531264, 4.12644052e-09, 0.25275141, -2.14540941e-09, 1, -8.11346634e-09, -0.25275141, 7.30777705e-09, 0.967531264),
     ["Dark3"] = CFrame.new(-3159.72266, 3.39824271, -806.266724, 0.685260892, -4.07395042e-08, -0.72829771, 7.85649448e-08, 1, 1.79843767e-08, 0.72829771, -6.95426579e-08, 0.685260892),
     ["Dark4"] = CFrame.new(-3158.15698, 3.39824271, -983.460022, -0.995008826, 4.6121162e-08, 0.0997871161, 4.40223111e-08, 1, -2.32352164e-08, -0.0997871161, -1.87263858e-08, -0.995008826),
+    ["Dark5"] = CFrame.new(-3153.11011, 3.39824271, -1199.1438, 0.999995232, -2.32926722e-09, -0.00308485143, 2.31231412e-09, 1, -5.49912871e-09, 0.00308485143, 5.49196955e-09, 0.999995232),
+    ["Dark6"] = CFrame.new(-3155.82593, 3.39824271, -1409.17603, 0.923518896, 9.05453206e-08, 0.383552939, -5.61126754e-08, 1, -1.00961827e-07, -0.383552939, 7.17179702e-08, 0.923518896),
+    ["Dark7"] = CFrame.new(-3152.32324, 3.39824271, -1605.56848, -0.994411111, -5.42758265e-08, -0.105577298, -4.51298909e-08, 1, -8.90168863e-08, 0.105577298, -8.3754685e-08, -0.994411111),
     ["Light1"] = CFrame.new(-3231.92432, 3.39824271, -398.904999, -0.0746290982, -2.37228068e-08, 0.997211337, -1.23650512e-08, 1, 2.28637731e-08, -0.997211337, -1.06242668e-08, -0.0746290982),
     ["Light2"] = CFrame.new(-3231.21802, 3.39824271, -600.883179, -0.991306663, -3.44640156e-08, -0.131571561, -2.47072833e-08, 1, -7.57878098e-08, 0.131571561, -7.18781905e-08, -0.991306663),
     ["Light3"] = CFrame.new(-3227.93311, 3.39824247, -822.378479, 0.997868001, -2.68472728e-08, -0.0652645528, 2.0409658e-08, 1, -9.93055025e-08, 0.0652645528, 9.7761756e-08, 0.997868001),
     ["Light4"] = CFrame.new(-3228.51733, 3.39824271, -991.515625, 0.972551823, -4.34344329e-08, 0.232686415, 5.82078243e-08, 1, -5.6624252e-08, -0.232686415, 6.86141917e-08, 0.972551823),
+    ["Light5"] = CFrame.new(-3224.47754, 3.39824271, -1200.32275, -0.400142878, 4.15955483e-08, -0.916452765, -2.54553871e-08, 1, 5.65019178e-08, 0.916452765, 4.59375009e-08, -0.400142878),
+    ["Light6"] = CFrame.new(-3230.09204, 3.39824271, -1405.12012, -0.68163681, -2.76605014e-08, -0.731690705, 1.9938291e-08, 1, -5.63778855e-08, 0.731690705, -5.3017903e-08, -0.68163681),
+    ["Light7"] = CFrame.new(-3227.84375, 3.39824271, -1602.06616, 0.536547065, -1.6037653e-08, 0.843870401, -3.15253388e-08, 1, 3.9049219e-08, -0.843870401, -4.75550443e-08, 0.536547065),
 }
 
 
@@ -255,7 +262,7 @@ local ToggleEnabled = false
 
 local Dropdown = Menu:CreateDropdown({
     Name = "Select Map (If not unlocked it will NOT work.)",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven","Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Light1", "Light2", "Light3", "Light4"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven","Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Dark5", "Dark6", "Dark7", "Light1", "Light2", "Light3", "Light4", "Light5", "Light6", "Light7"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
@@ -444,7 +451,7 @@ local Section = TP:CreateSection("Map Teleports")
 
 local Dropdown = TP:CreateDropdown({
     Name = "Map Teleports",
-    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven", "Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Light1", "Light2", "Light3", "Light4"},
+    Options = {"SPAWN", "Autumn Forest", "Flower Garden", "Snow Forest", "Tropical Palms", "Mine Shaft", "Diamond Mine", "Magical Forest", "Sakura Forest", "Sakura Ravine", "Magma Ravine", "Cloud Road", "Heaven","Toxic Wasteland", "Sandy Star Bay", "Dark1", "Dark2", "Dark3", "Dark4", "Dark5", "Dark6", "Dark7", "Light1", "Light2", "Light3", "Light4", "Light5", "Light6", "Light7"},
     CurrentOption = {"SPAWN"},
     MultipleOptions = false,
     Callback = function(Options)
