@@ -91,7 +91,7 @@ local function GetCredit()
   end
 
   for _, credit in ipairs(workspace.GameObjects:GetChildren()) do
-    if credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" then
+    if getgenv().GetCredit and credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" then
       firetouchinterest(humanoidRoot, credit, 0)
       firetouchinterest(humanoidRoot, credit, 1)
       task.wait(0.05)
