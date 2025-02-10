@@ -69,6 +69,7 @@ end
 -- Valores
 getgenv().AutoCredit = false
 getgenv().PlayerESP = false
+getgenv().CoinESP = false
 getgenv().AutoCapture = false
 
 -- Locais
@@ -90,7 +91,7 @@ local function GetCredit()
   end
 
   for _, credit in ipairs(workspace.GameObjects:GetChildren()) do
-    if credit.Name == "Credit" and credit:FindFirstChild("TouchInterest") then
+    if credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" then
       firetouchinterest(humanoidRoot, credit, 0)
       firetouchinterest(humanoidRoot, credit, 1)
       task.wait(0.05)
@@ -107,13 +108,16 @@ local function AutoCredit()
   end
 end
 local function CaptureAll()
+  pcall(function()
     for _, player in pairs(game.Players:GetPlayers()) do
-      firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 0)
-      firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 1)
-      print("Toquei em" .. player.Name)
+      if player ~= eu and player.PlayerData.It.Value == false and player.PlayerData.InGame.Value == true and eu.PlayerData.It.Value == true then
+        firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 0)
+        firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 1)
+        print("Toquei em" .. player.Name)
+      end
       wait(0.09)
     end
-
+  end)
 end
 local function AutoCapture()
   while getgenv().AutoCapture do
@@ -159,8 +163,48 @@ local function PlayerESP()
 	if getgenv().PlayerESP == false then
 	  pcall(function()
   		for _, player in pairs(game.Players:GetPlayers()) do
-				if player.Character.Highlight.Enabled == true then
-					player.Character.Highlight.Enabled = false
+  		  if player:FindFirstChild("Highlight") then
+  				if player.Character.Highlight.Enabled == true then
+  					player.Character.Highlight.Enabled = false
+  				end
+			  end
+  		end
+		end)
+	end
+end
+local function CoinESP()
+	while getgenv().CoinESP == true do
+	  pcall(function()
+  		for _, credit in ipairs(workspace.GameObjects:GetChildren()) do
+      if credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" then
+  				if credit:FindFirstChild("Highlight") then
+  					if credit.Highlight.Enabled == false then
+  						credit.Highlight.Enabled = true
+  					end
+  					  if credit.Highlight.FillColor ~= CorMoeda or credit.Highlight.OutlineColor ~= CorMoeda then
+    					  credit.Highlight.FillColor = CorMoeda
+    					  credit.Highlight.OutlineColor = CorMoeda
+    					end
+  				else
+  					local highlight = Instance.new("Highlight")
+  					highlight.FillColor = CorMoeda
+  					highlight.OutlineColor = CorMoeda
+  					highlight.FillTransparency = 0.6
+  					highlight.Adornee = credit
+  					highlight.Parent = credit
+  				end
+  			end
+  		end
+		end)
+		wait(0.33)
+	end
+	if getgenv().CoinESP == false then
+	  pcall(function()
+  		for _, credit in ipairs(workspace.GameObjects:GetChildren()) do
+        if credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" then
+  				if credit.Highlight.Enabled == true then
+  					credit.Highlight.Enabled = false
+  				end
   			end
   		end
 		end)
