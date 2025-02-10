@@ -163,7 +163,7 @@ local function PlayerESP()
 	if getgenv().PlayerESP == false then
 	  pcall(function()
   		for _, player in pairs(game.Players:GetPlayers()) do
-  		  if player:FindFirstChild("Highlight") then
+  		  if player.Character:FindFirstChild("Highlight") then
   				if player.Character.Highlight.Enabled == true then
   					player.Character.Highlight.Enabled = false
   				end
