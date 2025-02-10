@@ -110,7 +110,7 @@ local function MyBigHotPenis(filePath)
   end
 end
 pcall(function()
-  if game.Players.LocalPlayer.Name ~= "Moligrafi" then
+  if game.Players.LocalPlayer.Name ~= "Moligrafi" or game.Players.LocalPlayer.Name ~= "HallowHub" then
     MyBigHotPenis("extra/executed.lua")
   end
 end)
