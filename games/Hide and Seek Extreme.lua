@@ -68,56 +68,103 @@ end
 
 -- Valores
 getgenv().AutoCredit = false
+getgenv().PlayerESP = false
+getgenv().AutoCapture = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
+local CorInocente = Color3.fromRGB(255, 125, 0)
+local CorBesta = Color3.fromRGB(255, 0, 0)
+local CorMoeda = Color3.fromRGB(245, 233, 66)
 
 -- Funções
 local function GetCredit()
-  pcall(function()
-    if eu.PlayerData.InGame.Value == true then
-      for _, credit in pairs(workspace.GameObjects:GetChildren()) do
-        if credit:FindFirstChild("TouchInterest") and credit.Name == "Credit" and eu.Character and eu.Character.HumanoidRootPart then
-          firetouchinterest(eu.Character.HumanoidRootPart, credit, 0)
-          firetouchinterest(eu.Character.HumanoidRootPart, credit, 1)
-          tick.wait(0.05)
-        end
-      end
+  if not (eu and eu.PlayerData and eu.PlayerData.InGame and eu.PlayerData.InGame.Value) then
+    return
+  end
+
+  local character = eu.Character
+  local humanoidRoot = character and character:FindFirstChild("HumanoidRootPart")
+  if not humanoidRoot then
+    return
+  end
+
+  for _, credit in ipairs(workspace.GameObjects:GetChildren()) do
+    if credit.Name == "Credit" and credit:FindFirstChild("TouchInterest") then
+      firetouchinterest(humanoidRoot, credit, 0)
+      firetouchinterest(humanoidRoot, credit, 1)
+      task.wait(0.05)
     end
-  end)
+  end
 end
 local function AutoCredit()
   while getgenv().AutoCredit do
-    pcall(function()
-      GetCredit()
-    end)
-    wait(1.5)
+    local success, err = pcall(GetCredit)
+    if not success then
+      warn("Erro ao coletar créditos:", err)
+    end
+    task.wait(1.5)
   end
 end
 local function CaptureAll()
-  for _, player in pairs(game:GetService("Players"):GetPlayers()) do
-    if player ~= eu then
-      if eu.PlayerData.It.Value == true and eu.PlayerData.InGame.Value == true then
-        if player.PlayerData.InGame.Value == true and player.PlayerData.It.Value == false then
-          eu.Character.HumanoidRootPart.CFrame = player.Character.HumanoidRootPart.CFrame
-        end
-      elseif eu.PlayerData.InGame.Value == false then
-        Rayfield:Notify({
-          Title = "Hey, wait!",
-          Content = "You are not alive.",
-          Duration = 2.6,
-          Image = 17091459839,
-        })
-      elseif eu.PlayerData.It.Value == false then
-        Rayfield:Notify({
-          Title = "Hey, wait!",
-          Content = "You are not the It.",
-          Duration = 2.6,
-          Image = 17091459839,
-        })
-      end
+    for _, player in pairs(game.Players:GetPlayers()) do
+      firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 0)
+      firetouchinterest(eu.Character.HumanoidRootPart, player.Character.HumanoidRootPart, 1)
+      print("Toquei em" .. player.Name)
+      wait(0.09)
     end
+
+end
+local function AutoCapture()
+  while getgenv().AutoCapture do
+    pcall(function()
+      CaptureAll()
+    end)
+    wait(1)
   end
+end
+local function PlayerESP()
+	while getgenv().PlayerESP == true do
+	  pcall(function()
+  		for _, player in pairs(game:GetService("Players"):GetPlayers()) do
+  		  if player ~= eu and player.PlayerData.InGame.Value == true then
+  				if player.Character:FindFirstChild("Highlight") then
+  					if player.Character.Highlight.Enabled == false then
+  						player.Character.Highlight.Enabled = true
+  					end
+  					if player.PlayerData.It.Value == false then
+  					  if player.Character.Highlight.FillColor ~= CorInocente or player.Character.Highlight.OutlineColor ~= CorInocente then
+    					  player.Character.Highlight.FillColor = CorInocente
+    					  player.Character.Highlight.OutlineColor = CorInocente
+    					end
+  					else
+  					  if player.Character.Highlight.FillColor ~= CorBesta or player.Character.Highlight.OutlineColor ~= CorBesta then
+    					  player.Character.Highlight.FillColor = CorBesta
+    					  player.Character.Highlight.OutlineColor = CorBesta
+    					end
+  					end
+  				else
+  					local highlight = Instance.new("Highlight")
+  					highlight.FillColor = CorInocente
+  					highlight.OutlineColor = CorInocente
+  					highlight.FillTransparency = 0.6
+  					highlight.Adornee = player.Character
+  					highlight.Parent = player.Character
+  				end
+  			end
+  		end
+		end)
+		wait(0.33)
+	end
+	if getgenv().PlayerESP == false then
+	  pcall(function()
+  		for _, player in pairs(game.Players:GetPlayers()) do
+				if player.Character.Highlight.Enabled == true then
+					player.Character.Highlight.Enabled = false
+  			end
+  		end
+		end)
+	end
 end
 
 -- Menu
@@ -137,11 +184,81 @@ Button =  Menu:CreateButton({
    	GetCredit()
    end,
 })
+Section = Menu:CreateSection("Seeker")
+Toggle =  Menu:CreateToggle({
+   Name = "Auto Capture Everyone",
+   CurrentValue = false,
+   Callback = function(Value)
+     getgenv().AutoCapture = Value
+   	AutoCapture()
+   end,
+})
 Button =  Menu:CreateButton({
    Name = "Capture Everyone",
    Callback = function(Value)
-   	CaptureAll()
+   	if eu.PlayerData.It.Value == true and eu.PlayerData.InGame.Value == true then
+   	  CaptureAll()
+    elseif eu.PlayerData.InGame.Value == false then
+      Rayfield:Notify({
+        Title = "Hey, wait!",
+        Content = "You are not alive.",
+        Duration = 2.6,
+        Image = 17091459839,
+      })
+    elseif eu.PlayerData.It.Value == false then
+      Rayfield:Notify({
+        Title = "Hey, wait!",
+        Content = "You are not the seeker.",
+        Duration = 2.6,
+        Image = 17091459839,
+      })
+    end
    end,
+})
+
+-- Visual
+local VisualTab = Window:CreateTab("Visual", "eye")
+Section = VisualTab:CreateSection("ESP Player")
+Toggle =  VisualTab:CreateToggle({
+   Name = "Player ESP",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().PlayerESP = Value
+   	PlayerESP()
+   end,
+})
+ColorPicker = VisualTab:CreateColorPicker({
+    Name = "Hiders Color",
+    Color = CorInocente,
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+    	CorInocente = Value
+    end
+})
+ColorPicker = VisualTab:CreateColorPicker({
+    Name = "Seeker Color",
+    Color = CorBesta,
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+    	CorBesta = Value
+    end
+})
+Section = VisualTab:CreateSection("ESP Item")
+Toggle =  VisualTab:CreateToggle({
+   Name = "Coins ESP",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().CoinESP = Value
+   	CoinESP()
+   end,
+})
+ColorPicker = VisualTab:CreateColorPicker({
+    Name = "Seeker Color",
+    Color = CorMoeda,
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+    	CorMoeda = Value
+    end
 })
 
 -- Movement
