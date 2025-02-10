@@ -297,7 +297,7 @@ Toggle =  VisualTab:CreateToggle({
    end,
 })
 ColorPicker = VisualTab:CreateColorPicker({
-    Name = "Seeker Color",
+    Name = "Coins Color",
     Color = CorMoeda,
     Flag = "ColorPicker1",
     Callback = function(Value)
