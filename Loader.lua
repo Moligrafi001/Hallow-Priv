@@ -231,6 +231,8 @@ elseif Game == 7041406370 then
   MyBigHotPenis("games/Beach Gym.lua")
 elseif Game == 93740418 then
   MyBigHotPenis("games/Hide and Seek Extreme.lua")
+elseif Game == 188352921 then
+  MyBigHotPenis("games/Fusion Fighters.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
