@@ -71,10 +71,12 @@ getgenv().PlayerESP = false
 getgenv().GunSound = false
 getgenv().AnnoyTrade = false
 getgenv().CancelTrade = false
+getgenv().Triggerbot = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
 local HitSize = 5
+local IsCooldown = false
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
@@ -211,10 +213,68 @@ local function GunSound()
     wait(0.20)
   end
 end
+local function Triggerbot()
+  local function RayOn(part)
+      local success, result = pcall(function()
+          local camera = game.Workspace.CurrentCamera
+          local ray = Ray.new(camera.CFrame.Position, (part.Position - camera.CFrame.Position).unit * 1000)
+          local hitPart, _ = workspace:FindPartOnRay(ray, eu.Character)
+          
+          return hitPart and hitPart.Parent == part.Parent
+      end)
+      return success and result or false
+  end
+
+  local function SetCooldown()
+      if not IsCooldown then
+          IsCooldown = true
+          task.wait(2)
+          IsCooldown = false
+      end
+  end
+
+  while getgenv().Triggerbot and not IsCooldown do
+      pcall(function()
+          for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
+              if player ~= eu 
+                  and player:GetAttribute("Game") == eu:GetAttribute("Game")
+                  and player:GetAttribute("Team") ~= eu:GetAttribute("Team") then
+                  
+                  local character = player.Character
+                  if character and RayOn(character:FindFirstChild("HumanoidRootPart")) then
+                      for _, tool in ipairs(eu.Character:GetChildren()) do
+                          if not IsCooldown 
+                              and tool:IsA("Tool") 
+                              and tool:FindFirstChild("Handle") 
+                              and tool:FindFirstChild("showBeam") 
+                              and tool:FindFirstChild("kill") then
+
+                              local handle = tool.Handle
+                              tool.showBeam:FireServer(character.HumanoidRootPart.Position, handle.Position, handle)
+                              tool.kill:FireServer(player, character.Head.Position)
+                              SetCooldown()
+                              break
+                          end
+                      end
+                  end
+              end
+          end
+      end)
+      task.wait(0.1)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Gun Features")
+Toggle =  Menu:CreateToggle({
+   Name = "Triggerbot",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().Triggerbot = Value
+   	Triggerbot()
+   end,
+})
 Button = Menu:CreateButton({
    Name = "Kill All",
    Callback = function()
