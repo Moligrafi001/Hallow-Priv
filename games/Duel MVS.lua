@@ -228,7 +228,7 @@ local function Triggerbot()
   local function SetCooldown()
       if not IsCooldown then
           IsCooldown = true
-          task.wait(2.5)
+          task.wait(3)
           IsCooldown = false
       end
   end
