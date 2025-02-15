@@ -251,7 +251,7 @@ local function Triggerbot()
 
                               local handle = tool.Handle
                               tool.showBeam:FireServer(character.HumanoidRootPart.Position, handle.Position, handle)
-                              tool.kill:FireServer(player, character.Head.Position)
+                              tool.kill:FireServer(player, Vector3.new(player.Character.Head.Position))
                               SetCooldown()
                               break
                           end
