@@ -247,9 +247,12 @@ local function Triggerbot()
                               and tool:IsA("Tool") 
                               and tool:FindFirstChild("Handle") 
                               and tool:FindFirstChild("showBeam") 
-                              and tool:FindFirstChild("kill") then
+                              and tool:FindFirstChild("kill")
+                              and tool:FindFirstChild("fire") then
 
                               local handle = tool.Handle
+                              
+                              tool.fire:FireServer()
                               tool.showBeam:FireServer(character.HumanoidRootPart.Position, handle.Position, handle)
                               tool.kill:FireServer(player, Vector3.new(player.Character.Head.Position))
                               SetCooldown()
