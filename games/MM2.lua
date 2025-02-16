@@ -1,4 +1,4 @@
-
+-- Load the Rayfield library
 if _G.Rayfield then
     _G.Rayfield:Destroy()
     _G.Rayfield = nil
@@ -418,31 +418,32 @@ local function getMap()
 end
 
 local function findMurderer()
-    -- Loop through all characters in workspace
-    for _, obj in ipairs(workspace:GetChildren()) do
-        if obj:IsA("Model") and obj:FindFirstChild("Humanoid") then
-            -- Check if the character has a Knife in its Backpack or Character
-            local knife = obj:FindFirstChild("Knife")
-            if knife then
-                return obj
-            end
+    for _, player in ipairs(game.Players:GetPlayers()) do
+        if player.Character and player.Character:FindFirstChild("Knife") then
+            return player.Character
         end
     end
-
-    -- Fallback: Check playerData for the Murderer role
-    if playerData then
-        for player, data in pairs(playerData) do
-            if data.Role == "Murderer" then
-                -- If the role is "Murderer", find the corresponding player's character in workspace
-                local character = game.Players:FindFirstChild(player) and game.Players[player].Character
-                if character then
-                    return character
-                end
-            end
-        end
-    end
-
     return nil
+end
+
+local function followMurderer()
+    while true do
+        local murdererCharacter = findMurderer()
+
+        if murdererCharacter and murdererCharacter:FindFirstChild("UpperTorso") then
+            local murdererTorso = murdererCharacter.UpperTorso
+
+            if Plr.Character and Plr.Character:FindFirstChild("HumanoidRootPart") then
+                -- Calculate position behind the murderer
+                local behindPosition = murdererTorso.Position - murdererTorso.CFrame.LookVector * 5
+
+                -- Update player's position to follow the murderer
+                Plr.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition, murdererTorso.Position)
+            end
+        end
+
+        task.wait(0.1)
+    end
 end
 
 
@@ -859,45 +860,91 @@ HomeTab:CreateButton({
     end,
 })
 
-local button = HomeTab:CreateButton({
-    Name = "FPS Boost",
-    Callback = function()
-        if not NuclearFPS.Active then
-            -- Store original state
-            NuclearFPS.Original = {
-                -- ... (original storage logic)
-            }
-            
-            DestroyGraphics()
-            NuclearFPS.Active = true
-            
+local XRayActive = false  -- Track the state of X-Ray
+
+local Toggle = HomeTab:CreateToggle({
+    Name = "X-Ray",
+    Callback = function(Value)
+        XRayActive = Value  -- Set the active state based on toggle
+
+        if XRayActive then
+            -- Enable X-Ray
+            print("X-Ray Enabled")
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("BasePart") and obj.Transparency < 1 then
+                    obj.LocalTransparencyModifier = 0.7  -- Adjust transparency for X-Ray effect
+                end
+            end
+
             Rayfield:Notify({
-                Title = "GRAPHICS NUKE DETONATED",
-                Content = "Say goodbye to visual fidelity",
+                Title = "X-Ray Activated",
+                Content = "You can now see through walls!",
                 Duration = 4,
                 Image = 4483362458,
             })
         else
-            -- Restore original state
-            workspace.Terrain.WaterWaveSize = NuclearFPS.Original.TerrainWaterWaveSize
-            workspace.Terrain.WaterWaveSpeed = NuclearFPS.Original.TerrainWaterWaveSpeed
-            game.Lighting.Technology = NuclearFPS.Original.LightingTechnology
-            settings().Rendering.QualityLevel = NuclearFPS.Original.QualityLevel
-            
-            -- Disconnect cleanup
-            if NuclearFPS.Connections.descendantAdded then
-                NuclearFPS.Connections.descendantAdded:Disconnect()
+            -- Disable X-Ray
+            print("X-Ray Disabled")
+            for _, obj in ipairs(workspace:GetDescendants()) do
+                if obj:IsA("BasePart") and obj.Transparency < 1 then
+                    obj.LocalTransparencyModifier = 0  -- Restore original transparency
+                end
             end
-            
-            NuclearFPS.Active = false
-            
+
             Rayfield:Notify({
-                Title = "VISUALS PARTIALLY RESTORED",
-                Content = "Some settings may need manual reset",
+                Title = "X-Ray Deactivated",
+                Content = "Visuals have been restored.",
                 Duration = 4,
                 Image = 4483362458,
             })
         end
+    end
+})
+
+
+HomeTab:CreateButton({
+    Name = "FPS boost - AntiLag", -- Button name
+    Callback = function()
+        local Terrain = workspace:FindFirstChildOfClass('Terrain')
+	Terrain.WaterWaveSize = 0
+	Terrain.WaterWaveSpeed = 0
+	Terrain.WaterReflectance = 0
+	Terrain.WaterTransparency = 0
+	Lighting.GlobalShadows = false
+	Lighting.FogEnd = 9e9
+	settings().Rendering.QualityLevel = 1
+	for i,v in pairs(game:GetDescendants()) do
+		if v:IsA("Part") or v:IsA("UnionOperation") or v:IsA("MeshPart") or v:IsA("CornerWedgePart") or v:IsA("TrussPart") then
+			v.Material = "Plastic"
+			v.Reflectance = 0
+		elseif v:IsA("Decal") then
+			v.Transparency = 1
+		elseif v:IsA("ParticleEmitter") or v:IsA("Trail") then
+			v.Lifetime = NumberRange.new(0)
+		elseif v:IsA("Explosion") then
+			v.BlastPressure = 1
+			v.BlastRadius = 1
+		end
+	end
+	for i,v in pairs(Lighting:GetDescendants()) do
+		if v:IsA("BlurEffect") or v:IsA("SunRaysEffect") or v:IsA("ColorCorrectionEffect") or v:IsA("BloomEffect") or v:IsA("DepthOfFieldEffect") then
+			v.Enabled = false
+		end
+	end
+	workspace.DescendantAdded:Connect(function(child)
+		task.spawn(function()
+			if child:IsA('ForceField') then
+				RunService.Heartbeat:Wait()
+				child:Destroy()
+			elseif child:IsA('Sparkles') then
+				RunService.Heartbeat:Wait()
+				child:Destroy()
+			elseif child:IsA('Smoke') or child:IsA('Fire') then
+				RunService.Heartbeat:Wait()
+				child:Destroy()
+			end
+		end)
+	end)
     end,
 })
 
@@ -1600,73 +1647,71 @@ local Kill2Section = MiscTab:CreateSection("If you are Sheriff -", true)
 MiscTab:CreateButton({
     Name = "Shoot Murderer",
     Callback = function()
-        -- Ensure the local player has a Gun and the murderer exists in workspace
-        local murderer = findMurderer()
-        
-        if Plr.Character and murderer and (Plr.Character:FindFirstChild("Gun") or Plr.Backpack:FindFirstChild("Gun")) then
-            -- If the player has the gun in their backpack, move it to the character's main part
-            if Plr.Backpack:FindFirstChild("Gun") then
-                Plr.Backpack.Gun.Parent = Plr.Character
-            end
+        local murdererCharacter = findMurderer()  -- Find the murderer's character
 
-            -- Wait for the murderer's character to load, and then the HumanoidRootPart
-            local murdererRootPart = murderer:FindFirstChild("HumanoidRootPart")
-            
-            -- Print where we are looking for the HumanoidRootPart
-            if murdererRootPart then
-                print("Murderer found! Looking for HumanoidRootPart in: " .. murderer.Name)
-            else
-                print("HumanoidRootPart not found for murderer: " .. murderer.Name)
-            end
-            
-            if not murdererRootPart then
-                -- Retry after a short wait if the HumanoidRootPart isn't available immediately
-                wait(1)
-                murdererRootPart = murderer:FindFirstChild("HumanoidRootPart")
-            end
-            
-            -- If still not available, show an error and exit
-            if not murdererRootPart then
-                warn("Murderer's HumanoidRootPart is not available.")
-                return
-            end
+        if murdererCharacter then
+            print("Murderer found: " .. murdererCharacter.Name)
 
-            -- Start a loop to continuously update the position
-            spawn(function()
-                while murdererRootPart and Plr.Character and Plr.Character:FindFirstChild("HumanoidRootPart") do
-                    -- Calculate the position behind the murderer
-                    local behindPosition = murdererRootPart.Position - murdererRootPart.CFrame.LookVector * 10
-                    Plr.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition, murdererRootPart.Position)
-                    
-                    -- Wait for a small interval before updating the position again
-                    task.wait(0.1)
+            -- Check if LocalPlayer's character and gun exist
+            if Plr.Character and (Plr.Character:FindFirstChild("Gun") or Plr.Backpack:FindFirstChild("Gun")) then
+                local gun = Plr.Character:FindFirstChild("Gun") or Plr.Backpack:FindFirstChild("Gun")
+
+                -- Move gun to character if in backpack
+                if Plr.Backpack:FindFirstChild("Gun") then
+                    Plr.Backpack.Gun.Parent = Plr.Character
                 end
-            end)
 
-            -- Position the player initially behind the murderer to prepare for a shot
-            local behindPosition = murdererRootPart.Position - murdererRootPart.CFrame.LookVector * 10
-            Plr.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition, murdererRootPart.Position)
+                local murdererTorso = murdererCharacter:FindFirstChild("UpperTorso") or murdererCharacter:FindFirstChild("HumanoidRootPart")
 
-            -- Invoke the ShootGun function to fire at the murderer
-            if Plr.Character:FindFirstChild("Gun") then
-                -- Ensure the Gun has a Shoot function
-                local shoot = Plr.Character.Gun:FindFirstChild("Shoot")
-                if shoot then
-                    shoot:FireServer(murdererRootPart.Position)
+                if murdererTorso then
+                    print("Following murderer: " .. murdererCharacter.Name)
+
+                    -- Start following behind the murderer
+                    spawn(function()
+                        while murdererTorso and Plr.Character and Plr.Character:FindFirstChild("HumanoidRootPart") do
+                            local murdererHumanoid = murdererCharacter:FindFirstChild("Humanoid")
+                            if murdererHumanoid and murdererHumanoid.Health <= 0 then
+                                print("Murderer is dead. Stopping follow.")
+                                break
+                            end
+
+                            -- Position behind the murderer
+                            local behindPosition = murdererTorso.Position - murdererTorso.CFrame.LookVector * 5
+                            Plr.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition, murdererTorso.Position)
+
+                            task.wait(0.1)
+                        end
+                    end)
+
+                    -- Immediately position the player behind the murderer before shooting
+                    local behindPosition = murdererTorso.Position - murdererTorso.CFrame.LookVector * 5
+                    Plr.Character.HumanoidRootPart.CFrame = CFrame.new(behindPosition, murdererTorso.Position)
+
+                    -- Shoot the murderer
+                    local shoot = gun:FindFirstChild("Shoot")
+                    if shoot then
+                        shoot:FireServer(murdererTorso.Position)
+                        print("Shot fired at: " .. tostring(murdererTorso.Position))
+                    else
+                        warn("Gun Shoot function not found.")
+                    end
                 else
-                    warn("Gun Shoot function not found.")
+                    warn("Murderer's torso or root part not found.")
                 end
             else
-                warn("Gun not found in character.")
+                warn("Sheriff has no gun or character missing.")
             end
         else
-            warn("Sheriff has no gun or murderer not found.")
+            warn("Murderer not found.")
         end
 
-        -- Wait for a short time before repeating
-        task.wait(0.5)
+        task.wait(0.05)
     end
 })
+
+
+
+
 
 
 local Kill3Section = MiscTab:CreateSection("If you are Murderer -", true)
@@ -1788,7 +1833,7 @@ MiscTab:CreateButton({
                     Plr.Character.Knife:WaitForChild("Stab"):FireServer(unpack(args))
                 end
 
-                task.wait(0.25)
+                task.wait(0.8)
             end
         end
     end
@@ -2260,7 +2305,7 @@ ServersTab:CreateButton({
     Callback = function()
         if #Players:GetPlayers() <= 1 then
             -- If there is only one player (you), kick and rejoin
-            Players.LocalPlayer:Kick("Rejoining...")
+            Players.LocalPlayer:Kick("\nRejoining...")
             wait(1)  -- Wait for a brief moment before teleporting
             TeleportService:Teleport(PlaceId, Players.LocalPlayer)
         else
