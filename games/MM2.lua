@@ -1,4 +1,4 @@
--- Load the Rayfield library
+
 if _G.Rayfield then
     _G.Rayfield:Destroy()
     _G.Rayfield = nil
@@ -2260,7 +2260,7 @@ ServersTab:CreateButton({
     Callback = function()
         if #Players:GetPlayers() <= 1 then
             -- If there is only one player (you), kick and rejoin
-            Players.LocalPlayer:Kick("\nRejoining...")
+            Players.LocalPlayer:Kick("Rejoining...")
             wait(1)  -- Wait for a brief moment before teleporting
             TeleportService:Teleport(PlaceId, Players.LocalPlayer)
         else
