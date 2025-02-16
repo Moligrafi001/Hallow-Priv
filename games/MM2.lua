@@ -1518,14 +1518,6 @@ TeleportsTab:CreateButton({
 TeleportsTab:CreateButton({
     Name = "Teleport Tool",
     Callback = function()
-        if not isAntiKickEnabled then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Error",
-                Text = "You need to enable Anti-Kick first!",
-                Duration = 5,
-            })
-            return
-        end
         
         local Players = game:GetService("Players")
         local player = Players.LocalPlayer
