@@ -736,6 +736,23 @@ local TeleportButton = TP:CreateButton({
     end
 })
 
+local Button = TP:CreateButton({
+    Name = "Teleport to King Hill",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+
+        local character = Player.Character or Player.CharacterAdded:Wait()
+
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        if humanoidRootPart then
+            humanoidRootPart.CFrame = CFrame.new(235.907196, 89.8000641, -282.457306)
+        else
+            warn("HumanoidRootPart not found!")
+        end
+    end
+})
+
 local Pet = Window:CreateTab("Pets", "paw-print")
 local Section = Pet:CreateSection("Auto stuff")
 
