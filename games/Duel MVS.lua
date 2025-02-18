@@ -431,7 +431,6 @@ Toggle = MoveTab:CreateToggle({
 while true do
   if getgenv().Triggerbot then
     getgenv().Triggerbot = false
-    wait(0.09)
     getgenv().Triggerbot = true
     Triggerbot()
     print("Atualizado o Triggerbot!")
