@@ -230,53 +230,6 @@ HomeTab:CreateToggle({
 })
 
 
-local teleportSection = HomeTab:CreateSection("teleport stuff", true)
-
--- Teleport tool (Only works if Anti-Kick is enabled)
-HomeTab:CreateButton({
-    Name = "Teleport Tool",
-    Callback = function()
-        if not isAntiKickEnabled then
-            game.StarterGui:SetCore("SendNotification", {
-                Title = "Error",
-                Text = "You need to enable Anti-Kick first!",
-                Duration = 5,
-            })
-            return
-        end
-        
-        local Players = game:GetService("Players")
-        local player = Players.LocalPlayer
-
-        -- Create the Teleport Tool
-        local tool = Instance.new("Tool")
-        tool.Name = "TeleportTool"
-        tool.RequiresHandle = false
-        tool.Parent = player.Backpack -- Add the tool to the player's backpack
-
-        -- Function to handle teleporting when the tool is activated
-        local function onActivated()
-            -- Check if the character is valid
-            local character = player.Character
-            if not character or not character:FindFirstChild("HumanoidRootPart") then
-                return
-            end
-
-            -- Get the mouse and the clicked position
-            local mouse = player:GetMouse()
-            local position = mouse.Hit.p
-
-            -- Teleport the character to the clicked position
-            character.HumanoidRootPart.CFrame = CFrame.new(position)
-        end
-
-        -- Connect the Activated event of the tool to the onActivated function
-        tool.Activated:Connect(onActivated)
-
-        print("Teleport Tool created. Equip it and click anywhere to teleport.")
-    end,
-})
-
 local NoclipSection = HomeTab:CreateSection("Noclip actions", true)
 
                                                                                                                 -- Variables to manage NoClip state
