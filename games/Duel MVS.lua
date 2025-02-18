@@ -214,57 +214,61 @@ local function GunSound()
   end
 end
 local function Triggerbot()
-  local function RayOn(part)
-      local success, result = pcall(function()
-          local camera = game.Workspace.CurrentCamera
-          local ray = Ray.new(camera.CFrame.Position, (part.Position - camera.CFrame.Position).unit * 1000)
-          local hitPart, _ = workspace:FindPartOnRay(ray, eu.Character)
-          
-          return hitPart and hitPart.Parent == part.Parent
-      end)
-      return success and result or false
-  end
-
-  local function SetCooldown()
-      if not IsCooldown then
-          IsCooldown = true
-          task.wait(3)
-          IsCooldown = false
-      end
-  end
-
-  while getgenv().Triggerbot and not IsCooldown do
-      pcall(function()
-          for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-              if player ~= eu 
-                  and player:GetAttribute("Game") == eu:GetAttribute("Game")
-                  and player:GetAttribute("Team") ~= eu:GetAttribute("Team") then
-                  
-                  local character = player.Character
-                  if character and RayOn(character:FindFirstChild("HumanoidRootPart")) then
-                      for _, tool in ipairs(eu.Character:GetChildren()) do
-                          if not IsCooldown 
-                              and tool:IsA("Tool") 
-                              and tool:FindFirstChild("Handle") 
-                              and tool:FindFirstChild("showBeam") 
-                              and tool:FindFirstChild("kill")
-                              and tool:FindFirstChild("fire") then
-
-                              local handle = tool.Handle
-                              
-                              tool.fire:FireServer()
-                              tool.showBeam:FireServer(character.HumanoidRootPart.Position, handle.Position, handle)
-                              tool.kill:FireServer(player, Vector3.new(player.Character.Head.Position))
-                              SetCooldown()
-                              break
-                          end
-                      end
-                  end
-              end
-          end
-      end)
-      task.wait(0.1)
-  end
+    -- Variáveis locais
+    local Players = game:GetService("Players")
+    local Workspace = game.Workspace
+    local LocalPlayer = Players.LocalPlayer
+    -- Função principal do Triggerbot
+    while getgenv().Triggerbot do
+        task.wait(0.1) -- Intervalo para evitar uso excessivo de CPU
+        -- Iterar sobre todos os jogadores
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer 
+                and player:GetAttribute("Game") == LocalPlayer:GetAttribute("Game")
+                and player:GetAttribute("Team") ~= LocalPlayer:GetAttribute("Team") then
+                local character = player.Character
+                local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+                if rootPart then
+                    -- Verificar se o raio atinge o jogador
+                    local camera = Workspace.CurrentCamera
+                    if camera then
+                        local rayOrigin = camera.CFrame.Position
+                        local rayDirection = (rootPart.Position - rayOrigin).Unit * 1000
+                        local ray = Ray.new(rayOrigin, rayDirection)
+                        local hit, _ = Workspace:FindPartOnRay(ray, LocalPlayer.Character)
+                        if hit and hit.Parent == rootPart.Parent then
+                            -- Iterar sobre as ferramentas do jogador local
+                            local localCharacter = LocalPlayer.Character
+                            if localCharacter then
+                                for _, tool in ipairs(localCharacter:GetChildren()) do
+                                    if not IsCooldown 
+                                        and tool:IsA("Tool") 
+                                        and tool:FindFirstChild("Handle") 
+                                        and tool:FindFirstChild("showBeam") 
+                                        and tool:FindFirstChild("kill") 
+                                        and tool:FindFirstChild("fire") then
+                                        local handle = tool.Handle
+                                        -- Ativar as funções da ferramenta
+                                        tool.fire:FireServer()
+                                        tool.showBeam:FireServer(character.HumanoidRootPart.Position, handle.Position, handle)
+                                        tool.kill:FireServer(player, Vector3.new(player.Character.Head.Position))
+                                        
+                                        -- Definir cooldown após o disparo
+                                        IsCooldown = true
+                                        task.spawn(function()
+                                            task.wait(3) -- Cooldown de 3 segundos
+                                            IsCooldown = false
+                                        end)
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end
 end
 
 -- Menu
@@ -423,3 +427,14 @@ Toggle = MoveTab:CreateToggle({
    	InfJump()
    end,
 })
+
+while true do
+  if getgenv().Triggerbot then
+    getgenv().Triggerbot = false
+    wait(0.09)
+    getgenv().Triggerbot = false
+    Triggerbot()
+    print("Atualizado o Triggerbot!")
+  end
+  wait(60)
+end
