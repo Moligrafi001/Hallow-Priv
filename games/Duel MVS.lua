@@ -220,7 +220,7 @@ local function Triggerbot()
     local LocalPlayer = Players.LocalPlayer
     -- Função principal do Triggerbot
     while getgenv().Triggerbot do
-        task.wait(0.1) -- Intervalo para evitar uso excessivo de CPU
+        task.wait(0.01) -- Intervalo para evitar uso excessivo de CPU
         -- Iterar sobre todos os jogadores
         for _, player in ipairs(Players:GetPlayers()) do
             if player ~= LocalPlayer 
