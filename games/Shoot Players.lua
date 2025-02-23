@@ -109,7 +109,7 @@ local function AutoCash()
 end
 local function AutoAirdrop()
   while getgenv().AutoAirdrop do
-    if true then
+    pcall(function()
       for _, a in pairs(workspace.Airdrops:GetChildren()) do
         for _, p in pairs(a:GetDescendants()) do
           if p:IsA("ProximityPrompt") and getgenv().AutoAirdrop and not IsWaiting then
@@ -124,7 +124,7 @@ local function AutoAirdrop()
           end
         end
       end
-    end
+    end)
     task.wait(0.1)
   end
   if not getgenv().AutoAirdrop then
