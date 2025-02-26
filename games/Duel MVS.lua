@@ -72,11 +72,14 @@ getgenv().GunSound = false
 getgenv().AnnoyTrade = false
 getgenv().CancelTrade = false
 getgenv().Triggerbot = false
+getgenv().AutoSlash = false
+getgenv().KnifeTrigger = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
 local HitSize = 5
 local IsCooldown = false
+local KnifeCooldown = 1
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
@@ -270,6 +273,40 @@ local function Triggerbot()
         end
     end
 end
+local function AutoSlash()
+  while getgenv().AutoSlash do
+    pcall(function()
+      for _, tool in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren() or game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+        if tool:IsA("Tool") and tool:FindFirstChild("Slash") then
+          tool.Slash:FireServer()
+        end
+      end
+    end)
+    task.wait(0.9)
+  end
+end
+local function KnifeTrigger()
+  while getgenv().KnifeTrigger do
+    pcall(function()
+      for _, p in pairs(game:GetService("Players"):GetPlayers()) do
+        if p ~= eu and p:GetAttribute("Game") == eu:GetAttribute("Game") and p:GetAttribute("Team") ~= eu:GetAttribute("Team") then
+          for _, tool in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren() or game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Throw") then
+              local args = {  
+                  [1] = CFrame.new(-1260.008544921875, 15.824623107910156, 3794.62890625) * CFrame.Angles(-0, 0, -0),  
+                  [2] = Vector3.new(-1265.56982421875, 13.56989860534668, 3809.724365234375),  
+                  [3] = Vector3.new(0.34234797954559326, 0.1387990564107895, -0.9292645454406738)  
+              }  
+                
+              tool.Throw:FireServer(CFrame.new(p.Character.HumanoidRootPart.Position) * CFrame.Angles(-0, 0, -0), Vector3.new(p.Character.HumanoidRootPart.Position), Vector3.new(eu.Character.HumanoidRootPart.Position))
+            end
+          end
+        end
+      end
+    end)
+    task.wait(KnifeCooldown)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -310,6 +347,32 @@ Toggle =  Menu:CreateToggle({
    Callback = function(Value)
    	getgenv().GunSound = Value
    	GunSound()
+   end,
+})
+Section = Menu:CreateSection("Knife Features")
+Toggle =  Menu:CreateToggle({
+   Name = "Auto Slash",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoSlash = Value
+   	AutoSlash()
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "Triggerbot",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().KnifeTrigger = Value
+   	KnifeTrigger()
+   end,
+})
+Input = Menu:CreateInput({
+   Name = "Triggerbot Cooldown",
+   CurrentValue = "1",
+   PlaceholderText = "Value in seconds",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	KnifeCooldown = tonumber(Text)
    end,
 })
 Section = Menu:CreateSection("Misc")
