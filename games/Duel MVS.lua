@@ -74,6 +74,7 @@ getgenv().CancelTrade = false
 getgenv().Triggerbot = false
 getgenv().AutoSlash = false
 getgenv().KnifeTrigger = false
+getgenv().EquipKnife = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -90,6 +91,17 @@ local IsCooldown = false
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
+local function EquipKnife()
+  while getgenv().EquipKnife and task.wait(0.01) do
+    pcall(function()
+      for _, tool in pairs(eu.Backpack:GetChildren()) do
+        if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+          tool.Parent = eu.Character
+        end
+      end
+    end)
+  end
+end
 local function AnnoyTrade()
   while getgenv().AnnoyTrade do
     pcall(function()
@@ -417,7 +429,7 @@ Toggle = GunTab:CreateToggle({
    end,
 })
 Input = GunTab:CreateInput({
-   Name = "Triggerbot Cooldown",
+   Name = "Cooldown",
    CurrentValue = "3",
    PlaceholderText = "Value in seconds",
    RemoveTextAfterFocusLost = false,
@@ -470,6 +482,14 @@ Input = GunTab:CreateInput({
 local KnifeTab = Window:CreateTab("Knife", "sword")
 Section = KnifeTab:CreateSection("Legit")
 Toggle =  KnifeTab:CreateToggle({
+   Name = "Auto Equip.Knife",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().EquipKnife = Value
+   	EquipKnife()
+   end,
+})
+Toggle =  KnifeTab:CreateToggle({
    Name = "Auto Slash",
    CurrentValue = false,
    Callback = function(Value)
@@ -512,7 +532,7 @@ Toggle =  KnifeTab:CreateToggle({
    end,
 })
 Input = KnifeTab:CreateInput({
-   Name = "Triggerbot Cooldown",
+   Name = "Cooldown",
    CurrentValue = "1",
    PlaceholderText = "Value in seconds",
    RemoveTextAfterFocusLost = false,
