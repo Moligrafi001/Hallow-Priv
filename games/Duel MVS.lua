@@ -92,7 +92,7 @@ local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
 local function EquipKnife()
-  while getgenv().EquipKnife and task.wait(0.01) do
+  while getgenv().EquipKnife and task.wait(0.25) do
     pcall(function()
       for _, tool in pairs(eu.Backpack:GetChildren()) do
         if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
@@ -150,7 +150,7 @@ local function PullGun()
         end
       end
     end)
-    wait(0.25)
+    task.wait(0.25)
   end
 end
 local function HitBox()
