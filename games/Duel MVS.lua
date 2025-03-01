@@ -77,9 +77,16 @@ getgenv().KnifeTrigger = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
+local Settings = {
+  TriggerbotCooldown = 3,
+  SlashCooldown = 0.9,
+  SpamSoundCooldown = 0.2,
+  KnifeCooldown = 1,
+  IgnoreWalls = false,
+  KnifeMethod = "Single Target"
+}
 local HitSize = 5
 local IsCooldown = false
-local KnifeCooldown = 1
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
@@ -211,9 +218,13 @@ end
 local function GunSound()
   while getgenv().GunSound == true do
     pcall(function()
-      game:GetService("Players").LocalPlayer.Character.DragonGun.fire:FireServer()
+      for _, tool in pairs(eu.Character:GetChildren()) do
+        if tool:IsA("Tool") and tool:FindFirstChild("fire") then
+          tool.fire:FireServer()
+        end
+      end
     end)
-    wait(0.20)
+    wait(Settings.SpamSoundCooldown)
   end
 end
 local function Triggerbot()
@@ -259,7 +270,7 @@ local function Triggerbot()
                                         -- Definir cooldown após o disparo
                                         IsCooldown = true
                                         task.spawn(function()
-                                            task.wait(3) -- Cooldown de 3 segundos
+                                            task.wait(Settings.TriggerbotCooldown) -- Cooldown de 3 segundos
                                             IsCooldown = false
                                         end)
                                         break
@@ -282,97 +293,99 @@ local function AutoSlash()
         end
       end
     end)
-    task.wait(0.9)
+    task.wait(Settings.SlashCooldown)
   end
 end
 local function KnifeTrigger()
-  while getgenv().KnifeTrigger do
-    pcall(function()
-      for _, p in pairs(game:GetService("Players"):GetPlayers()) do
-        if p ~= eu and p:GetAttribute("Game") == eu:GetAttribute("Game") and p:GetAttribute("Team") ~= eu:GetAttribute("Team") then
-          for _, tool in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren() or game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Throw") then
-              local args = {  
-                  [1] = CFrame.new(-1260.008544921875, 15.824623107910156, 3794.62890625) * CFrame.Angles(-0, 0, -0),  
-                  [2] = Vector3.new(-1265.56982421875, 13.56989860534668, 3809.724365234375),  
-                  [3] = Vector3.new(0.34234797954559326, 0.1387990564107895, -0.9292645454406738)  
-              }  
-                
-              tool.Throw:FireServer(CFrame.new(p.Character.HumanoidRootPart.Position) * CFrame.Angles(-0, 0, -0), Vector3.new(p.Character.HumanoidRootPart.Position), Vector3.new(eu.Character.HumanoidRootPart.Position))
+    while getgenv().KnifeTrigger do
+        pcall(function()
+            local players = game:GetService("Players"):GetPlayers()
+            for _, p in ipairs(players) do
+                if p ~= eu and 
+                   p:GetAttribute("Game") == eu:GetAttribute("Game") and 
+                   p:GetAttribute("Team") ~= eu:GetAttribute("Team") then
+
+                    local targetChar = p.Character
+                    local euChar = eu.Character
+                    if targetChar and euChar and 
+                       targetChar:FindFirstChild("HumanoidRootPart") and 
+                       euChar:FindFirstChild("HumanoidRootPart") then
+
+                        local targetPos = targetChar.HumanoidRootPart.Position
+                        local euPos = euChar.HumanoidRootPart.Position
+                        local canThrow = true
+
+                        if not Settings.IgnoreWalls then
+                            local direction = (targetPos - euPos).unit * 500
+                            local rayParams = RaycastParams.new()
+                            rayParams.FilterDescendantsInstances = {euChar}
+                            rayParams.FilterType = Enum.RaycastFilterType.Blacklist
+                            local rayResult = workspace:Raycast(euPos, direction, rayParams)
+                            if rayResult then
+                                canThrow = false
+                            end
+                        end
+
+                        if canThrow then
+                            -- Agrupa ferramentas do personagem e da mochila
+                            local tools = {}
+                            for _, tool in ipairs(euChar:GetChildren()) do
+                                table.insert(tools, tool)
+                            end
+
+                            for _, tool in ipairs(tools) do
+                                if tool:IsA("Tool") and tool:FindFirstChild("Throw") then
+                                    local cf = CFrame.new(targetPos)
+                                    tool.Throw:FireServer(cf, targetPos, euPos)
+                                    if Settings.KnifeMethod == "Single Target" then
+                                        break
+                                    end
+                                end
+                            end
+                        end
+                    end
+                end
             end
-          end
-        end
-      end
-    end)
-    task.wait(KnifeCooldown)
-  end
+        end)
+        task.wait(Settings.KnifeCooldown)
+    end
 end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-Section = Menu:CreateSection("Gun Features")
+Section = Menu:CreateSection("Player ESP")
 Toggle =  Menu:CreateToggle({
-   Name = "Triggerbot",
+   Name = "Player ESP",
    CurrentValue = false,
    Callback = function(Value)
-   	getgenv().Triggerbot = Value
-   	Triggerbot()
+   	getgenv().PlayerESP = Value
+   	PlayerESP()
    end,
 })
-Button = Menu:CreateButton({
-   Name = "Kill All",
-   Callback = function()
-   	KillGun()
-   end,
+ColorPicker = Menu:CreateColorPicker({
+    Name = "ESP Color",
+    Color = CorInocente,
+    Flag = "ColorPicker1",
+    Callback = function(Value)
+    	CorInocente = Value
+    end
 })
-Toggle =  Menu:CreateToggle({
-   Name = "Auto Kill All",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().AutoGun = Value
-   	AutoGun()
-   end,
-})
-Toggle =  Menu:CreateToggle({
-   Name = "Auto Equip Gun",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().PullGun = Value
-   	PullGun()
-   end,
-})
-Toggle =  Menu:CreateToggle({
-   Name = "Spam Sound (FE)",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().GunSound = Value
-   	GunSound()
-   end,
-})
-Section = Menu:CreateSection("Knife Features")
-Toggle =  Menu:CreateToggle({
-   Name = "Auto Slash",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().AutoSlash = Value
-   	AutoSlash()
-   end,
-})
-Toggle =  Menu:CreateToggle({
-   Name = "Triggerbot",
-   CurrentValue = false,
-   Callback = function(Value)
-   	getgenv().KnifeTrigger = Value
-   	KnifeTrigger()
-   end,
-})
+Section = Menu:CreateSection("Hitbox Expander")
 Input = Menu:CreateInput({
-   Name = "Triggerbot Cooldown",
-   CurrentValue = "1",
-   PlaceholderText = "Value in seconds",
+   Name = "Hitbox Size",
+   CurrentValue = "",
+   PlaceholderText = "Default HitBox Size = 5",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
-   	KnifeCooldown = tonumber(Text)
+   	HitSize = Text
+   end,
+})
+Toggle =  Menu:CreateToggle({
+   Name = "Expand Hitboxes",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().HitBox = Value
+   	HitBox()
    end,
 })
 Section = Menu:CreateSection("Misc")
@@ -393,40 +406,118 @@ Toggle =  Menu:CreateToggle({
    end,
 })
 
--- Combat
-local CombatTab = Window:CreateTab("Combat", "swords")
-Toggle =  CombatTab:CreateToggle({
-   Name = "Player ESP",
+local GunTab = Window:CreateTab("Gun", "skull")
+Section = GunTab:CreateSection("Undetectable")
+Toggle = GunTab:CreateToggle({
+   Name = "Triggerbot",
    CurrentValue = false,
    Callback = function(Value)
-   	getgenv().PlayerESP = Value
-   	PlayerESP()
+   	getgenv().Triggerbot = Value
+   	Triggerbot()
    end,
 })
-ColorPicker = CombatTab:CreateColorPicker({
-    Name = "ESP Color",
-    Color = CorInocente,
-    Flag = "ColorPicker1",
-    Callback = function(Value)
-    	CorInocente = Value
-    end
-})
-Section = CombatTab:CreateSection("Hitbox Expander")
-Input = CombatTab:CreateInput({
-   Name = "Hitbox Size",
-   CurrentValue = "",
-   PlaceholderText = "Default HitBox Size = 5",
+Input = GunTab:CreateInput({
+   Name = "Triggerbot Cooldown",
+   CurrentValue = "3",
+   PlaceholderText = "Value in seconds",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
-   	HitSize = Text
+   	Settings.TriggerbotCooldown = tonumber(Text)
    end,
 })
-Toggle =  CombatTab:CreateToggle({
-   Name = "Expand Hitboxes",
+Section = GunTab:CreateSection("Blatant")
+Button = GunTab:CreateButton({
+   Name = "Kill All",
+   Callback = function()
+   	KillGun()
+   end,
+})
+Toggle =  GunTab:CreateToggle({
+   Name = "Auto Kill All",
    CurrentValue = false,
    Callback = function(Value)
-   	getgenv().HitBox = Value
-   	HitBox()
+   	getgenv().AutoGun = Value
+   	AutoGun()
+   end,
+})
+Toggle =  GunTab:CreateToggle({
+   Name = "Auto Equip Gun",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().PullGun = Value
+   	PullGun()
+   end,
+})
+Section = GunTab:CreateSection("Misc")
+Toggle =  GunTab:CreateToggle({
+   Name = "Spam Sound (FE)",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().GunSound = Value
+   	GunSound()
+   end,
+})
+Input = GunTab:CreateInput({
+   Name = "Sound Cooldown",
+   CurrentValue = "0.2",
+   PlaceholderText = "Value in seconds",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	Settings.SpamSoundCooldown = tonumber(Text)
+   end,
+})
+
+local KnifeTab = Window:CreateTab("Knife", "sword")
+Section = KnifeTab:CreateSection("Legit")
+Toggle =  KnifeTab:CreateToggle({
+   Name = "Auto Slash",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoSlash = Value
+   	AutoSlash()
+   end,
+})
+Input = KnifeTab:CreateInput({
+   Name = "Slash Cooldown",
+   CurrentValue = "1",
+   PlaceholderText = "Value in seconds",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	Settings.SlashCooldown = tonumber(Text)
+   end,
+})
+Section = KnifeTab:CreateSection("Undetectable")
+Toggle =  KnifeTab:CreateToggle({
+   Name = "Triggerbot",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().KnifeTrigger = Value
+   	KnifeTrigger()
+   end,
+})
+Dropdown = KnifeTab:CreateDropdown({
+   Name = "Shoot Mode",
+   Options = {"Single Target", "Multiple Targets"},
+   CurrentOption = {"Single Target"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		Settings.KnifeMethod = Options[1]
+   end,
+})
+Toggle =  KnifeTab:CreateToggle({
+   Name = "Ignore Walls",
+   CurrentValue = false,
+   Callback = function(Value)
+   	Settings.IgnoreWalls = Value
+   end,
+})
+Input = KnifeTab:CreateInput({
+   Name = "Triggerbot Cooldown",
+   CurrentValue = "1",
+   PlaceholderText = "Value in seconds",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	Settings.KnifeCooldown = tonumber(Text)
    end,
 })
 
