@@ -79,6 +79,7 @@ getgenv().EquipKnife = false
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
+  Selected = "Invalid",
   TriggerbotCooldown = 3,
   SlashCooldown = 0.9,
   SpamSoundCooldown = 0.2,
@@ -91,6 +92,28 @@ local IsCooldown = false
 local CorInocente = Color3.fromRGB(255, 125, 0)
 
 -- Funções
+local function Teleport()
+  pcall(function()
+    if Settings.Selected == "Lobby" then
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(-337, 76, 19)
+    elseif Settings.Selected == "Factory" then
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(-1074, 113, 5437)
+    elseif Settings.Selected == "House" then
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(408, 111, 6859)
+    elseif Settings.Selected == "Mansion" then
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(-1175, 47, 6475)
+    elseif Settings.Selected == "MilBase" then
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(-1186, 27, 3737)
+    else
+      Rayfield:Notify({
+        Title = "Nothing is selected!",
+        Content = "Select a map to teleport.",
+        Duration = 3,
+        Image = 17091459839,
+        })
+    end
+  end)
+end
 local function EquipKnife()
   while getgenv().EquipKnife and task.wait(0.25) do
     pcall(function()
@@ -418,6 +441,7 @@ Toggle =  Menu:CreateToggle({
    end,
 })
 
+-- Gun
 local GunTab = Window:CreateTab("Gun", "skull")
 Section = GunTab:CreateSection("Undetectable")
 Toggle = GunTab:CreateToggle({
@@ -479,6 +503,7 @@ Input = GunTab:CreateInput({
    end,
 })
 
+-- Knife
 local KnifeTab = Window:CreateTab("Knife", "sword")
 Section = KnifeTab:CreateSection("Legit")
 Toggle =  KnifeTab:CreateToggle({
@@ -540,6 +565,26 @@ Input = KnifeTab:CreateInput({
    	Settings.KnifeCooldown = tonumber(Text)
    end,
 })
+
+-- Teleport
+local TPsTab = Window:CreateTab("Teleport", "Shell")
+Section = TPsTab:CreateSection("Teleport to Map")
+Dropdown = TPsTab:CreateDropdown({
+   Name = "Selected Map",
+   Options = {"Lobby", "Factory", "House", "Mansion", "MilBase"},
+   CurrentOption = {"Select a Map"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		Settings.Selected = Options[1]
+   end,
+})
+Toggle =  TPsTab:CreateButton({
+   Name = "Teleport to Map",
+   Callback = function(Value)
+   	Teleport()
+   end,
+})
+Label = TPsTab:CreateLabel("I love you - Moligrafi <3")
 
 -- Movement
 local MoveTab = Window:CreateTab("Movement", "chevrons-up")
