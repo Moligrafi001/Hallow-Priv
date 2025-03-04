@@ -1,8 +1,8 @@
-local LucheVitae = loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Luche-Vitae/refs/heads/main/Source/Library.lua"))() -- Load the Library
+local LucheVitae = loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Luche-Vitae/refs/heads/main/Source/Library.lua"))()
 
-LucheVitae:Settings({ -- Load your settings
-  Service = "hallowhub", -- Your service identificator
-  DebugMode = true, -- Debug things in console
+LucheVitae:Settings({
+  Service = "hallowhub",
+  DebugMode = true
 })
 
-if LucheVitae:Implement("Check Banned") then LucheVitae:Implement("Everything") end
+LucheVitae:Implement("Everything")
