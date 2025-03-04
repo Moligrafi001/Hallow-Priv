@@ -1,3 +1,10 @@
-if game.Players.LocalPlayer.Name ~= "HallowHub" then
-  loadstring('local service = "hallowhub"\n' .. game:HttpGet("https://orange-auth.squareweb.app/api/raw"))()
+local LucheVitae = loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Luche-Vitae/refs/heads/main/Source/Library.lua"))() -- Load the Library
+
+LucheVitae:Settings({ -- Load your settings
+  Service = "hallowhub", -- Your service identificator
+  DebugMode = true, -- Debug things in console
+})
+
+if LucheVitae:Implement("Check Banned") then
+  LucheVitae:Implement("Everything")
 end
