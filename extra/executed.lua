@@ -5,4 +5,4 @@ LucheVitae:Settings({ -- Load your settings
   DebugMode = true, -- Debug things in console
 })
 
-if ucheVitae:Implement("Check Banned") then LucheVitae:Implement("Everything") end
+if LucheVitae:Implement("Check Banned") then LucheVitae:Implement("Everything") end
