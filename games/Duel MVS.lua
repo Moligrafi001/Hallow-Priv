@@ -75,6 +75,7 @@ getgenv().Triggerbot = false
 getgenv().AutoSlash = false
 getgenv().KnifeTrigger = false
 getgenv().EquipKnife = false
+getgenv().AutoTPe = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
@@ -385,6 +386,31 @@ local function KnifeTrigger()
         task.wait(Settings.KnifeCooldown)
     end
 end
+local function GetTP()
+  pcall(function()
+    local mouse = eu:GetMouse()
+    local tool = Instance.new("Tool")
+    tool.RequiresHandle = false
+    tool.Name = "Teleport Tool"
+    tool.ToolTip = "Equip and click somewhere to teleport - Hallow Hub"
+    
+    tool.Activated:Connect(function()
+      local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
+      eu.Character.HumanoidRootPart.CFrame = CFrame.new(pos)
+    end)
+    
+    tool.Parent = eu.Backpack
+  end)
+end
+local function AutoTPe()
+  while getgenv().AutoTPe and task.wait(0.9) do
+    pcall(function()
+      if not eu.Backpack:FindFirstChild("Teleport Tool") and not eu.Character:FindFirstChild("Teleport Tool") then
+        GetTP()
+      end
+    end)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -578,12 +604,28 @@ Dropdown = TPsTab:CreateDropdown({
    		Settings.Selected = Options[1]
    end,
 })
-Toggle =  TPsTab:CreateButton({
+Button =  TPsTab:CreateButton({
    Name = "Teleport to Map",
    Callback = function(Value)
    	Teleport()
    end,
 })
+Section = TPsTab:CreateSection("Teleport Tool")
+Button =  TPsTab:CreateButton({
+   Name = "Get Teleport Tool",
+   Callback = function(Value)
+   	GetTP()
+   end,
+})
+Toggle =  TPsTab:CreateToggle({
+   Name = "Permanent Tool",
+   CurrentValue = false,
+   Callback = function(Value)
+   	getgenv().AutoTPe = Value
+   	AutoTPe()
+   end,
+})
+
 Label = TPsTab:CreateLabel("I love you - Moligrafi <3")
 
 -- Movement
