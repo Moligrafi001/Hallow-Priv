@@ -81,7 +81,10 @@ getgenv().AutoTPe = false
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
   Selected = "Invalid",
+  Teleport = "Everytime",
   TriggerbotCooldown = 3,
+  Arma = false,
+  Faca = false,
   SlashCooldown = 0.9,
   SpamSoundCooldown = 0.2,
   KnifeCooldown = 1,
@@ -393,6 +396,7 @@ local function GetTP()
     tool.RequiresHandle = false
     tool.Name = "Teleport Tool"
     tool.ToolTip = "Equip and click somewhere to teleport - Hallow Hub"
+    tool.TextureId = "rbxassetid://17091459839"
     
     tool.Activated:Connect(function()
       local pos = mouse.Hit.Position + Vector3.new(0, 2.5, 0)
@@ -403,10 +407,56 @@ local function GetTP()
   end)
 end
 local function AutoTPe()
-  while getgenv().AutoTPe and task.wait(0.9) do
+  while getgenv().AutoTPe and task.wait() do
     pcall(function()
       if not eu.Backpack:FindFirstChild("Teleport Tool") and not eu.Character:FindFirstChild("Teleport Tool") then
-        GetTP()
+        if Settings.Teleport == "Tools Load" then
+          for _, tool in pairs(eu.Character:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              if tool then
+                Settings.Faca = true
+              else
+                Settings.Faca = false
+              end
+            end
+          end
+          for _, tool in pairs(eu.Backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              if tool then
+                Settings.Faca = true
+              else
+                Settings.Faca = false
+              end
+            end
+          end
+          for _, tool in pairs(eu.Character:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              if tool then
+                Settings.Arma = true
+              else
+                Settings.Arma = false
+              end
+            end
+          end
+          for _, tool in pairs(eu.Backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              if tool then
+                Settings.Arma = true
+              else
+                Settings.Arma = false
+              end
+            end
+          end
+          if Settings.Faca and Settings.Arma then
+            GetTP()
+          end
+          task.wait(0.1)
+        elseif Settings.Teleport == "Everytime" then
+          GetTP()
+          task.wait(0.9)
+        else
+          task.wait(1)
+        end
       end
     end)
   end
@@ -625,7 +675,15 @@ Toggle =  TPsTab:CreateToggle({
    	AutoTPe()
    end,
 })
-
+Dropdown = TPsTab:CreateDropdown({
+   Name = "Give Tool When",
+   Options = {"Tools Load", "Everytime"},
+   CurrentOption = {"Everytime"},
+   MultipleOptions = false,
+   Callback = function(Options)
+   		Settings.Teleport = Options[1]
+   end,
+})
 Label = TPsTab:CreateLabel("I love you - Moligrafi <3")
 
 -- Movement
