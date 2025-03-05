@@ -450,7 +450,7 @@ local function AutoTPe()
           if Settings.Faca and Settings.Arma then
             GetTP()
           end
-          task.wait(0.1)
+          task.wait(0.25)
         elseif Settings.Teleport == "Everytime" then
           GetTP()
           task.wait(0.9)
