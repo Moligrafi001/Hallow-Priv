@@ -406,56 +406,86 @@ local function GetTP()
     tool.Parent = eu.Backpack
   end)
 end
+local function DelTP()
+  pcall(function()
+    for _, tool in pairs(eu.Character:GetChildren()) do
+      if tool:IsA("Tool") and tool.Name == "Teleport Tool" then
+        tool:Destroy()
+      end
+    end
+    for _, tool in pairs(eu.Backpack:GetChildren()) do
+      if tool:IsA("Tool") and tool.Name == "Teleport Tool" then
+        tool:Destroy()
+      end
+    end
+  end)
+end
 local function AutoTPe()
   while getgenv().AutoTPe and task.wait() do
     pcall(function()
-      if not eu.Backpack:FindFirstChild("Teleport Tool") and not eu.Character:FindFirstChild("Teleport Tool") then
+      if Settings.Teleport == "Tools Load" and (eu.Backpack:FindFirstChild("Teleport Tool") or eu.Character:FindFirstChild("Teleport Tool")) then
+        local function CheckTools()
+          local Faca = false
+          local Arma = false
+          
+          for _, tool in pairs(eu.Character:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              Faca = true
+            end
+          end
+          for _, tool in pairs(eu.Backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              Faca = true
+            end
+          end
+          for _, tool in pairs(eu.Character:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              Arma = true
+            end
+          end
+          for _, tool in pairs(eu.Backpack:GetChildren()) do
+            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              Arma = true
+            end
+          end
+          
+          if Faca and Arma then
+            return true
+          end
+          return false
+        end
+        if not CheckTools() then
+          DelTP()
+        end
+      elseif not eu.Backpack:FindFirstChild("Teleport Tool") and not eu.Character:FindFirstChild("Teleport Tool") then
         if Settings.Teleport == "Tools Load" then
           for _, tool in pairs(eu.Character:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              if tool then
-                Settings.Faca = true
-              else
-                Settings.Faca = false
-              end
+            if not Settings.Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              Settings.Faca = true
             end
           end
           for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              if tool then
-                Settings.Faca = true
-              else
-                Settings.Faca = false
-              end
+            if not Settings.Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+              Settings.Faca = true
             end
           end
           for _, tool in pairs(eu.Character:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              if tool then
-                Settings.Arma = true
-              else
-                Settings.Arma = false
-              end
+            if not Settings.Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              Settings.Arma = true
             end
           end
           for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              if tool then
-                Settings.Arma = true
-              else
-                Settings.Arma = false
-              end
+            if not Settings.Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+              Settings.Arma = true
             end
           end
-          if Settings.Faca == true and Settings.Arma == true then
+          if Settings.Faca and Settings.Arma then
             GetTP()
           end
-          task.wait(0.1)
+          Settings.Faca = false
+          Settings.Arma = false
         elseif Settings.Teleport == "Everytime" then
           GetTP()
-          task.wait(0.9)
-        else
-          task.wait(1)
         end
       end
     end)
@@ -665,6 +695,12 @@ Button =  TPsTab:CreateButton({
    Name = "Get Teleport Tool",
    Callback = function(Value)
    	GetTP()
+   end,
+})
+Button =  TPsTab:CreateButton({
+   Name = "Remove Tool",
+   Callback = function(Value)
+   	DelTP()
    end,
 })
 Toggle =  TPsTab:CreateToggle({
