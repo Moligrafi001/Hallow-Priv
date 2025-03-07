@@ -423,67 +423,41 @@ end
 local function AutoTPe()
   while getgenv().AutoTPe and task.wait() do
     pcall(function()
-      if Settings.Teleport == "Tools Load" and (eu.Backpack:FindFirstChild("Teleport Tool") or eu.Character:FindFirstChild("Teleport Tool")) then
-        local function CheckTools()
-          local Faca = false
-          local Arma = false
-          
-          for _, tool in pairs(eu.Character:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              Faca = true
-            end
+      local function ToolsLoaded()
+        local Faca = false
+        local Arma = false
+        
+        for _, tool in pairs(eu.Character:GetChildren()) do
+          if not Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+            Faca = true
           end
-          for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              Faca = true
-            end
-          end
-          for _, tool in pairs(eu.Character:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              Arma = true
-            end
-          end
-          for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              Arma = true
-            end
-          end
-          
-          if Faca and Arma then
-            return true
-          end
-          return false
         end
-        if not CheckTools() then
-          DelTP()
+        for _, tool in pairs(eu.Backpack:GetChildren()) do
+          if not Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
+            Faca = true
+          end
         end
+        for _, tool in pairs(eu.Character:GetChildren()) do
+          if not Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+            Arma = true
+          end
+        end
+        for _, tool in pairs(eu.Backpack:GetChildren()) do
+          if not Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
+            Arma = true
+          end
+        end
+        
+        if Faca and Arma then
+          return true
+        end
+        return false
+      end
+      if Settings.Teleport == "Tools Load" and (eu.Backpack:FindFirstChild("Teleport Tool") or eu.Character:FindFirstChild("Teleport Tool")) and not ToolsLoaded() then
+        DelTP()
       elseif not eu.Backpack:FindFirstChild("Teleport Tool") and not eu.Character:FindFirstChild("Teleport Tool") then
-        if Settings.Teleport == "Tools Load" then
-          for _, tool in pairs(eu.Character:GetChildren()) do
-            if not Settings.Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              Settings.Faca = true
-            end
-          end
-          for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if not Settings.Faca and tool:IsA("Tool") and tool:FindFirstChild("Slash") and tool:FindFirstChild("Throw") then
-              Settings.Faca = true
-            end
-          end
-          for _, tool in pairs(eu.Character:GetChildren()) do
-            if not Settings.Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              Settings.Arma = true
-            end
-          end
-          for _, tool in pairs(eu.Backpack:GetChildren()) do
-            if not Settings.Arma and tool:IsA("Tool") and tool:FindFirstChild("fire") and tool:FindFirstChild("showBeam") then
-              Settings.Arma = true
-            end
-          end
-          if Settings.Faca and Settings.Arma then
-            GetTP()
-          end
-          Settings.Faca = false
-          Settings.Arma = false
+        if Settings.Teleport == "Tools Load" and ToolsLoaded() then
+          GetTP()
         elseif Settings.Teleport == "Everytime" then
           GetTP()
         end
