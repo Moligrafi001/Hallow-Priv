@@ -5,5 +5,4 @@ Luache:Settings({
   DebugMode = true
 })
 
-Luache:Implement("Send Webhook")
 Luache:Implement("Everything")
