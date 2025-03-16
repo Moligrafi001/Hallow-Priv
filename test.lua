@@ -1,1 +1,1 @@
-this is the script
+print("this is the script")
