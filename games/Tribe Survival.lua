@@ -106,7 +106,7 @@ Toggle =  Menu:CreateToggle({
    end,
 })
 Toggle =  Menu:CreateToggle({
-   Name = "Anti Wolfs",
+   Name = "Anti Wolves",
    CurrentValue = false,
    Callback = function(Value)
    	getgenv().AntiWolf = Value
