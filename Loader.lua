@@ -241,6 +241,8 @@ elseif Game == 3979950877 then
   MyBigHotPenis("games/Shoot Players.lua")
 elseif Game == 6938955762 then
   MyBigHotPenis("games/Tribe Survival.lua")
+elseif Game == 2548183080 then
+  MyBigHotPenis("games/Pilgrammed.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
