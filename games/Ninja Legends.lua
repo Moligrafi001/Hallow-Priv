@@ -1095,3 +1095,8 @@ local ToggleAutoDuel = Misc:CreateToggle({
         end
     end
 })
+
+local OWN = Window:CreateTab("Script Writer")
+local Section = OWN:CreateSection("Writer")
+
+local Label = OWN:CreateLabel("PrismX - Ninja Legends Script Writer",SectionParent)
