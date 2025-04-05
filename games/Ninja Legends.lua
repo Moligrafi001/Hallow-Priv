@@ -753,6 +753,25 @@ local Button = TP:CreateButton({
     end
 })
 
+local Section = TP:CreateSection("Other Locations")
+
+local Button = TP:CreateButton({
+    Name = "Teleport to Pet Cloner",
+    Callback = function()
+        local Player = game.Players.LocalPlayer 
+
+        local character = Player.Character or Player.CharacterAdded:Wait()
+
+        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+        if humanoidRootPart then
+            humanoidRootPart.CFrame = CFrame.new(4578.66553, 130.646988, 1426.25061)
+        else
+            warn("HumanoidRootPart not found!")
+        end
+    end
+})
+
 local Pet = Window:CreateTab("Pets", "paw-print")
 local Section = Pet:CreateSection("Auto stuff")
 
