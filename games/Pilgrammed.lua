@@ -9,7 +9,125 @@ local Window = Rayfield:CreateWindow({
 
 -- Valores
 getgenv().AutoChest = false
+getgenv().PlayerESP = false
+-- Movement
+local WalkSpeedText = 16
+local JumpPowerText = 50
+_G.SetWalkSpeed = false
+_G.SetJumpPower = false
+_G.InfJump = false
+_G.NoClip = false
 
+local function PlayerESP()
+	while getgenv().PlayerESP == true do
+		for _, players in pairs(game.Players:GetPlayers()) do
+			local player = players.Character
+			if players and player then
+				if player ~= game.Players.LocalPlayer.Character then
+					if player:FindFirstChild("LuzESP") then
+						if player.LuzESP.Enabled == false then
+							player.LuzESP.Enabled = true
+						end
+					else
+						local highlight = Instance.new("Highlight")
+						highlight.Name = "LuzESP"
+						highlight.FillColor = Color3.fromRGB(255, 125, 0)
+						highlight.OutlineColor = Color3.fromRGB(255, 125, 0)
+						highlight.FillTransparency = 0.6
+						highlight.Adornee = player
+						highlight.Parent = player
+					end
+					if player:FindFirstChild("HumanoidRootPart") and player:FindFirstChild("Head") and game.Players.LocalPlayer.Character and game.Players.LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+						local distance = player.Name .. " [" .. math.floor((game.Players.LocalPlayer.Character.HumanoidRootPart.Position - player.HumanoidRootPart.Position).Magnitude) .. " Studs]"
+						if player.Head:FindFirstChild("NameESP") then
+							if player.Head.NameESP.TextESP.Text ~= distance then
+								player.Head.NameESP.TextESP.Text = distance
+							end
+						else
+							local bgui = Instance.new("BillboardGui", player.Head)
+	            bgui.Name = "NameESP"
+	            bgui.AlwaysOnTop = true
+	            bgui.ExtentsOffset = Vector3.new(0, 3, 0)
+	            bgui.Size = UDim2.new(0, 200, 0, 50)
+	            bgui.MaxDistance = 1500
+	            if not player.Head.NameESP:FindFirstChild("TextESP") then
+	            	local nam = Instance.new("TextLabel", bgui)
+	            	nam.Name = "TextESP"
+	            	nam.Text = distance
+	            	nam.BackgroundTransparency = 1
+	            	nam.TextSize = 15
+	            	nam.Font = Enum.Font.GothamBold
+	            	nam.TextColor3 = Color3.fromRGB(255, 125, 0)
+	            	nam.Size = UDim2.new(0, 200, 0, 50)
+		          end
+						end
+					end
+				end
+			end
+		end
+		wait(0.01)
+	end
+	if getgenv().PlayerESP == false then
+		for _, players in pairs(game.Players:GetPlayers()) do
+			local player = players.Character
+			if players and player and player:FindFirstChild("LuzESP") then
+				if player.LuzESP.Enabled == true then
+					player.LuzESP.Enabled = false
+				end
+			end
+			if players and player and player:FindFirstChild("Head") and player.Head:FindFirstChild("NameESP") then
+				player.Head.NameESP:Destroy()
+			end
+		end
+	end
+end
+
+local function SetWalkSpeed()
+	while _G.SetWalkSpeed == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+		end
+		wait(0.01)
+	end
+	if _G.SetWalkSpeed == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+	end
+end
+local function SetJumpPower()
+	while _G.SetJumpPower == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
+		end
+		wait(0.01)
+		end
+	if _G.SetJumpPower == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
+	end
+end
+local function InfJump()
+	while _G.InfJump == true do
+		game:GetService("UserInputService").JumpRequest:connect(function()
+			if _G.InfJump == true then
+				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+			end
+		end)
+		wait(0.1)
+	end
+end
+local function NoClip()
+	while _G.NoClip == true do
+		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if _G.NoClip then
+					part.CanCollide = false
+				else
+					part.CanCollide = true
+				end
+			end
+		end
+		wait(0.1)
+	end
+end
 -- Locais
 local Settings = {
   Mirror = "Select a Mirror",
@@ -114,6 +232,17 @@ Toggle =  Menu:CreateToggle({
    end,
 })
 
+Section = Menu:CreateSection("Visuals", "eye")
+local Toggle =  Menu:CreateToggle({
+    Name = "ESP Players",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().PlayerESP = Value
+        PlayerESP()
+    end,
+ })
+
+
 -- Teleport
 local TPsTab = Window:CreateTab("Teleport", "shell")
 Section = TPsTab:CreateSection("Teleport to Mirror")
@@ -188,5 +317,66 @@ Button = TPsTab:CreateButton({
       Duration = 3,
       Image = 17091459839,
     })
+   end,
+})
+
+local M = Window:CreateTab("Movement", "move")
+local Section = M:CreateSection("Player", "person-standing")
+
+local Input = M:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "16",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	WalkSpeedText = Text
+   end,
+})
+local Toggle = M:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	_G.SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
+})
+local Toggle = M:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	_G.NoClip = Value
+   	NoClip()
+   end,
+})
+local Section = M:CreateSection("Jump")
+local Input = M:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	JumpPowerText = Text
+   end,
+})
+local Toggle = M:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	_G.SetJumpPower = Value
+   	SetJumpPower()
+   end,
+})
+local Toggle = M:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	_G.InfJump = Value
+   	InfJump()
    end,
 })
