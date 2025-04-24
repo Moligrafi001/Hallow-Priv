@@ -27,7 +27,7 @@ local eu = game:GetService("Players").LocalPlayer
 local function OresESP()
   while getgenv().OresESP and task.wait(0.1) do
     for _, ore in pairs(workspace.SpawnedBlocks:GetChildren()) do
-      if ore:IsA("MeshPart") then
+      if true then
         if ore:FindFirstChild("Highlight") then
           if table.find(Settings.Ores.Selecteds, ore.Name) then
             ore.Highlight.Enabled = true
@@ -57,13 +57,13 @@ local function Teleport(place)
   if place == "Home" then
     for _, p in pairs(workspace.Plots:GetChildren()) do
       if p:GetAttribute("OwnerId") == eu.UserId then
-        eu.Character.HumanoidRootPart.CFrame = (p.WorldPivot * CFrame.new(0, 9, 0))
+        eu.Character.HumanoidRootPart.CFrame = p.WorldPivot * CFrame.new(0, 9, 0)
       end
     end
   elseif place == "Player" then
     eu.Character.HumanoidRootPart.CFrame = game:GetService("Players")[Settings.Teleport.Player].Character.HumanoidRootPart.CFrame
   elseif place == "Plot" then
-    eu.Character.HumanoidRootPart.CFrame = (workspace.Plots[Settings.Teleport.Plot].WorldPivot * CFrame.new(0, 9, 0))
+    eu.Character.HumanoidRootPart.CFrame = workspace.Plots[Settings.Teleport.Plot].WorldPivot * CFrame.new(0, 9, 0)
   end
 end
 local function ReturnThing(type)
@@ -113,7 +113,7 @@ Toggle = Menu:CreateToggle({
 
 -- Teleport
 local TPsTab = Window:CreateTab("Teleport", "shell")
-Section = TPsTab:CreateSection("Helpful Tele.")
+Section = TPsTab:CreateSection("Helpful Teleport")
 Button = TPsTab:CreateButton({
   Name = "Teleport Home",
   Callback = function()
@@ -165,4 +165,121 @@ Button = TPsTab:CreateButton({
       Image = 17091459839
     })
   end
+})
+
+-- Movement
+local WalkSpeedText = 16
+local JumpPowerText = 50
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
+local function SetWalkSpeed()
+	while getgenv().SetWalkSpeed == true do
+	  pcall(function()
+  		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+  			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+  		end
+		end)
+		wait(0.01)
+	end
+	if getgenv().SetWalkSpeed == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+	end
+end
+local function SetJumpPower()
+	while getgenv().SetJumpPower == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
+		end
+		wait(0.01)
+		end
+	if getgenv().SetJumpPower == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
+	end
+end
+local function InfJump()
+	while getgenv().InfJump == true do
+		game:GetService("UserInputService").JumpRequest:connect(function()
+			if getgenv().InfJump == true then
+				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+			end
+		end)
+		wait(0.1)
+	end
+end
+local function NoClip()
+	while getgenv().NoClip == true do
+		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if getgenv().NoClip then
+					part.CanCollide = false
+				else
+					part.CanCollide = true
+				end
+			end
+		end
+		wait(0.1)
+	end
+end
+
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	WalkSpeedText = Text
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	getgenv().SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	getgenv().NoClip = Value
+   	NoClip()
+   end,
+})
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	JumpPowerText = Text
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	getgenv().SetJumpPower = Value
+   	SetJumpPower()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	getgenv().InfJump = Value
+   	InfJump()
+   end,
 })
