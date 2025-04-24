@@ -103,7 +103,7 @@ Dropdown = Menu:CreateDropdown({
   end
 })
 Toggle = Menu:CreateToggle({
-  Name = "Triggerbot",
+  Name = "ESP Ores",
   CurrentValue = false,
   Callback = function(Value)
     getgenv().OresESP = Value
