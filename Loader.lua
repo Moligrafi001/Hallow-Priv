@@ -249,6 +249,8 @@ elseif Game == 5850405510 then
   MyBigHotPenis("games/power.lua")
 elseif Game == 6935186137 then
   MyBigHotPenis("games/Cavern Quest.lua")
+elseif Game == 6329693946 then
+  MyBigHotPenis("games/Mining.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
