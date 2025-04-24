@@ -31,7 +31,7 @@ local function OresESP()
             ore.Highlight.Enabled = false
           end
         else
-          if table.find(Settings.Ores.Selecteds, ore.Name) and ore.Name ~= "Nothing Selected" then
+          if table.find(Settings.Ores.Selecteds, ore.Name) then
             
           end
         end
