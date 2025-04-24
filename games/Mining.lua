@@ -12,8 +12,11 @@ getgenv().OresESP = false
 
 -- Locais
 local Settings = {
-  Selected = {},
-  Names = { "OreMesh", "CrystallineMetalOre", "GemBlockMesh", "CubicBlockMetal", "ShaleMetalBlock" }
+  Ores = {
+    Selecteds = {},
+    Names = { "OreMesh", "CrystallineMetalOre", "GemBlockMesh", "CubicBlockMetal", "ShaleMetalBlock" },
+    Colors = {}
+  }
 }
 
 -- Funções
@@ -22,13 +25,13 @@ local function OresESP()
     for _, ore in pairs(workspace.SpawnedBlocks:GetChildren()) do
       if ore:IsA("MeshPart") then
         if ore:FindFirstChild("Highlight") then
-          if table.find(Settings.Selected, ore.Name) then
+          if table.find(Settings.Ores.Selecteds, ore.Name) then
             ore.Highlight.Enabled = true
           else
             ore.Highlight.Enabled = false
           end
         else
-          if table.find(Settings.Selected, ore.Name) then
+          if table.find(Settings.Ores.Selecteds, ore.Name) and ore.Name ~= "Nothing Selected" then
             
           end
         end
@@ -42,10 +45,10 @@ local Menu = Window:CreateTab("Menu", "home")
 Section = Menu:CreateSection("Helpful")
 Dropdown = Menu:CreateDropdown({
   Name = "Selected Ores",
-  Options = Settings.Names,
+  Options = Settings.Ores.Names,
   CurrentOption = { "Nothing Selected" },
   MultipleOptions = true,
   Callback = function(Options)
-    Settings.Selected = Options
+    Settings.Ores.Selecteds = Options
   end,
 })
