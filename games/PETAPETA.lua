@@ -43,8 +43,12 @@ local function EnemyESP()
 end
 local function AutoInteract()
   while getgenv().AutoInteract and task.wait(0.1) do
-    for _, item in pairs(workspace.Server.SpawnedItems:GetChildren()) do
-      fireproximityprompt(item:FindFirstChildOfClass("ProximityPrompt", true))
+    for _, pp in pairs(workspace.Server.SpawnedItems:GetDescendants()) do
+      if pp:IsA("ProximityPrompt") then
+        if (eu.Character.HumanoidRootPart.CFrame.Position - (pp.Parent.Position or pp.Parent.CFrame.Position)).Magnitude <= 9 then
+          fireproximityprompt(pp)
+        end
+      end
     end
   end
 end
