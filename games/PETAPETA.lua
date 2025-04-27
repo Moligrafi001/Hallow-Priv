@@ -25,7 +25,8 @@ local Settings = {
 -- Funções
 local function ItemsESP()
   while getgenv().ItemsESP and task.wait(0.1) do
-    for _, item in pairs(workspace.Server.SpawnedItems:GetChildren()) do
+    pcall(function()
+      for _, item in pairs(workspace.Server.SpawnedItems:GetChildren()) do
       if item:FindFirstChild("Luz") then
         if item.Luz.Enabled == false then
           item.Luz.Enabled = true
@@ -50,6 +51,7 @@ local function ItemsESP()
         end
       end
     end
+    end)
   end
 end
 local function EnemyESP()
