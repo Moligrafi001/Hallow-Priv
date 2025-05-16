@@ -10,13 +10,11 @@ local Window = Rayfield:CreateWindow({
     Theme = "Amethyst"
 })
 
-
 -- Teleporting delay
 _G.delay = 0.3 
 
 -- Mode for teleportation (can be 'moveto' or 'cframe')
 _G.mode = "moveto" 
-
 
 -- Path to checkpoints folder
 _G.pathtocheckpoints = game:GetService("Workspace").Checkpoints
@@ -24,8 +22,21 @@ _G.pathtocheckpoints = game:GetService("Workspace").Checkpoints
 -- Get the player's current stage from leaderstats
 _G.currentCheckpoint = game.Players.LocalPlayer.leaderstats.Stage.Value
 
+local Players = game:GetService("Players")
+local T  = Players.LocalPlayer
+
 -- List of specific checkpoints to move to (21, 41, 61, etc.)
 local checkpointsToTeleport = {21, 41, 61, 81, 101, 121, 141, 161, 181, 201, 221, 241, 261, 281, 301, 321, 341, 361, 381}
+local UserInputService = game:GetService("UserInputService")
+local IYMouse = Players.LocalPlayer:GetMouse()
+local CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+local lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+local SPEED = 0
+local FLYING = false
+local vfly = false
+local vehicleflyspeed = 50
+local iyflyspeed = 5
+local QEfly = true
 
 -- Movement
 local WalkSpeedText = 16
@@ -84,28 +95,24 @@ end
 local teleportingActive = false 
 
 local function moveToNextCheckpoint()
-    for _, checkpointNum in ipairs(checkpointsToTeleport) do
-        if checkpointNum < _G.currentCheckpoint then
-            continue
-        end
-        
-        if not teleportingActive then break end 
+    while true do
         wait(_G.delay)
-        
-        local nextCheckpoint = _G.pathtocheckpoints:FindFirstChild(tostring(checkpointNum))
-        
+        local nextCheckpointNum = _G.currentCheckpoint + 1
+        local nextCheckpoint = _G.pathtocheckpoints:FindFirstChild(tostring(nextCheckpointNum))
+
         if nextCheckpoint and nextCheckpoint:IsA("Model") and nextCheckpoint:FindFirstChild("Part") then
-            local part = nextCheckpoint.Part 
-            
+            local part = nextCheckpoint.Part
+
             if _G.mode == "moveto" then
                 game.Players.LocalPlayer.Character:MoveTo(part.Position)
             else
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
             end
-            
-            _G.currentCheckpoint = checkpointNum
+
+            _G.currentCheckpoint = nextCheckpointNum
+            break
         else
-            warn("Checkpoint ("..checkpointNum..") or its part not found!")
+            warn("Next checkpoint ("..nextCheckpointNum..") or its part not found!")
         end
     end
 end
@@ -120,28 +127,96 @@ local function toggleTeleportation()
     end
 end
 
-local function moveToNextCheckpoint()
-    while true do
-        wait(_G.delay)
-        local nextCheckpointNum = _G.currentCheckpoint + 1
-        local nextCheckpoint = _G.pathtocheckpoints:FindFirstChild(tostring(nextCheckpointNum))
-        
-        if nextCheckpoint and nextCheckpoint:IsA("Model") and nextCheckpoint:FindFirstChild("Part") then
-            local part = nextCheckpoint:FindFirstChild("Part")
-            
-            if _G.mode == "moveto" then
-                game.Players.LocalPlayer.Character:MoveTo(part.Position)
-            else
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
-            end
-            
-            _G.currentCheckpoint = nextCheckpointNum
-            break
-        else
-            warn("Next checkpoint ("..nextCheckpointNum..") or its part not found!")
-        end
-    end
+local function FLY()
+	FLYING = true
+	local BG = Instance.new('BodyGyro')
+	local BV = Instance.new('BodyVelocity')
+	local rootPart = T.Character and T.Character:FindFirstChild("HumanoidRootPart")
+	if rootPart then
+		BG.P = 9e4
+		BG.Parent = rootPart
+		BV.Parent = rootPart
+		BG.maxTorque = Vector3.new(9e9, 9e9, 9e9)
+		BG.CFrame = rootPart.CFrame
+		BV.velocity = Vector3.new(0, 0, 0)
+		BV.maxForce = Vector3.new(9e9, 9e9, 9e9)
+
+		task.spawn(function()
+			repeat wait()
+				if not vfly and Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+					Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = true
+				end
+				if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+					SPEED = 50
+				elseif SPEED ~= 0 then
+					SPEED = 0
+				end
+				if CONTROL.L + CONTROL.R ~= 0 or CONTROL.F + CONTROL.B ~= 0 or CONTROL.Q + CONTROL.E ~= 0 then
+					BV.velocity = ((workspace.CurrentCamera.CFrame.LookVector * (CONTROL.F + CONTROL.B)) + ((workspace.CurrentCamera.CFrame * CFrame.new(CONTROL.L + CONTROL.R, (CONTROL.F + CONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CFrame.p)) * SPEED
+					lCONTROL = {F = CONTROL.F, B = CONTROL.B, L = CONTROL.L, R = CONTROL.R}
+				elseif SPEED ~= 0 then
+					BV.velocity = ((workspace.CurrentCamera.CFrame.LookVector * (lCONTROL.F + lCONTROL.B)) + ((workspace.CurrentCamera.CFrame * CFrame.new(lCONTROL.L + lCONTROL.R, (lCONTROL.F + lCONTROL.B + CONTROL.Q + CONTROL.E) * 0.2, 0).p) - workspace.CurrentCamera.CFrame.p)) * SPEED
+				else
+					BV.velocity = Vector3.new(0, 0, 0)
+				end
+				BG.CFrame = workspace.CurrentCamera.CFrame
+			until not FLYING
+
+			CONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+			lCONTROL = {F = 0, B = 0, L = 0, R = 0, Q = 0, E = 0}
+			SPEED = 0
+			BG:Destroy()
+			BV:Destroy()
+			if Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid') then
+				Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid').PlatformStand = false
+			end
+		end)
+	end
+
+	-- Keybind listeners
+	flyKeyDown = IYMouse.KeyDown:Connect(function(KEY)
+		local key = KEY:lower()
+		if key == 'w' then CONTROL.F = (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key == 's' then CONTROL.B = - (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key == 'a' then CONTROL.L = - (vfly and vehicleflyspeed or iyflyspeed)
+		elseif key == 'd' then CONTROL.R = (vfly and vehicleflyspeed or iyflyspeed)
+		elseif QEfly and key == 'e' then CONTROL.Q = (vfly and vehicleflyspeed or iyflyspeed) * 2
+		elseif QEfly and key == 'q' then CONTROL.E = -(vfly and vehicleflyspeed or iyflyspeed) * 2
+		end
+		pcall(function() workspace.CurrentCamera.CameraType = Enum.CameraType.Track end)
+	end)
+
+	flyKeyUp = IYMouse.KeyUp:Connect(function(KEY)
+		local key = KEY:lower()
+		if key == 'w' then CONTROL.F = 0
+		elseif key == 's' then CONTROL.B = 0
+		elseif key == 'a' then CONTROL.L = 0
+		elseif key == 'd' then CONTROL.R = 0
+		elseif key == 'e' then CONTROL.Q = 0
+		elseif key == 'q' then CONTROL.E = 0 end
+	end)
 end
+
+
+function NOFLY()
+    FLYING = false
+    if flyKeyDown and flyKeyDown.Disconnect then
+        flyKeyDown:Disconnect()
+        flyKeyDown = nil
+    end
+    if flyKeyUp and flyKeyUp.Disconnect then
+        flyKeyUp:Disconnect()
+        flyKeyUp = nil
+    end
+    local humanoid = Players.LocalPlayer.Character and Players.LocalPlayer.Character:FindFirstChildOfClass('Humanoid')
+    if humanoid then
+        humanoid.PlatformStand = false
+    end
+    pcall(function()
+        workspace.CurrentCamera.CameraType = Enum.CameraType.Custom
+    end)
+end
+
 
 
 local Menu = Window:CreateTab("Main", "home")
@@ -229,6 +304,20 @@ Menu:CreateButton({
 
 -- Movement
 local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Fly")
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Fly",
+   CurrentValue = false,
+   Flag = "FlyToggle",
+   Callback = function(Value)
+       if Value then
+           FLY()
+       else
+           NOFLY()
+       end
+   end,
+})
+
 Section = MoveTab:CreateSection("Walk")
 Input = MoveTab:CreateInput({
    Name = "Player Walk Speed",
