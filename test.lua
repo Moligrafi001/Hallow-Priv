@@ -29,6 +29,11 @@ local function ProtectDetector()
     end)
   end
 end
+local args = {
+    [1] = Vector3.new(-73.27619934082031, 126.11563110351562, -210.80734252929688)
+}
+
+game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(unpack(args))
 
 
 local function ShootSkinwalker()
