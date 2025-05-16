@@ -32,6 +32,8 @@ end
 local args = {
     [1] = Vector3.new(-73.27619934082031, 126.11563110351562, -210.80734252929688)
 }
+workspace.GameObjects:GetChildren()[6]
+workspace.Runners.Skinwalkers.sylviiu.Head:GetChildren()[11]
 
 game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(unpack(args))
 
