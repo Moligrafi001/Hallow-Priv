@@ -19,6 +19,19 @@ local function RevealSkinwalkers()
   end
 end
 local function CollectMoneyBags()
+  local function onProximityPromptAdded(instance)
+    if instance:IsA("ProximityPrompt") then
+        fireproximityprompt(instance)
+    end
+end
+
+-- Escaneia já existentes
+for _, obj in pairs(workspace.GameObjects:GetDescendants()) do
+    onProximityPromptAdded(obj)
+end
+
+-- Monitora novos adicionados
+workspace.GameObjects.DescendantAdded:Connect(onProximityPromptAdded)
   while getgenv().CollectMoneyBags and task.wait(1) do
     for _, pp in pairs(workspace.GameObjects:GetDescendants()) do
       if pp:IsA("ProximityPrompt") then
