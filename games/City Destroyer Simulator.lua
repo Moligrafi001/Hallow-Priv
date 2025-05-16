@@ -13,9 +13,8 @@ _G.AutoSoco = false
 
 -- Funções
 local function AutoSoco()
-	while _G.AutoSoco == true do
+	while _G.AutoSoco and wait(0.01) do
 		game:GetService("ReplicatedStorage").Punch:FireServer()
-		wait(0.01)
 	end
 end
 local WalkSpeedText = 16
@@ -210,5 +209,4 @@ local Toggle = MoveTab:CreateToggle({
    Callback = function(Value)
    	_G.InfJump = Value
    	InfJump()
-   end,
-})
+   end,})
