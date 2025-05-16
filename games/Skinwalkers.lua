@@ -12,6 +12,8 @@ getgenv().RevealSkinwalkers = false
 getgenv().ProtectDetector = false
 getgenv().ShootSkinwalker = false
 getgenv().CiviliansESP = false
+getgenv().ExterminateSkinwalkers = false
+getgenv().Fullbright = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
@@ -57,14 +59,22 @@ local function ProtectDetector()
     end)
   end
 end
-
-local function ShootSkinwalker()
-  while getgenv().ShootSkinwalker and task.wait(0.33) do
-    for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-      if skinwalker.Humanoid.Health > 0 and (skinwalker.HumanoidRootPart.CFrame.Position - workspace["NEW MAP"].Village.Detector).Magnitude <= 15 then
-        game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker)
+local function KillAll(who)
+  if who == "skinwalkers" then
+    for _, skinwalker in pairs(workspace.Runners/Skinwalkers:GetChildren()) do
+      if skinwalker.Humanoid.Health > 0 then
+        game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)
       end
     end
+  elseif who == "nightwalkers" then
+    
+  end
+end
+local function ExterminateSkinwalkers()
+  while getgenv().ExterminateSkinwalkers and task.wait(3) do
+    pcall(function()
+      KillAll("skinwalkers")
+    end)
   end
 end
 local function CiviliansESP()
@@ -91,24 +101,35 @@ local function CiviliansESP()
     end)
   end
 end
+local function Fullbright()
+    while getgenv().Fullbright and wait(0.01) do
+        game:GetService("Lighting").Brightness = 2
+        game:GetService("Lighting").ClockTime = 12
+        game:GetService("Lighting").FogEnd = 100000
+        game:GetService("Lighting").GlobalShadows = false
+    end
+    game:GetService("Lighting").Brightness = 1
+    game:GetService("Lighting").ClockTime = 14
+    game:GetService("Lighting").FogEnd = 10000000
+    game:GetService("Lighting").GlobalShadows = true
+    game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
+end
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
-Section = Menu:CreateSection("Helpful")
+Section = Menu:CreateSection("Exterminate")
 Toggle = Menu:CreateToggle({
-  Name = "Auto Collect Money Bags",
+  Name = "Auto Kill Skinwalkers",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().CollectMoneyBags = Value
-    CollectMoneyBags()
+    getgenv().ExterminateSkinwalkers= Value
+    ExterminateSkinwalkers()
   end
 })
-Toggle = Menu:CreateToggle({
-  Name = "Reveal Skinwalkers",
-  CurrentValue = false,
+Toggle = Menu:CreateButton({
+  Name = "Kill All Skinwalkers",
   Callback = function(Value)
-    getgenv().RevealSkinwalkers = Value
-    RevealSkinwalkers()
+    KillAll("skinwalkers")
   end
 })
 Toggle = Menu:CreateToggle({
@@ -118,4 +139,149 @@ Toggle = Menu:CreateToggle({
     getgenv().ProtectDetector = Value
     ProtectDetector()
   end
+})
+Section = Menu:CreateSection("Helpful")
+Toggle = Menu:CreateToggle({
+  Name = "Reveal Skinwalkers",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().RevealSkinwalkers = Value
+    RevealSkinwalkers()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Collect Money Bags",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().CollectMoneyBags = Value
+    CollectMoneyBags()
+  end
+})
+
+-- Visual
+local VisualTab = Window:CreateTab("Visual", "eye")
+Toggle = VisualTab:CreateToggle({
+  Name = "Fullbright",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().Fullbright = Value
+    Fullbright()
+  end
+})
+
+-- Movement
+local WalkSpeedText = 16
+local JumpPowerText = 50
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
+local function SetWalkSpeed()
+	while getgenv().SetWalkSpeed == true do
+	  pcall(function()
+  		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
+  			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
+  		end
+		end)
+		wait(0.01)
+	end
+	if getgenv().SetWalkSpeed == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
+	end
+end
+local function SetJumpPower()
+	while getgenv().SetJumpPower == true do
+		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
+			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
+		end
+		wait(0.01)
+		end
+	if getgenv().SetJumpPower == false then
+		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
+	end
+end
+local function InfJump()
+	while getgenv().InfJump == true do
+		game:GetService("UserInputService").JumpRequest:connect(function()
+			if getgenv().InfJump == true then
+				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
+			end
+		end)
+		wait(0.1)
+	end
+end
+local function NoClip()
+	while getgenv().NoClip == true do
+		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
+			if part:IsA("BasePart") then
+				if getgenv().NoClip then
+					part.CanCollide = false
+				else
+					part.CanCollide = true
+				end
+			end
+		end
+		wait(0.1)
+	end
+end
+
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	WalkSpeedText = Text
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	getgenv().SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	getgenv().NoClip = Value
+   	NoClip()
+   end,
+})
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	JumpPowerText = Text
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	getgenv().SetJumpPower = Value
+   	SetJumpPower()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	getgenv().InfJump = Value
+   	InfJump()
+   end,
 })
