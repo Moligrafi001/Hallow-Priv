@@ -28,9 +28,9 @@ local function CollectMoneyBags()
       end
     end
     if not workspace.GameObjects:GetAttribute("Connected") then
-      workspace.GameObjects.DescendantAdded:Connect(function(instance)
-        if getgenv().CollectMoneyBags and instance:IsA("ProximityPrompt") then
-          fireproximityprompt(instance)
+      workspace.GameObjects.ChildAdded:Connect(function(instance)
+        if getgenv().CollectMoneyBags and instance.Name == "MoneyBag" then
+          fireproximityprompt(instance.ProximityPrompt)
         end
       end)
       workspace.GameObjects:SetAttribute("Connected", true)
