@@ -11,9 +11,18 @@ local eu = game:GetService("Players").LocalPlayer
 local function RevealSkinwalkers()
   while getgenv().RevealSkinwalkers and task.wait(3) do
     for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-      if skinwalker.Humanoid.Health > 0 then
+      if not skinwalker.Head:FindFirstChild("SkinwalkerNotifier") and skinwalker.Humanoid.Health > 0 then
         local pos = skinwalker.HumanoidRootPart.CFrame.Position
-        game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z - 3))
+        game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
+      end
+    end
+  end
+end
+local function CollectMoneyBags()
+  while getgenv().CollectMoneyBags and task.wait(1) do
+    for _, pp in pairs(workspace.GameObjects:GetDescendants()) do
+      if pp:IsA("ProximityPrompt") then
+        fireproximityprompt(pp)
       end
     end
   end
@@ -32,8 +41,7 @@ end
 local args = {
     [1] = Vector3.new(-73.27619934082031, 126.11563110351562, -210.80734252929688)
 }
-workspace.GameObjects:GetChildren()[6]
-workspace.Runners.Skinwalkers.sylviiu.Head:GetChildren()[11]
+-- workspace.GameObjects:GetChildren()[6]
 
 game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(unpack(args))
 
