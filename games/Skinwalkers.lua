@@ -61,7 +61,7 @@ local function ProtectDetector()
 end
 local function KillAll(who)
   if who == "skinwalkers" then
-    for _, skinwalker in pairs(workspace.Runners/Skinwalkers:GetChildren()) do
+    for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
       if skinwalker.Humanoid.Health > 0 then
         game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)
       end
