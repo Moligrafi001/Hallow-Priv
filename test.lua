@@ -11,9 +11,9 @@ local eu = game:GetService("Players").LocalPlayer
 local function RevealSkinwalkers()
   while getgenv().RevealSkinwalkers and task.wait(3) do
     for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-      if skinwalker.Humanoid.Health > 0 then
+      if skinwalker.Humanoid.Health > 0 and not (skinwalker:FindFirstChildOClass("BillboardGui", true) or skinwalker:FindFirstChildOClass("SurfaeGui", true)) then
         local pos = skinwalker.HumanoidRootPart.CFrame.Position
-        game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z))
+        game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z - 3))
       end
     end
   end
