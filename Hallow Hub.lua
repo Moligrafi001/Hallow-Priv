@@ -19,6 +19,7 @@ end
 
 -- Lista de Place IDs correspondentes aos jogos
 local gamePlaceIds = {
+    ["Ninja Legends"] = 3956818381,
     ["The Upgrade Tree Of Tree"] = 16148053600,
     ["Everything Upgrade Tree"] = 122809141833750,
     ["Snow Plow Simulator"] = 11701792069,
