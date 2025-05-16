@@ -1,4 +1,20 @@
-getgenv().Trap = false
+-- Global Values
+getgenv().RevealSkinwalkers = false
+
+-- Locals
+local eu = game:GetService("Pllayers").LocalPlayer
+
+-- Functions
+local function RevealSkinwalkers()
+  while getgenv().RevealSkinwalkers and task.wait(3) do
+    for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
+      if skinwalker.Humanoid.Health > 0 then
+        local pos = skinwalker.HumanoidRootPart.CFrame.Position
+        game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z))
+      end
+    end
+  end
+end
 while getgenv().Trap and task.wait(0.3) do
 local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position
 local args = {
