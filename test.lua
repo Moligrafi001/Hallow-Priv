@@ -19,7 +19,7 @@ local function RevealSkinwalkers()
   end
 end
 local function CollectMoneyBags()
-  if getgenv()/CollectMoneyBags then
+  if getgenv().CollectMoneyBags then
     for _, pp in pairs(workspace.GameObjects:GetDescendants()) do
       if pp:IsA("ProximityPrompt") then 
         fireproximitypromp(pp) 
