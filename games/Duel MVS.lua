@@ -128,23 +128,21 @@ local function EquipKnife()
   end
 end
 local function AnnoyTrade()
-  while getgenv().AnnoyTrade do
+  while getgenv().AnnoyTrade and wait(0.25) do
     pcall(function()
       for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         game:GetService("ReplicatedStorage").Trade:FireServer("SENT", player)
       end
     end)
-    wait(0.25)
   end
 end
 local function CancelTrade()
-  while getgenv().CancelTrade do
+  while getgenv().CancelTrade and wait(0.25) do
     pcall(function()
       for _, player in pairs(game:GetService("Players"):GetPlayers()) do
         game:GetService("ReplicatedStorage").Trade:FireServer("CANCEL_TRADE", player)
       end
     end)
-    wait(0.25)
   end
 end
 local function KillGun()
@@ -161,13 +159,12 @@ local function KillGun()
   end)
 end
 local function AutoGun()
-  while getgenv().AutoGun == true do
+  while getgenv().AutoGun and wait(0.33) do
     KillGun()
-    wait(0.33)
   end
 end
 local function PullGun()
-  while getgenv().PullGun == true do
+  while getgenv().PullGun and task.wait(0.25) do
     pcall(function()
       for _, tool in pairs(eu.Backpack:GetChildren()) do
         if tool:IsA("Tool") and tool:FindFirstChild("kill") then
@@ -175,11 +172,10 @@ local function PullGun()
         end
       end
     end)
-    task.wait(0.25)
   end
 end
 local function HitBox()
-	while getgenv().HitBox == true do
+	while getgenv().HitBox and wait() do
 	  pcall(function()
 		for _, player in pairs(game.Players:GetPlayers()) do
 			if player ~= eu and player:GetAttribute("Game") == eu:GetAttribute("Game") and player:GetAttribute("Team") ~= eu:GetAttribute("Team") then
@@ -195,9 +191,8 @@ local function HitBox()
 			end
 		end
 	  end)
-		wait()
 	end
-	if getgenv().HitBox == false then
+	if not getgenv().HitBox then
 		for _, player in pairs(game.Players:GetPlayers()) do
 			if player ~= game.Players.LocalPlayer then
 				if player.Character and game.Players.LocalPlayer.Character then
@@ -213,7 +208,7 @@ local function HitBox()
 	end
 end
 local function PlayerESP()
-	while getgenv().PlayerESP == true do
+	while getgenv().PlayerESP and wait(0.33) do
 	  pcall(function()
 		for _, players in pairs(game.Players:GetPlayers()) do
 			local player = players.Character
@@ -239,9 +234,8 @@ local function PlayerESP()
 			end
 		end
 		end)
-		wait(0.33)
 	end
-	if getgenv().PlayerESP == false then
+	if not getgenv().PlayerESP then
 		for _, players in pairs(game.Players:GetPlayers()) do
 			local player = players.Character
 			if player and players:GetAttribute("Game") == eu:GetAttribute("Game") and players:GetAttribute("Team") ~= eu:GetAttribute("Team") and player:FindFirstChild("Highlight") then
@@ -253,7 +247,7 @@ local function PlayerESP()
 	end
 end
 local function GunSound()
-  while getgenv().GunSound == true do
+  while getgenv().GunSound and  task.wait(Settings.SpamSoundCooldown) do
     pcall(function()
       for _, tool in pairs(eu.Character:GetChildren()) do
         if tool:IsA("Tool") and tool:FindFirstChild("fire") then
@@ -261,7 +255,6 @@ local function GunSound()
         end
       end
     end)
-    wait(Settings.SpamSoundCooldown)
   end
 end
 local function Triggerbot()
@@ -322,7 +315,7 @@ local function Triggerbot()
     end
 end
 local function AutoSlash()
-  while getgenv().AutoSlash do
+  while getgenv().AutoSlash and task.wait(Settings.SlashCooldown) do
     pcall(function()
       for _, tool in pairs(game:GetService("Players").LocalPlayer.Character:GetChildren() or game:GetService("Players").LocalPlayer.Backpack:GetChildren()) do
         if tool:IsA("Tool") and tool:FindFirstChild("Slash") then
@@ -330,7 +323,6 @@ local function AutoSlash()
         end
       end
     end)
-    task.wait(Settings.SlashCooldown)
   end
 end
 local function KnifeTrigger()
