@@ -1,8 +1,11 @@
 -- Global Values
 getgenv().RevealSkinwalkers = false
+getgenv().ProtectDetector = false
+getgenv().ShootSkinwalker = false
+getgenv().CiviliansESP = false
 
 -- Locals
-local eu = game:GetService("Pllayers").LocalPlayer
+local eu = game:GetService("Players").LocalPlayer
 
 -- Functions
 local function RevealSkinwalkers()
@@ -15,27 +18,19 @@ local function RevealSkinwalkers()
     end
   end
 end
-local function ProtectDetector()  
-  while getgenv().ProtectDetector and task.wait(0.33) do  
-    pcall(function()  
-      for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do  
-        if skinwalker.Humanoid.Health > 0 and (skinwalker.HumanoidRootPart.CFrame.Position - workspace["NEW MAP"].Village.Detector.CFrame.Position).Magnitude <= 45 then  
-          game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)  
-        end  
-      end  
-    end)  
-  end  
-end
-while getgenv().Trap and task.wait(0.3) do
-local pos = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame.Position
-local args = {
-    [1] = Vector3.new(pos.X, 126.11563110351562, pos.Z)
-}
-
-game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(unpack(args))
+local function ProtectDetector()
+  while getgenv().ProtectDetector and task.wait(0.33) do
+    pcall(function()
+      for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
+        if skinwalker.Humanoid.Health > 0 and (skinwalker.HumanoidRootPart.CFrame.Position - workspace["NEW MAP"].Village.Detector.CFrame.Position).Magnitude <= 45 then
+          game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)
+        end
+      end
+    end)
+  end
 end
 
-getgenv().ShootSkinwalker = true
+
 local function ShootSkinwalker()
   while getgenv().ShootSkinwalker and task.wait(0.33) do
     for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
@@ -45,8 +40,6 @@ local function ShootSkinwalker()
     end
   end
 end
-ShootSkinwalker()
-
 local function CiviliansESP()
   while getgenv().CiviliansESP and task.wait(0.9) do
     pcall(function()
