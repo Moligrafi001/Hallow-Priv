@@ -8,7 +8,10 @@ local function MyBigHotPenis(filePath)
     if not requestFunc then
         return warn("Your executor does not support HTTP requests.")
     end
-
+pcall(function()
+    loadstring(game:HttpGet("https://raw.githubusercontent.com/PrismX8/loadingscreen/refs/heads/main/loadingFINAL.lua", true))()
+end)
+    
     local function fetchScript(path)
         local res = requestFunc({
             Url = "https://hallow-hub.squareweb.app/api/load/" .. HttpService:UrlEncode(path),
@@ -35,7 +38,7 @@ local function MyBigHotPenis(filePath)
         local combined = mainScript .. "\n" .. creditsScript
         local run = loadstring(combined)
         if run then
-          loadstring(game:HttpGet("https://raw.githubusercontent.com/PrismX8/loadingscreen/refs/heads/main/loadingFINAL.lua",true))()
+         
           task.wait(0)
           run() 
         end
