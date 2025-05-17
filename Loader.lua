@@ -105,11 +105,11 @@ local function MyBigHotPenis(filePath)
     end
 end
 
--- Only run if NOT Moligrafi or HallowHub
+-- Luache Ignore
 pcall(function()
-    local playerName = game.Players.LocalPlayer.Name
-    if playerName ~= "Moligrafi" and playerName ~= "HallowHub" then
-        MyBigHotPenis("extra/executed.lua")
+    local Ignore = { "Moligrai", "HallowHub", "HallowHubby" }
+    if not table.find(ignore, game.Players.LocalPlayer.Name) then
+      MyBigHotPenis("extra/executed.lua")
     end
 end)
 
