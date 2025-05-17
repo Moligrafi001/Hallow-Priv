@@ -82,3 +82,17 @@ do
     MonitorHealth()
   end)
 end
+
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+  Name = "Hallow Hub | Blast Zone",
+  Icon = 17091459839,
+  LoadingTitle = "Hallow Hub",
+  LoadingSubtitle = "By Moligrafi",
+  Theme = "Amethyst"
+})
+-- Menu
+local Menu = Window:CreateTab("Menu", "home")
+Section = Menu:CreateSection("Helpful")
+Section = Menu:CreateLabel("Auto Heal [ ENABLED ]")
+Section = Menu:CreateLabel("Inf Stamina [ ENABLED ]")
