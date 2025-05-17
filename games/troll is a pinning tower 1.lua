@@ -20,10 +20,23 @@ local Settings = {
 -- Functions
 local function HitAll()
   pcall(function()
-    for _, p in pairs(game:GetService("Players"):GetPlayers()) do
-      if p ~= eu then
-        eu.Character.YeetGlove.Event:FireServer("slash", p.Character, Vector3.new(0, 0, 0))
-        eu.Backpack.YeetGlove.Event:FireServer("slash", p.Character, Vector3.new(0, 0, 0))
+    local function Hit()
+      for _, p in pairs(game:GetService("Players"):GetPlayers()) do
+        if p ~= eu then
+          pcall(function()
+            eu.Character.YeetGlove.Event:FireServer("slash", p.Character, Vector3.new(0, 0, 0))
+          end)
+        end
+      end
+    end
+    if eu.Character:FindFirstChild("YeetGlove") then
+      Hit()
+    else
+      if eu.Backpack:FindFirstChild("YeetGlove") then
+        eu.Backpack.YeetGlove.Parent = eu.Character
+        Hit()
+      else
+        GetReward("SteamPunk")
       end
     end
   end)
@@ -35,16 +48,20 @@ local function AutoHit()
 end
 local function ReturnRewards()
   local Names = {}
-  for _, reward in pairs(workspace.MainGame.EndTower.Rewards:GetChildre()) do
+  for _, reward in pairs(workspace.MainGame.EndTower.Rewards:GetChildren()) do
     if reward.Name ~= "FaceModel" then
       table.insert(Names, reward.Name)
     end
   end
   return Names
 end
-local function GetReward()
+local function GetReward(manuel)
   eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.Cframe)
-  eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.Cframe
+  if manual then
+    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[manual].ProxmityPromptPart.Cframe
+  else
+    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.Cframe
+  end
   for _, pp in pairs(workspace.MainGame.Rewards[Settings.Reward]:GetDescendants()) do
     if pp:IsA("ProximityPrompt") then
       fireproximityprompt(pp)
@@ -60,11 +77,18 @@ Section = Menu:CreateSection("Helpful")
 Dropdown = Menu:CreateDropdown({
   Name = "Selected Reward",
   Options = ReturnRewards(),
-  CurrentOption = { "YeetGlove" },
+  CurrentOption = { "SteamPunk" },
   Callback = function(Options)
     Settings.Reward = Options[1]
   end
 })
+Button = Menu:CreateButton({
+  Name = "Get Reward",
+  Callback = function(Value)
+    GetReward()
+  end
+})
+Section = Menu:CreateSection("Blatant")
 Toggle = Menu:CreateToggle({
   Name = "Auto Hit",
   CurrentValue = false,
@@ -73,10 +97,9 @@ Toggle = Menu:CreateToggle({
     AutoHit()
   end
 })
-Toggle = Menu:CreateButton({
+Button = Menu:CreateButton({
   Name = "Hit All",
   Callback = function(Value)
     HitAll()
   end
 })
-Section = Menu:CreateLabel("Equip YeetGlove to hit", "triangle-alert")
