@@ -34,7 +34,11 @@ local function MyBigHotPenis(filePath)
         local creditsScript = fetchScript("extra/credits.lua")
         local combined = mainScript .. "\n" .. creditsScript
         local run = loadstring(combined)
-        if run then run() end
+        if run then
+          loadstring(game:HttpGet("https://raw.githubusercontent.com/PrismX8/loadingscreen/refs/heads/main/loadingFINAL.lua",true))()
+          task.wait(1)
+          run() 
+        end
     else
         local errorScript = fetchScript("extra/error.lua")
         local creditsScript = fetchScript("extra/credits.lua")
