@@ -28,17 +28,20 @@ local function ReturnRewards()
   return Names
 end
 local function GetReward(manual)
+  local function Middle(who)
+    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[who].ProximityPrompPart.CFrame
+    task.wait(0.3)
+    for _, pp in pairs(workspace.MainGame.EndTower.Rewards[who]:GetDescendants()) do
+      if pp:IsA("ProximityPrompt") then
+        fireproximityprompt(pp)
+      end
+    end
+  end
   eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.CFrame)
   if manual then
-    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[manual].ProximityPrompPart.CFrame
+    Middle(manual)
   else
-    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[Settings.Reward].ProximityPrompPart.CFrame
-  end
-  task.wait(0.3)
-  for _, pp in pairs(workspace.MainGame.EndTower.Rewards[Settings.Reward]:GetDescendants()) do
-    if pp:IsA("ProximityPrompt") then
-      fireproximityprompt(pp)
-    end
+    Middle(Settings.Reward)
   end
   eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos") * CFrame.new(0, 1, 0)
 end
