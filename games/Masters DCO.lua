@@ -94,36 +94,48 @@ end
 
 local teleportingActive = false 
 
+
 local function moveToNextCheckpoint()
-    while true do
-        wait(_G.delay)
-        local nextCheckpointNum = _G.currentCheckpoint + 1
-        local nextCheckpoint = _G.pathtocheckpoints:FindFirstChild(tostring(nextCheckpointNum))
+    task.spawn(function()
+        while teleportingActive do
+            wait(_G.delay)
+            local nextCheckpointNum = _G.currentCheckpoint + 1
+            local nextCheckpoint = _G.pathtocheckpoints:FindFirstChild(tostring(nextCheckpointNum))
 
-        if nextCheckpoint and nextCheckpoint:IsA("Model") and nextCheckpoint:FindFirstChild("Part") then
-            local part = nextCheckpoint.Part
+            if nextCheckpoint and nextCheckpoint:IsA("Model") and nextCheckpoint:FindFirstChild("Part") then
+                local part = nextCheckpoint.Part
 
-            if _G.mode == "moveto" then
-                game.Players.LocalPlayer.Character:MoveTo(part.Position)
+                if _G.mode == "moveto" then
+                    game.Players.LocalPlayer.Character:MoveTo(part.Position)
+                else
+                    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+                end
+
+                _G.currentCheckpoint = nextCheckpointNum
             else
-                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = part.CFrame
+                warn("Checkpoint " .. nextCheckpointNum .. " not found.")
+                break
             end
-
-            _G.currentCheckpoint = nextCheckpointNum
-            break
-        else
-            warn("Next checkpoint ("..nextCheckpointNum..") or its part not found!")
         end
-    end
+    end)
 end
 
--- Create a function to toggle teleportation on and off
 local function toggleTeleportation()
-    teleportingActive = not teleportingActive  
+    teleportingActive = not teleportingActive
+
     if teleportingActive then
-        moveToNextCheckpoint() 
+        Rayfield:Notify({
+            Title = "Auto Win Enabled",
+            Content = "Teleporting to the end...",
+            Duration = 3,
+        })
+        moveToNextCheckpoint()
     else
-        print("Teleportation stopped.")  
+        Rayfield:Notify({
+            Title = "Auto Win Disabled",
+            Content = "Stopped teleporting.",
+            Duration = 3,
+        })
     end
 end
 
@@ -225,23 +237,7 @@ local Button = Menu:CreateButton({
     Name = "Auto Win",
     Interact = 'Changable',
     Callback = function()
-        teleportingActive = true
-
-        if teleportingActive then
-            moveToNextCheckpoint()
-            Rayfield:Notify({
-                Title = "Auto Win Enabled",
-                Content = "You will now auto teleport to the win area.",
-                Duration = 3,
-            })
-        else
-            teleportingActive = false
-            Rayfield:Notify({
-                Title = "Auto Win Disabled",
-                Content = "Teleportation has been turned off.",
-                Duration = 3,
-            })
-        end
+        toggleTeleportation()
     end,
 })
 local Section = Menu:CreateSection("Stage")
