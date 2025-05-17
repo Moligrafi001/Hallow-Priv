@@ -34,14 +34,14 @@ local function ESP()
     end
   end
   local function Check(instance)
-pcall(function()
-    if instance[instance.Name]:GetAttribute("Type") then
-      return instance[instance.Name]:GetAttribute("Type")
-    elseif instance.Configuration:GetAttribute("Type") then
-      return instance.Configuration:GetAttribute("Type")
-    end
-    return false
-end)
+    pcall(function()
+      if instance[instance.Name]:GetAttribute("Type") then
+        return instance[instance.Name]:GetAttribute("Type")
+      elseif instance.Configuration:GetAttribute("Type") then
+        return instance.Configuration:GetAttribute("Type")
+      end
+      return false
+    end)
   end
   while getgenv().ESP and task.wait(1) do
     if not workspace.Models:GetAttribute("Connected") then
