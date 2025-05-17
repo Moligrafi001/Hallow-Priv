@@ -14,6 +14,7 @@ getgenv().ESP = false
 local eu  = game:GetService("Players").LocalPlayer
 local Colors = {
   Enemy = Color3.fromRGB(255, 0, 0),
+  Melee = Color3.fromRGB(0, 0, 255),
   Trash = Color3.fromRGB(0, 255, 0)
 }
 
@@ -32,13 +33,28 @@ local function ESP()
       highlight.FillColor, highlight.OutlineColor = color, color
     end
   end
+  local function Check(instance)
+    if obj[obj.Name]:GetAttribute("Type") then
+      return obj[obj.Name]:GetAttribute("Type")
+    elseif obj.Configuration:GetAttribute("Type") then
+      return obj.Configuration:GetAttribute("Type")
+    end
+    return false
+  end
   while getgenv().ESP and task.wait(1) do
     if not workspace.Models:GetAttribute("Connected") then
       workspace.Models:SetAttribute("Connected", true)
       workspace.Models.ChildAdded:Connect(function(instance)
         if getgenv().ESP then
-          if instance:GetAttribute("Type") == "Enemy" then
-            SetESP(instance, Colors.Enemy)
+          local obj = Check(instance)
+          if obj then
+            if obj == "Enemy" then
+              SetESP(instance, Colors.Enemy)
+            elseif obj == "Melee" then
+              SetESP(instance, Colors.Melee)
+            else
+              SetESP(instance, Colors.Trash)
+            end
           else
             SetESP(instance, Colors.Trash)
           end
@@ -79,3 +95,4 @@ local ColorPicker = VisualTab:CreateColorPicker({
     	Colors.Trash = Value
     end
 })
+
