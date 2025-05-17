@@ -1,0 +1,1 @@
+workspace.Models:GetChildren()[9].Goblin
