@@ -259,6 +259,8 @@ elseif Game == 3408154779 then
   MyBigHotPenis("games/Blast Zone.lua")
 elseif Game == 7118588325 then
   MyBigHotPenis("games/Fast Food Simulator.lua")
+elseif Game == 5531280658 then
+  MyBigHotPenis("games/troll is a pinning tower 1.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
