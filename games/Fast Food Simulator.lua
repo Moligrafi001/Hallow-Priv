@@ -17,6 +17,7 @@ local eu = game:GetService("Players").LocalPlayer
 -- Functions
 local function AutoDirty()
   while getgenv().AutoDirty and task.wait(1) do
-    
+    if not GetAttribute("Connected") then
+    end
   end
 end
