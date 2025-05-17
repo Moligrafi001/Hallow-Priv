@@ -225,17 +225,17 @@ local Button = Menu:CreateButton({
     Name = "Auto Win",
     Interact = 'Changable',
     Callback = function()
-        teleportingActive = not teleportingActive
+        teleportingActive = true
 
         if teleportingActive then
-            toggleTeleportation(true) -- start teleporting
+            moveToNextCheckpoint()
             Rayfield:Notify({
                 Title = "Auto Win Enabled",
                 Content = "You will now auto teleport to the win area.",
                 Duration = 3,
             })
         else
-            toggleTeleportation(false) -- stop teleporting
+            teleportingActive = false
             Rayfield:Notify({
                 Title = "Auto Win Disabled",
                 Content = "Teleportation has been turned off.",
