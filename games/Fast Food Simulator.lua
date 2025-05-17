@@ -21,3 +21,12 @@ local function AutoDirty()
     end
   end
 end
+
+workspace.OwnedRestaurants.HallowHubby.DirtyTrays:FindFirstChild("Dirty Tray").Collect:FireServer()
+local args = {
+    [1] = workspace.OwnedRestaurants.HallowHubby.Ingredients:FindFirstChild("{aea78d64-214e-4190-8386-0ce3b6e8737e}")
+}
+
+game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
+workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
+workspace.OwnedRestaurants.HallowHubby.Trash.Tray.FoodsLeft.Burger["Cooked Patty"]
