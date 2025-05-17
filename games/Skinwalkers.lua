@@ -1,4 +1,4 @@
-local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 local Window = Rayfield:CreateWindow({
   Name = "Hallow Hub | Skinwalkers [ HORROR ]",
   Icon = 17091459839,
@@ -13,6 +13,7 @@ getgenv().ProtectDetector = false
 getgenv().ShootSkinwalker = false
 getgenv().CiviliansESP = false
 getgenv().ExterminateSkinwalkers = false
+getgenv().ExterminateNightwalkers = false
 getgenv().Fullbright = false
 
 -- Locals
@@ -39,12 +40,12 @@ local function CollectMoneyBags()
       end
     end
     if not workspace.GameObjects:GetAttribute("Connected") then
+      workspace.GameObjects:SetAttribute("Connected", true)
       workspace.GameObjects.ChildAdded:Connect(function(instance)
         if getgenv().CollectMoneyBags and instance.Name == "MoneyBag" then
           fireproximityprompt(instance.ProximityPrompt)
         end
       end)
-      workspace.GameObjects:SetAttribute("Connected", true)
     end
   end
 end
@@ -60,20 +61,33 @@ local function ProtectDetector()
   end
 end
 local function KillAll(who)
+  local function Shoot(instance)
+    game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), instance)
+  end
   if who == "skinwalkers" then
     for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
       if skinwalker.Humanoid.Health > 0 then
-        game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)
+        Shoot(skinwalker.HumanoidRootPart)
       end
     end
   elseif who == "nightwalkers" then
-    
+    for _, nightwalker in pairs(workspace.Nightwalkers:GetChildren()) do
+      if nightwalker.Humanoid.Health > 0 then
+      end
+    end
   end
 end
 local function ExterminateSkinwalkers()
   while getgenv().ExterminateSkinwalkers and task.wait(3) do
     pcall(function()
       KillAll("skinwalkers")
+    end)
+  end
+end
+local function ExterminateNightwalkers()
+  while getgenv().ExterminateNightwalkers and task.wait(3) do
+    pcall(function()
+      KillAll("nightwalkers")
     end)
   end
 end
@@ -170,58 +184,75 @@ Toggle = VisualTab:CreateToggle({
 })
 
 -- Movement
-local WalkSpeedText = 16
-local JumpPowerText = 50
+local MovementTexts = {
+  WalkSpeedText = 16,
+  JumpPowerText = 50
+}
 getgenv().SetWalkSpeed = false
 getgenv().SetJumpPower = false
 getgenv().InfJump = false
 getgenv().NoClip = false
 local function SetWalkSpeed()
-	while getgenv().SetWalkSpeed == true do
-	  pcall(function()
-  		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed ~= WalkSpeedText then
-  			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = WalkSpeedText
-  		end
+  while getgenv().SetWalkSpeed and task.wait(1) do
+    pcall(function()
+      local function CheckSet()
+        if eu.Character.Humanoid.WalkSpeedText ~= MovementTexts.WalkSpeedText then
+          eu.Character.Humanoid.WalkSpeedText = MovementTexts.WalkSpeedText
+        end
+      end
+      CheckSet()
+      if not eu.Character.Humanoid:GetAttribute("SpeedConnected") then
+        eu.Character.Humanoid:SetAttribute("SpeedConnected", true)
+        eu.Character.Humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+          if getgenv().SetWalkSpeed then CheckSet() end
+        end)
+      end
 		end)
-		wait(0.01)
-	end
-	if getgenv().SetWalkSpeed == false then
-		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").WalkSpeed = 16
-	end
+  end
 end
 local function SetJumpPower()
-	while getgenv().SetJumpPower == true do
-		if game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower ~= JumpPowerText then
-			game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = JumpPowerText
-		end
-		wait(0.01)
-		end
-	if getgenv().SetJumpPower == false then
-		game.Players.LocalPlayer.Character:WaitForChild("Humanoid").JumpPower = 50
-	end
+  while getgenv().SetJumpPower and task.wait(1) do
+    pcall(function()
+      local function CheckSet()
+        if eu.Character.Humanoid.JumpPower ~= MovementTexts.JumpPowerText then
+          eu.Character.Humanoid.JumpPowerText = MovementTexts.JumpPowerText
+        end
+      end
+      CheckSet()
+      if not eu.Character.Humanoid:GetAttribute("JumpConnected") then
+        eu.Character.Humanoid:SetAttribute("JumpConnected", true)
+        eu.Character.Humanoid:GetPropertyChangedSignal("JumpPower"):Connect(function()
+          if getgenv().SetJumpPower then CheckSet() end
+        end)
+      end
+		end)
+  end
 end
 local function InfJump()
-	while getgenv().InfJump == true do
-		game:GetService("UserInputService").JumpRequest:connect(function()
-			if getgenv().InfJump == true then
-				game:GetService("Players").LocalPlayer.Character:FindFirstChildOfClass('Humanoid'):ChangeState("Jumping")
-			end
-		end)
-		wait(0.1)
+  while getgenv().InfJump and task.wait(1) do
+    if not game:GetService("UserInputService"):GetAttribute("JumpConnected") then
+      game:GetService("UserInputService"):SetAttribute("JumpConnected", true)
+      game:GetService("UserInputService").JumpRequest:Connect(function()
+        if getgenv().InfJump then
+         eu.Character:WaitForChild("Humanoid"):ChangeState("Jumping")
+        end
+      end)
+    end
 	end
 end
 local function NoClip()
-	while getgenv().NoClip == true do
-		for _, part in ipairs(game.Players.LocalPlayer.Character:GetDescendants()) do
-			if part:IsA("BasePart") then
-				if getgenv().NoClip then
-					part.CanCollide = false
-				else
-					part.CanCollide = true
-				end
-			end
-		end
-		wait(0.1)
+	while getgenv().NoClip and wait(0.1) do
+	  pcall(function()
+  		for _, part in pairs(eu.Character:GetDescendants()) do
+  			if part:IsA("BasePart") then
+  				if getgenv().NoClip then
+  					part.CanCollide = false
+  				else
+  					part.CanCollide = true
+  				end
+  			end
+  		end
+		end)
 	end
 end
 
@@ -235,7 +266,7 @@ Input = MoveTab:CreateInput({
    PlaceholderText = "Default Walk Speed = 16",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
-   	WalkSpeedText = Text
+   	MovementTexts.WalkSpeedText = tonumber(Text)
    end,
 })
 Toggle = MoveTab:CreateToggle({
@@ -264,7 +295,7 @@ Input = MoveTab:CreateInput({
    PlaceholderText = "Default Jump Power = 50",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
-   	JumpPowerText = Text
+   	MovementTexts.JumpPowerText = tonumber(Text)
    end,
 })
 Toggle = MoveTab:CreateToggle({
