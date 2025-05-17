@@ -10,6 +10,7 @@ local Window = Rayfield:CreateWindow({
 
 -- Global Values
 getgenv().AutoDirty = false
+getgenv().AutoOrder = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
@@ -25,6 +26,32 @@ local function AutoDirty()
     end)
   end
 end
+local function AutoOrder()
+  while getgenv().AutoOrder and task.wait(3) do
+    workspace.OwnedRestaurants[eu.Name].Furniture.CashRegisters.Register.TakeOrder:FireServer()
+  end
+end
+
+-- Menu
+local Menu = Window:CreateTab("Menu", "home")
+Section = Menu:CreateSection("Helpful")
+Toggle = Menu:CreateToggle({
+  Name = "Collect Dirty Trays",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoDirty = Value
+    AutoDirty()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Take Orders",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoOrder = Value
+    AutoOrder()
+  end
+})
+
 
 -- workspace.OwnedRestaurants.HallowHubby.DirtyTrays:FindFirstChild("Dirty Tray").Collect:FireServer()
 -- local args = {
@@ -33,30 +60,17 @@ end
 
 -- game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
 -- workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
--- workspace.OwnedRestaurants.HallowHubby.Trash.Tray.FoodsLeft.Burger["Cooked Patty"]
+-- -- workspace.OwnedRestaurants.HallowHubby.Trash.Tray.FoodsLeft.Burger["Cooked Patty"]
+-- 7118588325
+-- workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
+-- local args = {
+--     [1] = workspace.OwnedRestaurants.HallowHubby.Ingredients:FindFirstChild("{aea78d64-214e-4190-8386-0ce3b6e8737e}")
+-- }
 
--- Menu
-local Menu = Window:CreateTab("Menu", "home")
-Section = Menu:CreateSection("Helpful")
-Toggle = Menu:CreateToggle({
-  Name = "Reveal Skinwalkers",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().RevealSkinwalkers = Value
-    RevealSkinwalkers()
-  end
-})
+-- game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
+-- local args = {
+--     [1] = workspace.OwnedRestaurants.HallowHubby.Trash:FindFirstChild("Burger Bun"),
+--     [2] = workspace.OwnedRestaurants.HallowHubby.Trash.Paper.Part
+-- }
 
-7118588325
-workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
-local args = {
-    [1] = workspace.OwnedRestaurants.HallowHubby.Ingredients:FindFirstChild("{aea78d64-214e-4190-8386-0ce3b6e8737e}")
-}
-
-game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
-local args = {
-    [1] = workspace.OwnedRestaurants.HallowHubby.Trash:FindFirstChild("Burger Bun"),
-    [2] = workspace.OwnedRestaurants.HallowHubby.Trash.Paper.Part
-}
-
-game:GetService("ReplicatedStorage").Remotes.Gameplay.SnapIngredient:FireServer(unpack(args))
+-- game:GetService("ReplicatedStorage").Remotes.Gameplay.SnapIngredient:FireServer(unpack(args))
