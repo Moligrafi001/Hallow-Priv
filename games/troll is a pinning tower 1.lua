@@ -40,7 +40,7 @@ local function GetReward(manual)
       fireproximityprompt(pp)
     end
   end
-  eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos")
+  eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos") * CFrame.new(0, 1, 0)
 end
 local function HitAll()
   pcall(function()
@@ -102,4 +102,13 @@ Button = Menu:CreateButton({
   Callback = function(Value)
     HitAll()
   end
+})
+Input = Menu:CreateInput({
+   Name = "Auto Hit Cooldown",
+   CurrentValue = "1",
+   PlaceholderText = "Seconds only, ex.: 0.5",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+     Settings.Cooldown = tonumber(Text)
+   end,
 })
