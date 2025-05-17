@@ -256,7 +256,7 @@ elseif Game == 73885730 then
 elseif Game == 7355857660 then
   MyBigHotPenis("games/Skinwalkers.lua")
 elseif Game == 3408154779 then
-  MyBigHotPenis("games/Skinwalkers.lua")
+  MyBigHotPenis("games/Blast Zone.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
