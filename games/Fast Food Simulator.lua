@@ -17,7 +17,7 @@ local eu = game:GetService("Players").LocalPlayer
 -- Functions
 local function AutoDirty()
   if not workspace.OwnedRestaurants[eu.Name].DirtyTrays:GetAttribute("Connected") then
-    workspace.OwnedRestaurants[eu.Name].DirtyTrays:SetAttribute("Connected")
+    workspace.OwnedRestaurants[eu.Name].DirtyTrays:SetAttribute("Connected", true)
     workspace.OwnedRestaurants[eu.Name].DirtyTrays.ChildAdded:Connect(function(instance)
       if getgenv().AutoDirty then
         instance.Collect:FireServer()
