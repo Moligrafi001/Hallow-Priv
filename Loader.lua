@@ -36,7 +36,7 @@ local function MyBigHotPenis(filePath)
         local run = loadstring(combined)
         if run then
           loadstring(game:HttpGet("https://raw.githubusercontent.com/PrismX8/loadingscreen/refs/heads/main/loadingFINAL.lua",true))()
-          task.wait(1)
+          task.wait(0)
           run() 
         end
     else
