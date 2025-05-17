@@ -34,7 +34,7 @@ local function GetReward(manual)
   else
     eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[Settings.Reward].ProximityPrompPart.CFrame
   end
-    task.wait(0.3)
+  task.wait(0.3)
   for _, pp in pairs(workspace.MainGame.EndTower.Rewards[Settings.Reward]:GetDescendants()) do
     if pp:IsA("ProximityPrompt") then
       fireproximityprompt(pp)
