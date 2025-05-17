@@ -40,7 +40,7 @@ local function GetReward(manual)
     end
   end
   task.wait(0.1)
-  eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAtribute("Pos")
+  eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos")
 end
 local function HitAll()
   pcall(function()
