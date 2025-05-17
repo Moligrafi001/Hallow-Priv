@@ -46,3 +46,17 @@ Toggle = Menu:CreateToggle({
     RevealSkinwalkers()
   end
 })
+
+7118588325
+workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
+local args = {
+    [1] = workspace.OwnedRestaurants.HallowHubby.Ingredients:FindFirstChild("{aea78d64-214e-4190-8386-0ce3b6e8737e}")
+}
+
+game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
+local args = {
+    [1] = workspace.OwnedRestaurants.HallowHubby.Trash:FindFirstChild("Burger Bun"),
+    [2] = workspace.OwnedRestaurants.HallowHubby.Trash.Paper.Part
+}
+
+game:GetService("ReplicatedStorage").Remotes.Gameplay.SnapIngredient:FireServer(unpack(args))
