@@ -27,7 +27,7 @@ local function ESP()
       end
     else
       local highlight = Instance.new("Highlight")
-      highlight.FillTransparency = 0.6
+      highlight.FillTransparency = 1
       highlight.Adornee, highlight.Parent = instance, instance
       highlight.Name = "Luz"
       highlight.FillColor, highlight.OutlineColor = color, color
@@ -75,8 +75,9 @@ end
 
 -- Visual
 local VisualTab = Window:CreateTab("Visual", "eye")
+Section = VisualTab:CreateSection("Undetectable")
 Toggle = VisualTab:CreateToggle({
-  Name = "ESP",
+  Name = "Highlights ESP",
   CurrentValue = false,
   Callback = function(Value)
     getgenv().ESP = Value
@@ -104,3 +105,6 @@ local ColorPicker = VisualTab:CreateColorPicker({
     	Colors.Trash = Value
     end
 })
+
+-- Teleport
+-- local TPsTab = Window:CreateTab("Teleport", "Shell")
