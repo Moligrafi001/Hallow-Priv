@@ -255,6 +255,8 @@ elseif Game == 73885730 then
   MyBigHotPenis("games/PrisonLife.lua")
 elseif Game == 7355857660 then
   MyBigHotPenis("games/Skinwalkers.lua")
+elseif Game == 3408154779 then
+  MyBigHotPenis("games/Skinwalkers.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
