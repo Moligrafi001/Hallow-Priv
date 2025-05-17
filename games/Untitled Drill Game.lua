@@ -14,7 +14,15 @@ getgenv().AutoCollect = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
+local character = eu.Character or eu.CharacterAdded:Wait()
+local backpack = eu:WaitForChild("Backpack")
+local VirtualInputManager = game:GetService("VirtualInputManager")
 
+local function equipSlot1Tool()
+	VirtualInputManager:SendKeyEvent(true, Enum.KeyCode.One, false, game)
+	task.wait(0.05)
+	VirtualInputManager:SendKeyEvent(false, Enum.KeyCode.One, false, game)
+end
 -- Drill once
 local function drill()
 	game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("OreService"):WaitForChild("RE"):WaitForChild("RequestRandomOre"):FireServer()
@@ -106,6 +114,7 @@ Menu:CreateToggle({
 	Callback = function(Value)
 		getgenv().AutoDrill = Value
 		if Value then
+			equipSlot1Tool()
 			AutoDrill()
 		end
 	end
