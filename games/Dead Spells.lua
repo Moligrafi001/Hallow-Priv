@@ -72,3 +72,10 @@ local ColorPicker = VisualTab:CreateColorPicker({
     	Colors.Enemy = Value
     end
 })
+local ColorPicker = VisualTab:CreateColorPicker({
+    Name = "Trash Color",
+    Color = Colors.Trash,
+    Callback = function(Value)
+    	Colors.Trash = Value
+    end
+})
