@@ -28,11 +28,11 @@ local function ReturnRewards()
   return Names
 end
 local function GetReward(manual)
-  eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.Cframe)
+  eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.CFrame)
   if manual then
-    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[manual].ProxmityPromptPart.Cframe
+    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.Rewards[manual].ProxmityPromptPart.CFrame
   else
-    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.Cframe
+    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.CFrame
   end
   for _, pp in pairs(workspace.MainGame.Rewards[Settings.Reward]:GetDescendants()) do
     if pp:IsA("ProximityPrompt") then
@@ -40,7 +40,7 @@ local function GetReward(manual)
     end
   end
   task.wait(0.1)
-  eu.Character.HumanoidRootPart.Cframe = eu.Character.HumanoidRootPart:GetAtribute("Pos")
+  eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAtribute("Pos")
 end
 local function HitAll()
   pcall(function()
