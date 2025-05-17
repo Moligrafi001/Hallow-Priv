@@ -30,11 +30,11 @@ end
 local function GetReward(manual)
   eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.CFrame)
   if manual then
-    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.Rewards[manual].ProxmityPromptPart.CFrame
+    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[manual].ProxmityPromptPart.CFrame
   else
-    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.CFrame
+    eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[Settings.Reward].ProxmityPromptPart.CFrame
   end
-  for _, pp in pairs(workspace.MainGame.Rewards[Settings.Reward]:GetDescendants()) do
+  for _, pp in pairs(workspace.MainGame.EndTower.Rewards[Settings.Reward]:GetDescendants()) do
     if pp:IsA("ProximityPrompt") then
       fireproximityprompt(pp)
     end
