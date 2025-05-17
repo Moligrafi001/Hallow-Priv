@@ -34,12 +34,12 @@ local function GetReward(manual)
   else
     eu.Character.HumanoidRootPart.CFrame = workspace.MainGame.EndTower.Rewards[Settings.Reward].ProximityPrompPart.CFrame
   end
+    task.wait(0.3)
   for _, pp in pairs(workspace.MainGame.EndTower.Rewards[Settings.Reward]:GetDescendants()) do
     if pp:IsA("ProximityPrompt") then
       fireproximityprompt(pp)
     end
   end
-  task.wait(0.1)
   eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos")
 end
 local function HitAll()
