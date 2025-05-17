@@ -21,7 +21,7 @@ local Colors = {
 -- Functions
 local function ESP()
   local function SetESP(instance, color)
-    if instance:FindFirstChid("Luz") then
+    if instance:FindFirstChild("Luz") then
       if instance.Luz.Enabled == false then
         instance.Luz.Enabled = true
       end
@@ -34,12 +34,14 @@ local function ESP()
     end
   end
   local function Check(instance)
-    if obj[obj.Name]:GetAttribute("Type") then
-      return obj[obj.Name]:GetAttribute("Type")
-    elseif obj.Configuration:GetAttribute("Type") then
-      return obj.Configuration:GetAttribute("Type")
+pcall(function()
+    if instance[instance.Name]:GetAttribute("Type") then
+      return instance[instance.Name]:GetAttribute("Type")
+    elseif instance.Configuration:GetAttribute("Type") then
+      return instance.Configuration:GetAttribute("Type")
     end
     return false
+end)
   end
   while getgenv().ESP and task.wait(1) do
     if not workspace.Models:GetAttribute("Connected") then
@@ -64,7 +66,7 @@ local function ESP()
   end
   if not getgenv().ESP then
     for  _, model in pairs(workspace.Models:GetChildren()) do
-      if model:FindFirstChid("Luz") and model.Luz.Enabled == true then
+      if model:FindFirstChild("Luz") and model.Luz.Enabled == true then
         model.Luz.Enabled = false
       end
     end
@@ -89,10 +91,16 @@ local ColorPicker = VisualTab:CreateColorPicker({
     end
 })
 local ColorPicker = VisualTab:CreateColorPicker({
+    Name = "Melee Color",
+    Color = Colors.Melee,
+    Callback = function(Value)
+    	Colors.Melee = Value
+    end
+})
+local ColorPicker = VisualTab:CreateColorPicker({
     Name = "Trash Color",
     Color = Colors.Trash,
     Callback = function(Value)
     	Colors.Trash = Value
     end
 })
-
