@@ -18,6 +18,30 @@ local Settings = {
 }
 
 -- Functions
+local function ReturnRewards()
+  local Names = {}
+  for _, reward in pairs(workspace.MainGame.EndTower.Rewards:GetChildren()) do
+    if reward.Name ~= "FaceModel" then
+      table.insert(Names, reward.Name)
+    end
+  end
+  return Names
+end
+local function GetReward(manual)
+  eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.Cframe)
+  if manual then
+    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[manual].ProxmityPromptPart.Cframe
+  else
+    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.Cframe
+  end
+  for _, pp in pairs(workspace.MainGame.Rewards[Settings.Reward]:GetDescendants()) do
+    if pp:IsA("ProximityPrompt") then
+      fireproximityprompt(pp)
+    end
+  end
+  task.wait(0.1)
+  eu.Character.HumanoidRootPart.Cframe = eu.Character.HumanoidRootPart:GetAtribute("Pos")
+end
 local function HitAll()
   pcall(function()
     local function Hit()
@@ -45,30 +69,6 @@ local function AutoHit()
   while getgenv().AutoHit and task.wait(Settings.Cooldown) do
     HitAll()
   end
-end
-local function ReturnRewards()
-  local Names = {}
-  for _, reward in pairs(workspace.MainGame.EndTower.Rewards:GetChildren()) do
-    if reward.Name ~= "FaceModel" then
-      table.insert(Names, reward.Name)
-    end
-  end
-  return Names
-end
-local function GetReward(manuel)
-  eu.Character.HumanoidRootPart:SetAttribute("Pos", eu.Character.HumanoidRootPart.Cframe)
-  if manual then
-    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[manual].ProxmityPromptPart.Cframe
-  else
-    eu.Character.HumanoidRootPart.Cframe = workspace.MainGame.Rewards[Settings.Reward].ProxmityPromptPart.Cframe
-  end
-  for _, pp in pairs(workspace.MainGame.Rewards[Settings.Reward]:GetDescendants()) do
-    if pp:IsA("ProximityPrompt") then
-      fireproximityprompt(pp)
-    end
-  end
-  task.wait(0.1)
-  eu.Character.HumanoidRootPart.Cframe = eu.Character.HumanoidRootPart:GetAtribute("Pos")
 end
 
 -- Menu
