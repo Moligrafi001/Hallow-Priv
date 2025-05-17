@@ -34,3 +34,15 @@ end
 -- game:GetService("ReplicatedStorage").Remotes.Gameplay.TakeIngredient:FireServer(unpack(args))
 -- workspace.OwnedRestaurants.HallowHubby.Furniture.CashRegisters.Register.TakeOrder:FireServer()
 -- workspace.OwnedRestaurants.HallowHubby.Trash.Tray.FoodsLeft.Burger["Cooked Patty"]
+
+-- Menu
+local Menu = Window:CreateTab("Menu", "home")
+Section = Menu:CreateSection("Helpful")
+Toggle = Menu:CreateToggle({
+  Name = "Reveal Skinwalkers",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().RevealSkinwalkers = Value
+    RevealSkinwalkers()
+  end
+})
