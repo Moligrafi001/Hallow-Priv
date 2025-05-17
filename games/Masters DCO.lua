@@ -222,11 +222,27 @@ end
 local Menu = Window:CreateTab("Main", "home")
 local Section = Menu:CreateSection("Auto Farm")
 local Button = Menu:CreateButton({
-   Name = "Auto Win",
-   Interact = 'Changable',
-   Callback = function()
-       toggleTeleportation()
-   end,
+    Name = "Auto Win",
+    Interact = 'Changable',
+    Callback = function()
+        teleportingActive = not teleportingActive
+
+        if teleportingActive then
+            toggleTeleportation(true) -- start teleporting
+            Rayfield:Notify({
+                Title = "Auto Win Enabled",
+                Content = "You will now auto teleport to the win area.",
+                Duration = 3,
+            })
+        else
+            toggleTeleportation(false) -- stop teleporting
+            Rayfield:Notify({
+                Title = "Auto Win Disabled",
+                Content = "Teleportation has been turned off.",
+                Duration = 3,
+            })
+        end
+    end,
 })
 local Section = Menu:CreateSection("Stage")
 Menu:CreateButton({
