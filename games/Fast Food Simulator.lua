@@ -7,7 +7,6 @@ local Window = Rayfield:CreateWindow({
   Theme = "Amethyst"
 })
 
-
 -- Global Values
 getgenv().AutoDirty = false
 getgenv().AutoOrder = false
