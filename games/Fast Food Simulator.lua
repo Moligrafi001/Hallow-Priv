@@ -10,17 +10,21 @@ local Window = Rayfield:CreateWindow({
 -- Global Values
 getgenv().AutoDirty = false
 getgenv().AutoOrder = false
+getgenv().Opened = false
+getgenv().AutoAction = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
+local dirtyConnected = false
 
 -- Functions
 local function AutoDirty()
   for _, tray in pairs(workspace.OwnedRestaurants[eu.Name].DirtyTrays:GetChildren()) do
     tray.Collect:FireServer()
   end
-  if not workspace.OwnedRestaurants[eu.Name].DirtyTrays:GetAttribute("Connected") then
-    workspace.OwnedRestaurants[eu.Name].DirtyTrays:SetAttribute("Connected", true)
+
+  if not dirtyConnected then
+    dirtyConnected = true
     workspace.OwnedRestaurants[eu.Name].DirtyTrays.ChildAdded:Connect(function(instance)
       if getgenv().AutoDirty then
         instance.Collect:FireServer()
@@ -28,31 +32,78 @@ local function AutoDirty()
     end)
   end
 end
+
 local function AutoOrder()
-  while getgenv().AutoOrder and task.wait(3) do
-    workspace.OwnedRestaurants[eu.Name].Furniture.CashRegisters.Register.TakeOrder:FireServer()
-  end
+  task.spawn(function()
+    while getgenv().AutoOrder do
+      workspace.OwnedRestaurants[eu.Name].Furniture.CashRegisters.Register.TakeOrder:FireServer()
+      task.wait(3)
+    end
+  end)
 end
+
+local function Open()
+    task.spawn(function()
+        while getgenv().Opened do
+            local success, err = pcall(function()
+                local remote = game:GetService("ReplicatedStorage")
+                    :WaitForChild("Remotes")
+                    :WaitForChild("Settings")
+                    :WaitForChild("Setting")
+
+                remote:FireServer("Open", true) 
+            end)
+
+            if not success then
+                warn("Failed to open restaurant:", err)
+            end
+
+            task.wait(0.5)
+        end
+
+        pcall(function()
+            local remote = game:GetService("ReplicatedStorage")
+                :WaitForChild("Remotes")
+                :WaitForChild("Settings")
+                :WaitForChild("Setting")
+
+            remote:FireServer("Open", false) 
+        end)
+    end)
+end
+
 
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
-Section = Menu:CreateSection("Helpful")
-Toggle = Menu:CreateToggle({
+local Section = Menu:CreateSection("Helpful")
+
+Menu:CreateToggle({
   Name = "Collect Dirty Trays",
   CurrentValue = false,
   Callback = function(Value)
     getgenv().AutoDirty = Value
-    AutoDirty()
+    if Value then AutoDirty() end
   end
 })
-Toggle = Menu:CreateToggle({
+
+Menu:CreateToggle({
   Name = "Auto Take Orders",
   CurrentValue = false,
   Callback = function(Value)
     getgenv().AutoOrder = Value
-    AutoOrder()
+    if Value then AutoOrder() end
   end
 })
+
+Menu:CreateToggle({
+  Name = "Auto Open Restaurant",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().Opened = Value
+    if Value then Open() end
+  end
+})
+
 
 
 -- workspace.OwnedRestaurants.HallowHubby.DirtyTrays:FindFirstChild("Dirty Tray").Collect:FireServer()
