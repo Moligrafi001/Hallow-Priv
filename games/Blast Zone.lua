@@ -1,4 +1,4 @@
-if game.GameId == 3408154779 then
+do
   local Players = game:GetService("Players")
   local eu = Players.LocalPlayer
 
