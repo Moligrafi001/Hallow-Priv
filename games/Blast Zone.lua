@@ -86,36 +86,48 @@ end
 getgenv().NoKnockback = false
 local knockbackConnection
 
-local function ToggleNoKnockback()
-    if knockbackConnection then
-        knockbackConnection:Disconnect()
-        knockbackConnection = nil
+local function ApplyNoKnockback()
+    local player = game.Players.LocalPlayer
+    local function apply()
+        local char = player.Character or player.CharacterAdded:Wait()
+        local hrp = char:WaitForChild("HumanoidRootPart")
+
+        if knockbackConnection then
+            knockbackConnection:Disconnect()
+        end
+
+        knockbackConnection = game:GetService("RunService").Heartbeat:Connect(function()
+            if not getgenv().NoKnockback then return end 
+
+            if hrp and hrp.Velocity.Magnitude > 50 then
+                hrp.Velocity = Vector3.new(0, hrp.Velocity.Y, 0)
+            end
+
+            for _, v in pairs(hrp:GetChildren()) do
+                if v:IsA("BodyVelocity") or v:IsA("BodyForce") then
+                    v:Destroy()
+                end
+            end
+        end)
     end
 
-    if getgenv().NoKnockback then
-        local player = game.Players.LocalPlayer
-        local function apply()
-            local char = player.Character or player.CharacterAdded:Wait()
-            local hrp = char:WaitForChild("HumanoidRootPart")
-
-            knockbackConnection = game:GetService("RunService").Heartbeat:Connect(function()
-                if hrp and hrp.Velocity.Magnitude > 50 then
-                    hrp.Velocity = Vector3.new(0, hrp.Velocity.Y, 0)
-                end
-
-                for _, v in pairs(hrp:GetChildren()) do
-                    if v:IsA("BodyVelocity") or v:IsA("BodyForce") then
-                        v:Destroy()
-                    end
-                end
-            end)
-        end
-        if player.Character then
-            apply()
-        end
-        player.CharacterAdded:Connect(apply)
+    if player.Character then
+        apply()
     end
+    player.CharacterAdded:Connect(apply)
 end
+
+task.spawn(function()
+    while true do
+        if getgenv().NoKnockback and not knockbackConnection then
+            ApplyNoKnockback()
+        elseif not getgenv().NoKnockback and knockbackConnection then
+            knockbackConnection:Disconnect()
+            knockbackConnection = nil
+        end
+        task.wait(1) 
+    end
+end)
 
 
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
@@ -138,6 +150,6 @@ Menu:CreateToggle({
     CurrentValue = false,
     Callback = function(Value)
         getgenv().NoKnockback = Value
-        ToggleNoKnockback()
+         ApplyNoKnockback()
     end
 })
