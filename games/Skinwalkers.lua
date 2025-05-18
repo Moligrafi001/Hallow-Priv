@@ -21,17 +21,56 @@ local eu = game:GetService("Players").LocalPlayer
 
 -- Functions
 local function RevealSkinwalkers()
-  while getgenv().RevealSkinwalkers and task.wait(3) do
-    pcall(function()
-      for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-        if not skinwalker.Head:FindFirstChild("SkinwalkerNotifier") and skinwalker.Humanoid.Health > 0 then
-          local pos = skinwalker.HumanoidRootPart.CFrame.Position
-          game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
+    local added = {}
+
+    getgenv().RevealSkinwalkers = true
+
+    while getgenv().RevealSkinwalkers and task.wait(1) do
+        for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
+            local head = skinwalker:FindFirstChild("Head")
+            local hrp = skinwalker:FindFirstChild("HumanoidRootPart")
+            local humanoid = skinwalker:FindFirstChildOfClass("Humanoid")
+
+            if head and hrp and humanoid and humanoid.Health > 0 and not added[skinwalker] then
+                added[skinwalker] = true
+
+                -- Fire trap
+                local pos = hrp.Position
+                game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
+
+                -- Create ESP
+                local esp = Instance.new("BillboardGui")
+                esp.Name = "SkinwalkerNotifier"
+                esp.Size = UDim2.new(0, 100, 0, 40)
+                esp.Adornee = head
+                esp.AlwaysOnTop = true
+
+                local label = Instance.new("TextLabel")
+                label.Size = UDim2.new(1, 0, 1, 0)
+                label.BackgroundTransparency = 1
+                label.Text = "⚠ SKINWALKER ⚠"
+                label.TextColor3 = Color3.fromRGB(255, 0, 0)
+                label.TextStrokeColor3 = Color3.new(0, 0, 0)
+                label.TextStrokeTransparency = 0
+                label.TextScaled = true
+                label.Font = Enum.Font.GothamBlack
+                label.Parent = esp
+
+                esp.Parent = head
+
+                -- Clean up on death
+                humanoid.Died:Connect(function()
+                    if esp and esp.Parent then
+                        esp:Destroy()
+                    end
+                    added[skinwalker] = nil
+                end)
+            end
         end
-      end
-    end)
-  end
+    end
 end
+
+
 local function CollectMoneyBags()
   if getgenv().CollectMoneyBags then
     for _, pp in pairs(workspace.GameObjects:GetDescendants()) do
@@ -142,6 +181,7 @@ local function Fullbright()
     game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
 end
 
+
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
 Section = Menu:CreateSection("Exterminate")
@@ -177,6 +217,14 @@ Toggle = Menu:CreateToggle({
   end
 })
 Toggle = Menu:CreateToggle({
+  Name = "Civilian ESP",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().CiviliansESP = Value
+    CiviliansESP()
+  end
+})
+Toggle = Menu:CreateToggle({
   Name = "Auto Collect Money Bags",
   CurrentValue = false,
   Callback = function(Value)
@@ -184,6 +232,7 @@ Toggle = Menu:CreateToggle({
     CollectMoneyBags()
   end
 })
+
 
 -- Visual
 local VisualTab = Window:CreateTab("Visual", "eye")
