@@ -15,62 +15,33 @@ getgenv().CiviliansESP = false
 getgenv().ExterminateSkinwalkers = false
 getgenv().ExterminateNightwalkers = false
 getgenv().Fullbright = false
+getgenv().KillAura = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
+local Settings = {
+  Distance = 19
+}
 
--- Functions
-local function RevealSkinwalkers()
-    local added = {}
-
-    getgenv().RevealSkinwalkers = true
-
-    while getgenv().RevealSkinwalkers and task.wait(1) do
-        for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-            local head = skinwalker:FindFirstChild("Head")
-            local hrp = skinwalker:FindFirstChild("HumanoidRootPart")
-            local humanoid = skinwalker:FindFirstChildOfClass("Humanoid")
-
-            if head and hrp and humanoid and humanoid.Health > 0 and not added[skinwalker] then
-                added[skinwalker] = true
-
-                -- Fire trap
-                local pos = hrp.Position
-                game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
-
-                -- Create ESP
-                local esp = Instance.new("BillboardGui")
-                esp.Name = "SkinwalkerNotifier"
-                esp.Size = UDim2.new(0, 100, 0, 40)
-                esp.Adornee = head
-                esp.AlwaysOnTop = true
-
-                local label = Instance.new("TextLabel")
-                label.Size = UDim2.new(1, 0, 1, 0)
-                label.BackgroundTransparency = 1
-                label.Text = "⚠ SKINWALKER ⚠"
-                label.TextColor3 = Color3.fromRGB(255, 0, 0)
-                label.TextStrokeColor3 = Color3.new(0, 0, 0)
-                label.TextStrokeTransparency = 0
-                label.TextScaled = true
-                label.Font = Enum.Font.GothamBlack
-                label.Parent = esp
-
-                esp.Parent = head
-
-                -- Clean up on death
-                humanoid.Died:Connect(function()
-                    if esp and esp.Parent then
-                        esp:Destroy()
-                    end
-                    added[skinwalker] = nil
-                end)
-            end
-        end
+-- Trash Functions
+local function KillAll(who)
+  local function Shoot(instance)
+    game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), instance)
+  end
+  if who == "skinwalkers" then
+    for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
+      if skinwalker.Humanoid.Health > 0 then
+        Shoot(skinwalker.HumanoidRootPart)
+      end
     end
+  elseif who == "nightwalkers" then
+    for _, nightwalker in pairs(workspace.Nightwalkers:GetChildren()) do
+      if nightwalker.Humanoid.Health > 0 then
+        Shoot(nightwalker.Head)
+      end
+    end
+  end
 end
-
-
 local function CollectMoneyBags()
   if getgenv().CollectMoneyBags then
     for _, pp in pairs(workspace.GameObjects:GetDescendants()) do
@@ -112,23 +83,47 @@ local function ProtectDetector()
     end)
   end
 end
-local function KillAll(who)
-  local function Shoot(instance)
-    game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), instance)
+local function KillAura()
+  local function GetNearby()
+    local Detected = {}
+    for _, part in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
+      local model = part:FindFirstAncestorWhichIsA("Model")
+      if model and model:IsDescendantOf(workspace.Runners.Skinwalkers) or model:IsDescendantOf(workspace.Nightwalkers) then
+        local humanoid = model:FindFirstChild("Humanoid")
+        local root = model:FindFirstChild("HumanoidRootPart")
+        if humanoid and humanoid.Health > 0 then
+          if model:IsDescendantOf(workspace.Runners.Skinwalkers) then
+            Detected[model] = root
+          elseif model:IsDescendantOf(workspace.Nightwalkers) then
+            Detected[model] = model:FindFirstChild("Head")
+          end
+        end
+      end
+    end
+    return Detected
   end
-  if who == "skinwalkers" then
-    for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-      if skinwalker.Humanoid.Health > 0 then
-        Shoot(skinwalker.HumanoidRootPart)
+  while getgenv().KillAura and task.wait(0.2) do
+    pcall(function()
+      for _, root in pairs(GetNearby()) do
+        game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.4116, 140.9968, 307.8087), Vector3.new(-81.7182, 128.5721, -76.3155), root)
       end
-    end
-  elseif who == "nightwalkers" then
-    for _, nightwalker in pairs(workspace.Nightwalkers:GetChildren()) do
-      if nightwalker.Humanoid.Health > 0 then
-      end
-    end
+    end)
   end
 end
+local function Fullbright()
+    while getgenv().Fullbright and wait(0.01) do
+        game:GetService("Lighting").Brightness = 2
+        game:GetService("Lighting").ClockTime = 12
+        game:GetService("Lighting").FogEnd = 100000
+        game:GetService("Lighting").GlobalShadows = false
+    end
+    game:GetService("Lighting").Brightness = 1
+    game:GetService("Lighting").ClockTime = 14
+    game:GetService("Lighting").FogEnd = 10000000
+    game:GetService("Lighting").GlobalShadows = true
+    game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
+end
+-- Skinwalkers Functions
 local function ExterminateSkinwalkers()
   while getgenv().ExterminateSkinwalkers and task.wait(3) do
     pcall(function()
@@ -136,6 +131,19 @@ local function ExterminateSkinwalkers()
     end)
   end
 end
+local function RevealSkinwalkers()
+  while getgenv().RevealSkinwalkers and task.wait(3) do
+    pcall(function()
+      for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
+        if not skinwalker.Head:FindFirstChild("SkinwalkerNotifier") and skinwalker.Humanoid.Health > 0 then
+          local pos = skinwalker.HumanoidRootPart.CFrame.Position
+          game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
+        end
+      end
+    end)
+  end
+end
+-- Nightwalkers Functions
 local function ExterminateNightwalkers()
   while getgenv().ExterminateNightwalkers and task.wait(3) do
     pcall(function()
@@ -143,6 +151,19 @@ local function ExterminateNightwalkers()
     end)
   end
 end
+local function RevealNightwalkers()
+  while getgenv().RevealNightwalkers and task.wait(3) do
+    pcall(function()
+      for _, skinwalker in pairs(workspace.Nightwalkers:GetChildren()) do
+        if not skinwalker.Head:FindFirstChild("SkinwalkerNotifier") and skinwalker.Humanoid.Health > 0 then
+          local pos = skinwalker.WorldPivot.Position
+          game:GetService("ReplicatedStorage").Remotes.PlaceTrap:FireServer(Vector3.new(pos.X, 126.11563110351562, pos.Z + 3))
+        end
+      end
+    end)
+  end
+end
+-- Maintenance Functions
 local function CiviliansESP()
   while getgenv().CiviliansESP and task.wait(0.9) do
     pcall(function()
@@ -167,38 +188,10 @@ local function CiviliansESP()
     end)
   end
 end
-local function Fullbright()
-    while getgenv().Fullbright and wait(0.01) do
-        game:GetService("Lighting").Brightness = 2
-        game:GetService("Lighting").ClockTime = 12
-        game:GetService("Lighting").FogEnd = 100000
-        game:GetService("Lighting").GlobalShadows = false
-    end
-    game:GetService("Lighting").Brightness = 1
-    game:GetService("Lighting").ClockTime = 14
-    game:GetService("Lighting").FogEnd = 10000000
-    game:GetService("Lighting").GlobalShadows = true
-    game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
-end
-
 
 -- Menu
-local Menu = Window:CreateTab("Menu", "home")
+local Menu = Window:CreateTab("Undetectable", "home")
 Section = Menu:CreateSection("Exterminate")
-Toggle = Menu:CreateToggle({
-  Name = "Auto Kill Skinwalkers",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().ExterminateSkinwalkers= Value
-    ExterminateSkinwalkers()
-  end
-})
-Toggle = Menu:CreateButton({
-  Name = "Kill All Skinwalkers",
-  Callback = function(Value)
-    KillAll("skinwalkers")
-  end
-})
 Toggle = Menu:CreateToggle({
   Name = "Protect Village",
   CurrentValue = false,
@@ -207,23 +200,23 @@ Toggle = Menu:CreateToggle({
     ProtectDetector()
   end
 })
+Toggle = Menu:CreateToggle({
+  Name = "Kill Aura",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().KillAura = Value
+    KillAura()
+  end
+})
+Input = Menu:CreateInput({
+   Name = "Aura Distance",
+   CurrentValue = "19",
+   PlaceholderText = "Numbers only, ex.: 19",
+   Callback = function(Text)
+     Settings.Distance = tonumber(Text) or 19
+   end,
+})
 Section = Menu:CreateSection("Helpful")
-Toggle = Menu:CreateToggle({
-  Name = "Reveal Skinwalkers",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().RevealSkinwalkers = Value
-    RevealSkinwalkers()
-  end
-})
-Toggle = Menu:CreateToggle({
-  Name = "Civilian ESP",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().CiviliansESP = Value
-    CiviliansESP()
-  end
-})
 Toggle = Menu:CreateToggle({
   Name = "Auto Collect Money Bags",
   CurrentValue = false,
@@ -233,9 +226,58 @@ Toggle = Menu:CreateToggle({
   end
 })
 
+-- Blatant
+local Blatant = Window:CreateTab("Blatant", "swords")
+Section = Blatant:CreateSection("Skinwalkers")
+Toggle = Blatant:CreateToggle({
+  Name = "Auto Kill Skinwalkers",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().ExterminateSkinwalkers = Value
+    ExterminateSkinwalkers()
+  end
+})
+Toggle = Blatant:CreateButton({
+  Name = "Kill All Skinwalkers",
+  Callback = function(Value)
+    KillAll("skinwalkers")
+  end
+})
+Toggle = Blatant:CreateToggle({
+  Name = "Reveal Skinwalkers [ FE ]",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().RevealSkinwalkers = Value
+    RevealSkinwalkers()
+  end
+})
+Section = Blatant:CreateSection("Nightwalkers")
+Toggle = Blatant:CreateToggle({
+  Name = "Auto Kill Nightwalkers",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().ExterminateNightwalkers = Value
+    ExterminateNightwalkers()
+  end
+})
+Toggle = Blatant:CreateButton({
+  Name = "Kill All Nightwalkers",
+  Callback = function(Value)
+    KillAll("nightwalkers")
+  end
+})
+Toggle = Blatant:CreateToggle({
+  Name = "Reveal Nightwalkers [ FE ]",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().RevealNightwalkers = Value
+    RevealNightwalkers()
+  end
+})
 
 -- Visual
 local VisualTab = Window:CreateTab("Visual", "eye")
+Section = VisualTab:CreateSection("Light")
 Toggle = VisualTab:CreateToggle({
   Name = "Fullbright",
   CurrentValue = false,
@@ -324,7 +366,6 @@ Section = MoveTab:CreateSection("Walk")
 Input = MoveTab:CreateInput({
    Name = "Player Walk Speed",
    CurrentValue = "",
-   Flag = "WalkSpeedInput",
    PlaceholderText = "Default Walk Speed = 16",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
@@ -334,7 +375,6 @@ Input = MoveTab:CreateInput({
 Toggle = MoveTab:CreateToggle({
    Name = "Toggle Walk Speed",
    CurrentValue = false,
-   Flag = "WalkSpeedToggle", 
    Callback = function(Value)
    	getgenv().SetWalkSpeed = Value
    	SetWalkSpeed()
@@ -343,7 +383,6 @@ Toggle = MoveTab:CreateToggle({
 Toggle = MoveTab:CreateToggle({
    Name = "No Clip",
    CurrentValue = false,
-   Flag = "NoClipToggle",
    Callback = function(Value)
    	getgenv().NoClip = Value
    	NoClip()
@@ -353,7 +392,6 @@ Section = MoveTab:CreateSection("Jump")
 Input = MoveTab:CreateInput({
    Name = "Player Jump Power",
    CurrentValue = "",
-   Flag = "JumpPowerInput",
    PlaceholderText = "Default Jump Power = 50",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
@@ -363,7 +401,6 @@ Input = MoveTab:CreateInput({
 Toggle = MoveTab:CreateToggle({
    Name = "Toggle Jump Power",
    CurrentValue = false,
-   Flag = "JumpPowerToggle",
    Callback = function(Value)
    	getgenv().SetJumpPower = Value
    	SetJumpPower()
@@ -372,7 +409,6 @@ Toggle = MoveTab:CreateToggle({
 Toggle = MoveTab:CreateToggle({
    Name = "Inf Jump",
    CurrentValue = false,
-   Flag = "InfJumpToggle",
    Callback = function(Value)
    	getgenv().InfJump = Value
    	InfJump()
