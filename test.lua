@@ -91,14 +91,18 @@ local function KillAura()
       if model and model:IsDescendantOf(workspace.Runners.Skinwalkers) or model:IsDescendantOf(workspace.Nightwalkers) then
         local humanoid = model:FindFirstChild("Humanoid")
         local root = model:FindFirstChild("HumanoidRootPart")
-        if humanoid and humanoid.Health > 0 and root then
-          Detected[model] = root
+        if humanoid and humanoid.Health > 0 then
+          if model:IsDescendantOf(workspace.Runners.Skinwalkers) then
+            Detected[model] = root
+          elseif model:IsDescendantOf(workspace.Nightwalkers) then
+            Detected[model] = model:FindFirstChild("Head")
+          end
         end
       end
     end
     return Detected
   end
-  while getgenv().KillAura and task.wait(1) do
+  while getgenv().KillAura and task.wait(0.2) do
     pcall(function()
       for _, root in pairs(GetNearby()) do
         game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.4116, 140.9968, 307.8087), Vector3.new(-81.7182, 128.5721, -76.3155), root)
@@ -118,7 +122,7 @@ local function Fullbright()
     game:GetService("Lighting").FogEnd = 10000000
     game:GetService("Lighting").GlobalShadows = true
     game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
-end 
+end
 -- Skinwalkers Functions
 local function ExterminateSkinwalkers()
   while getgenv().ExterminateSkinwalkers and task.wait(3) do
@@ -147,8 +151,8 @@ local function ExterminateNightwalkers()
     end)
   end
 end
-local function RevealSkinwalkers()
-  while getgenv().RevealSkinwalkers and task.wait(3) do
+local function RevealNightwalkers()
+  while getgenv().RevealNightwalkers and task.wait(3) do
     pcall(function()
       for _, skinwalker in pairs(workspace.Nightwalkers:GetChildren()) do
         if not skinwalker.Head:FindFirstChild("SkinwalkerNotifier") and skinwalker.Humanoid.Health > 0 then
@@ -225,7 +229,7 @@ Toggle = Menu:CreateToggle({
 -- Blatant
 local Blatant = Window:CreateTab("Blatant", "swords")
 Section = Blatant:CreateSection("Skinwalkers")
-Toggle = Menu:CreateToggle({
+Toggle = Blatant:CreateToggle({
   Name = "Auto Kill Skinwalkers",
   CurrentValue = false,
   Callback = function(Value)
@@ -233,13 +237,13 @@ Toggle = Menu:CreateToggle({
     ExterminateSkinwalkers()
   end
 })
-Toggle = Menu:CreateButton({
+Toggle = Blatant:CreateButton({
   Name = "Kill All Skinwalkers",
   Callback = function(Value)
     KillAll("skinwalkers")
   end
 })
-Toggle = Menu:CreateToggle({
+Toggle = Blatant:CreateToggle({
   Name = "Reveal Skinwalkers [ FE ]",
   CurrentValue = false,
   Callback = function(Value)
@@ -248,7 +252,7 @@ Toggle = Menu:CreateToggle({
   end
 })
 Section = Blatant:CreateSection("Nightwalkers")
-Toggle = Menu:CreateToggle({
+Toggle = Blatant:CreateToggle({
   Name = "Auto Kill Nightwalkers",
   CurrentValue = false,
   Callback = function(Value)
@@ -256,13 +260,13 @@ Toggle = Menu:CreateToggle({
     ExterminateNightwalkers()
   end
 })
-Toggle = Menu:CreateButton({
+Toggle = Blatant:CreateButton({
   Name = "Kill All Nightwalkers",
   Callback = function(Value)
     KillAll("nightwalkers")
   end
 })
-Toggle = Menu:CreateToggle({
+Toggle = Blatant:CreateToggle({
   Name = "Reveal Nightwalkers [ FE ]",
   CurrentValue = false,
   Callback = function(Value)
