@@ -124,7 +124,7 @@ RightGroupbox:AddToggle('CollectToggle', {
   end
 });
 RightGroupbox:AddToggle('HealToggle', {
-  Text = 'Auto Heal',
+  Text = '-- Auto Heal --',
   Tooltip = 'Need Bandage',
   Callback = function(Value)
     getgenv().AutoHeal = Value
