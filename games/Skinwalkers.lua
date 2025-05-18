@@ -17,11 +17,16 @@ getgenv().ExterminateSkinwalkers = false
 getgenv().ExterminateNightwalkers = false
 getgenv().Fullbright = false
 getgenv().KillAura = false
+getgenv().AutoHeal = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Distance = 30
+  Distance = 30,
+  Heal = {
+    self = true,
+    others = true
+  }
 }
 
 -- Trash Functions
@@ -124,6 +129,24 @@ local function Fullbright()
     game:GetService("Lighting").GlobalShadows = true
     game:GetService("Lighting").OutdoorAmbient = Color3.fromRGB(200, 200, 200)
 end
+local function AutoHeal()
+  while getgenv().AutoHeal and task.wait(1) do
+    pcall(function()
+      if eu.Character:FindFirstChild("Bandage") or eu.Backpack:FindFirstChild("Bandage") then
+        if Settings.Heal.self and eu.Humanoid.Health < eu.Humanoid.MaxHealth then
+          game:GetService("ReplicatedStorage").Remotes.Heal:FireServer(eu.Character)
+        end
+        if Settings.Heal.others then
+          for _, p in pairs(game:GetService("Players"):GetPlayers()) do
+            if p.Character.Humanoid.Health < MaxHealth then
+              game:GetService("ReplicatedStorage").Remotes.Heal:FireServer(p.Character)
+            end
+          end
+        end
+      end
+    end)
+  end
+end
 -- Skinwalkers Functions
 local function ExterminateSkinwalkers()
   while getgenv().ExterminateSkinwalkers and task.wait(3) do
@@ -224,6 +247,14 @@ Toggle = Menu:CreateToggle({
   Callback = function(Value)
     getgenv().CollectMoneyBags = Value
     CollectMoneyBags()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Heal [ Need Bandage ]",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoHeal = Value
+    AutoHeal()
   end
 })
 Toggle = Menu:CreateToggle({
