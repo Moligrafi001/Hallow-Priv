@@ -265,7 +265,7 @@ elseif Game == 7513130835 then
   MyBigHotPenis("games/Untitled Drill Game.lua")
 elseif Game == 7435020231 then
   MyBigHotPenis("games/Dead Spells.lua")
-elseif Game == 8144063261 then
+elseif Game == 7468338447 then
   MyBigHotPenis("games/DigToEarthsCore.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
