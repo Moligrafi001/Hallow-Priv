@@ -9,6 +9,7 @@ local Window = Rayfield:CreateWindow({
 
 -- Global Values
 getgenv().RevealSkinwalkers = false
+getgenv().CollectMoneyBags = false
 getgenv().ProtectDetector = false
 getgenv().ShootSkinwalker = false
 getgenv().CiviliansESP = false
