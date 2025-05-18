@@ -190,7 +190,7 @@ local function CiviliansESP()
 end
 
 -- Menu
-local Menu = Window:CreateTab("Undetectable", "home")
+local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Exterminate")
 Toggle = Menu:CreateToggle({
   Name = "Protect Village",
