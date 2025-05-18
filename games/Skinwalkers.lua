@@ -20,7 +20,7 @@ getgenv().KillAura = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Distance = 19
+  Distance = 30
 }
 
 -- Trash Functions
@@ -210,10 +210,10 @@ Toggle = Menu:CreateToggle({
 })
 Input = Menu:CreateInput({
    Name = "Aura Distance",
-   CurrentValue = "19",
-   PlaceholderText = "Numbers only, ex.: 19",
+   CurrentValue = "15",
+   PlaceholderText = "Numbers only, ex.: 15",
    Callback = function(Text)
-     Settings.Distance = tonumber(Text) or 19
+     Settings.Distance = tonumber(Text) * 2
    end,
 })
 Section = Menu:CreateSection("Helpful")
