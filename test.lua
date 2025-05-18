@@ -53,12 +53,14 @@ local function ProtectDetector()
   local function GetNearbySkinwalkers()
     local Detected = {}
     for _, part in pairs(workspace:GetPartBoundsInBox(workspace["NEW MAP"].Village.Detector.CFrame, Vector3.new(45, 10, 45), nil)) do
-      local model = part:FindFirstAncestorWhichIsA("Model")
-      local humanoid = model:FindFirstChild("Humanoid")
-      local root = model:FindFirstChild("HumanoidRootPart")
-      if model and model:IsAncestorOf(workspace.Runners.Skinwalkers) and humanoid and humanoid.Health > 0 and root then
-        Detected[model] = root
-      end
+      pcall(function()
+        local model = part:FindFirstAncestorWhichIsA("Model")
+        local humanoid = model:FindFirstChild("Humanoid")
+        local root = model:FindFirstChild("HumanoidRootPart")
+        if model and model:IsAncestorOf(workspace.Runners.Skinwalkers) and humanoid and humanoid.Health > 0 and root then
+          Detected[model] = root
+        end
+      end)
     end
     return Detected
   end
