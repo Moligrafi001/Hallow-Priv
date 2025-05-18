@@ -225,6 +225,14 @@ Toggle = Menu:CreateToggle({
     CollectMoneyBags()
   end
 })
+Toggle = Menu:CreateToggle({
+  Name = "Fullbright",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().Fullbright = Value
+    Fullbright()
+  end
+})
 
 -- Blatant
 local Blatant = Window:CreateTab("Blatant", "swords")
@@ -272,18 +280,6 @@ Toggle = Blatant:CreateToggle({
   Callback = function(Value)
     getgenv().RevealNightwalkers = Value
     RevealNightwalkers()
-  end
-})
-
--- Visual
-local VisualTab = Window:CreateTab("Visual", "eye")
-Section = VisualTab:CreateSection("Light")
-Toggle = VisualTab:CreateToggle({
-  Name = "Fullbright",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().Fullbright = Value
-    Fullbright()
   end
 })
 
