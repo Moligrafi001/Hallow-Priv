@@ -11,7 +11,7 @@ Library.NotifySide = "Right"
 
 -- Window & Tabs Setup
 local Window = Library:CreateWindow({
-  Title = 'Hallow Hub | PETAPETA',
+  Title = 'Hallow Hub | Skinwalkers [ HORROR ]',
 	Center = true,
 	AutoShow = true,
 	Resizable = false,
@@ -26,105 +26,45 @@ local Tabs = {
 	['UI Settings'] = Window:AddTab('UI Settings'),
 }
 
--- Valores
-getgenv().AutoInteract = false
-getgenv().ItemsESP = false
-getgenv().EnemyESP = false
+-- Global Values
+getgenv().CollectMoneyBags = false
+getgenv().RevealSkinwalkers = false
+getgenv().ProtectDetector = false
+getgenv().ShootSkinwalker = false
+getgenv().CiviliansESP = false
+getgenv().ExterminateSkinwalkers = false
+getgenv().ExterminateNightwalkers = false
+getgenv().Fullbright = false
+getgenv().KillAura = false
 
 -- Locais
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  AutoInteract = {
-    Diatance = 9
-  },
-  Colors = {
-    Box = Color3.fromRGB(59, 158, 219),
-    Zeni = Color3.fromRGB(255, 255, 20),
-    Key = Color3.fromRGB(0, 255, 99),
-    Enemy = Color3.fromRGB(255, 0, 0)
+  Distance = 30,
+  Heal = {
+    self = true,
+    others = true
   }
 }
 
 -- Funções
-local function AutoInteract()
-  while getgenv().AutoInteract and task.wait(0.1) do
-    pcall(function()
-      for _, pp in pairs(workspace.Server.SpawnedItems:GetDescendants()) do
-        if pp:IsA("ProximityPrompt") then
-          if (eu.Character.HumanoidRootPart.CFrame.Position - (pp.Parent.Position or pp.Parent.CFrame.Position)).Magnitude <= Settings.AutoInteract.Distance then
-            fireproximityprompt(pp)
+local function AutoHeal()
+  while getgenv().AutoHeal and task.wait(1) do
+    if eu.Character:FindFirstChild("Bandage") or eu.Backpack:FindFirstChild("Bandage") then
+      if Settings.Heal.self and eu.Humanoid.Health < eu.Humanoid.MaxHealth then
+        game:GetService("ReplicatedStorage").Remotes.Heal:FireServer(eu.Character)
+      end
+      if Settings.Heal.others then
+        for _, p in pairs(game:GetService("Players"):GetPlayers()) do
+          if p.Character.Humanoid.Health < MaxHealth then
+            game:GetService("ReplicatedStorage").Remotes.Heal:FireServer(p.Character)
           end
         end
       end
-    end)
+    end
   end
 end
-local function ItemsESP()
-  while getgenv().ItemsESP and task.wait(0.1) do
-    pcall(function()
-      for _, item in pairs(workspace.Server.SpawnedItems:GetChildren()) do
-        if item:FindFirstChild("Luz") then
-          if item.Luz.Enabled == false then
-            item.Luz.Enabled = true
-          elseif item.Luz.DepthMode ~= Enum.HighlightDepthMode.AlwaysOnTop then
-            item.Luz.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-          end
-        else
-          local highlight = Instance.new("Highlight")
-          highlight.FillTransparency = 0.6
-          highlight.Adornee, highlight.Parent = item, item
-          highlight.Name = "Luz"
-          
-          if string.find(item.Name, "Box") then
-            highlight.FillColor, highlight.OutlineColor = Settings.Colors.Box, Settings.Colors.Box
-          elseif string.find(item.Name, "Zeni") then
-            highlight.FillColor, highlight.OutlineColor = Settings.Colors.Zeni, Settings.Colors.Zeni
-          elseif string.find(item.Name, "Key") then
-            highlight.FillColor, highlight.OutlineColor = Settings.Colors.Key, Settings.Colors.Key
-          else
-            highlight.FillColor, highlight.OutlineColor = Color3.fromRGB(255, 255, 255), Color3.fromRGB(255, 255, 255)
-          end
-        end
-      end
-    end)
-  end
-  if not getgenv().ItemsESP then
-    pcall(function()
-      for _, item in pairs(workspace.Server.SpawnedItems:GetChildren()) do
-        if item:FindFirstChild("Luz") and item.Luz.Enabled == true then
-          item.Luz.Enabled = false
-        end
-      end
-    end)
-  end
-end
-local function EnemyESP()
-  while getgenv().EnemyESP and task.wait(0.1) do
-    pcall(function()
-      if workspace.Client.Enemy.ClientEnemy.EnemyModel:FindFirstChild("Luz") then
-        if workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.Enabled == false then
-          workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.Enabled = true
-        end
-        if workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.FillColor  ~= Settings.Colors.Enemy or workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.OutlineColor ~= Settings.Colors.Enemy then
-          workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.FillColor, workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.OutlineColor = Settings.Colors.Enemy, Settings.Colors.Enemy
-        end
-      else
-        local highlight = Instance.new("Highlight")
-        highlight.FillTransparency = 0.6
-        highlight.Adornee, highlight.Parent = workspace.Client.Enemy.ClientEnemy.EnemyModel, workspace.Client.Enemy.ClientEnemy.EnemyModel
-        highlight.FillColor, highlight.OutlineColor = Settings.Colors.Enemy, Settings.Colors.Enemy
-        highlight.Name = "Luz"
-      end
-    end)
-  end
-  if not getgenv().Enemy then
-    pcall(function()
-      if workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.Enabled == true then
-        workspace.Client.Enemy.ClientEnemy.EnemyModel.Luz.Enabled = false
-      end
-    end)
-  end
-end
+
 
 -- Left Groupbox
 local LeftGroupBox = Tabs.Main:AddLeftGroupbox('Movement')
@@ -176,14 +116,33 @@ LeftGroupBox:AddToggle('InfjumpToggle', {
 });
 
 local RightGroupbox = Tabs.Main:AddRightGroupbox('Helpful');
-RightGroupbox:AddToggle('InteractToggle', {
-  Text = 'Auto Interact',
+RightGroupbox:AddToggle('CollectToggle', {
+  Text = 'Auto Collect Money Bags',
   Callback = function(Value)
-    getgenv().AutoInteract = Value
-    AutoInteract()
+    getgenv().CollectMoneyBags = Value
+    CollectMoneyBags()
+  end
+});
+RightGroupbox:AddToggle('HealToggle', {
+  Text = 'Auto Heal',
+  Callback = function(Value)
+    getgenv().AutoHeal = Value
+    AutoHeal()
   end
 });
 local Depbox = RightGroupbox:AddDependencyBox();
+Depbox:AddToggle('SelfToggle', {
+  Text = 'Self Heal',
+  Callback = function(Value)
+    Settings.Heal.self = Value
+  end
+});
+Depbox:AddToggle('OthersToggle', {
+  Text = 'Heal Others',
+  Callback = function(Value)
+    Settings.Heal.others = Value
+  end
+});
 Depbox:AddSlider('DistanceSlider', {
   Text = 'Interaction Distance',
   Default = 9,
