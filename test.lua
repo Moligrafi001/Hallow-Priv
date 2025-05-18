@@ -125,6 +125,7 @@ RightGroupbox:AddToggle('CollectToggle', {
 });
 RightGroupbox:AddToggle('HealToggle', {
   Text = 'Auto Heal',
+  Tooltip = 'Need Bandage',
   Callback = function(Value)
     getgenv().AutoHeal = Value
     AutoHeal()
@@ -156,7 +157,7 @@ Depbox:AddSlider('DistanceSlider', {
 });
 Depbox:AddDivider()
 Depbox:SetupDependencies({
-	{ Toggles.InteractToggle, true }
+	{ Toggles.HealToggle, true }
 });
 
 local VisualsGroupbox = Tabs.Main:AddRightGroupbox('ESPs and Colors');
