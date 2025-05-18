@@ -106,5 +106,136 @@ local ColorPicker = VisualTab:CreateColorPicker({
     end
 })
 
--- Teleport
--- local TPsTab = Window:CreateTab("Teleport", "Shell")
+-- Movement
+local MovementTexts = {
+  WalkSpeedText = 16,
+  JumpPowerText = 50
+}
+getgenv().SetWalkSpeed = false
+getgenv().SetJumpPower = false
+getgenv().InfJump = false
+getgenv().NoClip = false
+local function SetWalkSpeed()
+  while getgenv().SetWalkSpeed and task.wait(1) do
+    pcall(function()
+      local function CheckSet()
+        if eu.Character.Humanoid.WalkSpeedText ~= MovementTexts.WalkSpeedText then
+          eu.Character.Humanoid.WalkSpeedText = MovementTexts.WalkSpeedText
+        end
+      end
+      CheckSet()
+      if not eu.Character.Humanoid:GetAttribute("SpeedConnected") then
+        eu.Character.Humanoid:SetAttribute("SpeedConnected", true)
+        eu.Character.Humanoid:GetPropertyChangedSignal("WalkSpeed"):Connect(function()
+          if getgenv().SetWalkSpeed then CheckSet() end
+        end)
+      end
+		end)
+  end
+end
+local function SetJumpPower()
+  while getgenv().SetJumpPower and task.wait(1) do
+    pcall(function()
+      local function CheckSet()
+        if eu.Character.Humanoid.JumpPower ~= MovementTexts.JumpPowerText then
+          eu.Character.Humanoid.JumpPowerText = MovementTexts.JumpPowerText
+        end
+      end
+      CheckSet()
+      if not eu.Character.Humanoid:GetAttribute("JumpConnected") then
+        eu.Character.Humanoid:SetAttribute("JumpConnected", true)
+        eu.Character.Humanoid:GetPropertyChangedSignal("JumpPower"):Connect(function()
+          if getgenv().SetJumpPower then CheckSet() end
+        end)
+      end
+		end)
+  end
+end
+local function InfJump()
+  while getgenv().InfJump and task.wait(1) do
+    if not game:GetService("UserInputService"):GetAttribute("JumpConnected") then
+      game:GetService("UserInputService"):SetAttribute("JumpConnected", true)
+      game:GetService("UserInputService").JumpRequest:Connect(function()
+        if getgenv().InfJump then
+         eu.Character:WaitForChild("Humanoid"):ChangeState("Jumping")
+        end
+      end)
+    end
+	end
+end
+local function NoClip()
+	while getgenv().NoClip and wait(0.1) do
+	  pcall(function()
+  		for _, part in pairs(eu.Character:GetDescendants()) do
+  			if part:IsA("BasePart") then
+  				if getgenv().NoClip then
+  					part.CanCollide = false
+  				else
+  					part.CanCollide = true
+  				end
+  			end
+  		end
+		end)
+	end
+end
+
+-- Movement
+local MoveTab = Window:CreateTab("Movement", "chevrons-up")
+Section = MoveTab:CreateSection("Walk")
+Input = MoveTab:CreateInput({
+   Name = "Player Walk Speed",
+   CurrentValue = "",
+   Flag = "WalkSpeedInput",
+   PlaceholderText = "Default Walk Speed = 16",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	MovementTexts.WalkSpeedText = tonumber(Text)
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Walk Speed",
+   CurrentValue = false,
+   Flag = "WalkSpeedToggle", 
+   Callback = function(Value)
+   	getgenv().SetWalkSpeed = Value
+   	SetWalkSpeed()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "No Clip",
+   CurrentValue = false,
+   Flag = "NoClipToggle",
+   Callback = function(Value)
+   	getgenv().NoClip = Value
+   	NoClip()
+   end,
+})
+Section = MoveTab:CreateSection("Jump")
+Input = MoveTab:CreateInput({
+   Name = "Player Jump Power",
+   CurrentValue = "",
+   Flag = "JumpPowerInput",
+   PlaceholderText = "Default Jump Power = 50",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+   	MovementTexts.JumpPowerText = tonumber(Text)
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Toggle Jump Power",
+   CurrentValue = false,
+   Flag = "JumpPowerToggle",
+   Callback = function(Value)
+   	getgenv().SetJumpPower = Value
+   	SetJumpPower()
+   end,
+})
+Toggle = MoveTab:CreateToggle({
+   Name = "Inf Jump",
+   CurrentValue = false,
+   Flag = "InfJumpToggle",
+   Callback = function(Value)
+   	getgenv().InfJump = Value
+   	InfJump()
+   end,
+})
