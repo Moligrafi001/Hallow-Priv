@@ -83,6 +83,41 @@ do
   end)
 end
 
+getgenv().NoKnockback = false
+local knockbackConnection
+
+local function ToggleNoKnockback()
+    if knockbackConnection then
+        knockbackConnection:Disconnect()
+        knockbackConnection = nil
+    end
+
+    if getgenv().NoKnockback then
+        local player = game.Players.LocalPlayer
+        local function apply()
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+
+            knockbackConnection = game:GetService("RunService").Heartbeat:Connect(function()
+                if hrp and hrp.Velocity.Magnitude > 50 then
+                    hrp.Velocity = Vector3.new(0, hrp.Velocity.Y, 0)
+                end
+
+                for _, v in pairs(hrp:GetChildren()) do
+                    if v:IsA("BodyVelocity") or v:IsA("BodyForce") then
+                        v:Destroy()
+                    end
+                end
+            end)
+        end
+        if player.Character then
+            apply()
+        end
+        player.CharacterAdded:Connect(apply)
+    end
+end
+
+
 local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
 local Window = Rayfield:CreateWindow({
   Name = "Hallow Hub | Blast Zone",
@@ -96,3 +131,13 @@ local Menu = Window:CreateTab("Menu", "home")
 Section = Menu:CreateSection("Helpful")
 Section = Menu:CreateLabel("Auto Heal [ ENABLED ]")
 Section = Menu:CreateLabel("Inf Stamina [ ENABLED ]")
+
+
+Menu:CreateToggle({
+    Name = "No Knockback",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().NoKnockback = Value
+        ToggleNoKnockback()
+    end
+})
