@@ -13,7 +13,7 @@ getgenv().AutoHit = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Cooldown = 1,
+  Cooldown = 0.5,
   Reward = "Carpet"
 }
 
