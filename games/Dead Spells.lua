@@ -35,9 +35,9 @@ local function ESP()
   end
   local function Check(instance)
     pcall(function()
-      if instance[instance.Name]:GetAttribute("Type") then
+      if instance:FindFirstChild(instance.Name) and instance[instance.Name]:GetAttribute("Type") then
         return instance[instance.Name]:GetAttribute("Type")
-      elseif instance.Configuration:GetAttribute("Type") then
+      elseif instance:FindFirstChild("Configuration") and instance.Configuration:GetAttribute("Type") then
         return instance.Configuration:GetAttribute("Type")
       end
       return false
