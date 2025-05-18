@@ -108,7 +108,7 @@ Button = Menu:CreateButton({
 })
 Input = Menu:CreateInput({
    Name = "Auto Hit Cooldown",
-   CurrentValue = "1",
+   CurrentValue = "0.5",
    PlaceholderText = "Seconds only, ex.: 0.5",
    RemoveTextAfterFocusLost = false,
    Callback = function(Text)
