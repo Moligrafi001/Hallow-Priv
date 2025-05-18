@@ -50,12 +50,25 @@ local function CollectMoneyBags()
   end
 end
 local function ProtectDetector()
+  local function GetNearbySkinwalkers()
+    local Detected = {}
+    local parts = workspace:GetPartBoundsInBox(workspace["NEW MAP"].Village.Detector.CFrame, Vector3.new(90, 20, 90), nil)
+    for _, part in pairs(parts) do
+      local model = part:FindFirstAncestorWhichIsA("Model")
+      if model and model:IsDescendantOf(workspace.Runners.Skinwalkers) then
+        local humanoid = model:FindFirstChild("Humanoid")
+        local root = model:FindFirstChild("HumanoidRootPart")
+        if humanoid and humanoid.Health > 0 and root then
+          Detected[model] = root
+        end
+      end
+    end
+    return Detected
+  end
   while getgenv().ProtectDetector and task.wait(0.33) do
     pcall(function()
-      for _, skinwalker in pairs(workspace.Runners.Skinwalkers:GetChildren()) do
-        if skinwalker.Humanoid.Health > 0 and (skinwalker.HumanoidRootPart.CFrame.Position - workspace["NEW MAP"].Village.Detector.CFrame.Position).Magnitude <= 45 then
-          game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.41163635253906, 140.996826171875, 307.8087158203125), Vector3.new(-81.71827697753906, 128.5720977783203, -76.3155517578125), skinwalker.HumanoidRootPart)
-        end
+      for _, root in pairs(GetNearbySkinwalkers()) do
+        game:GetService("ReplicatedStorage").Remotes.SniperShot:FireServer(Vector3.new(-86.4116, 140.9968, 307.8087), Vector3.new(-81.7182, 128.5721, -76.3155), root)
       end
     end)
   end
