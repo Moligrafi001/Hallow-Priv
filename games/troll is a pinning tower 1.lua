@@ -9,11 +9,13 @@ local Window = Rayfield:CreateWindow({
 
 -- Global Values
 getgenv().AutoHit = false
+getgenv().AutoTeleport = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
   Cooldown = 1,
+  HitMode = "Push Up",
   Reward = "Carpet"
 }
 
@@ -51,7 +53,11 @@ local function HitAll()
       for _, p in pairs(game:GetService("Players"):GetPlayers()) do
         if p ~= eu then
           pcall(function()
-            eu.Character.YeetGlove.Event:FireServer("slash", p.Character, Vector3.new(0, 0, 0))
+            if Settings.HitMode == "Push Up" then
+              eu.Character.YeetGlove.Event:FireServer("slash", p.Character, Vector3.new(0, 0, 0))
+            else
+              eu.Character.YeetGlove.Event:FireServer("slash", p.Character, eu.Character.HumanoidRootPart.CFrame.Position)
+            end
           end)
         end
       end
@@ -69,13 +75,10 @@ local function HitAll()
   end)
 end
 local function AutoHit()
-  while getgenv().AutoHit and task.wait(Settings.Cooldown) do
+  while getgenv().AutoHit and task.wait(Settings.Cooldown) do 
     HitAll()
   end
 end
-
-getgenv().AutoTeleport = false
-
 local function TeleportAndPressE()
     task.spawn(function()
         while getgenv().AutoTeleport do
@@ -103,8 +106,6 @@ local function TeleportAndPressE()
     end)
 end
 
-
-
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
 Section = Menu:CreateSection("Helpful")
@@ -122,6 +123,16 @@ Button = Menu:CreateButton({
     GetReward()
   end
 })
+Menu:CreateToggle({
+    Name = "Auto Win",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().AutoTeleport = Value
+        if Value then
+            TeleportAndPressE()
+        end
+    end
+})
 Section = Menu:CreateSection("Blatant")
 Toggle = Menu:CreateToggle({
   Name = "Auto Hit",
@@ -137,6 +148,14 @@ Button = Menu:CreateButton({
     HitAll()
   end
 })
+Dropdown = Menu:CreateDropdown({
+  Name = "Hit Mode",
+  Options = { "Push Up", "Crash" },
+  CurrentOption = { "Push Up" },
+  Callback = function(Options)
+    Settings.HitMode = Options[1]
+  end
+})
 Input = Menu:CreateInput({
    Name = "Auto Hit Cooldown",
    CurrentValue = "0.5",
@@ -146,15 +165,3 @@ Input = Menu:CreateInput({
      Settings.Cooldown = tonumber(Text)
    end,
 })
-
-Menu:CreateToggle({
-    Name = "Auto Wins",
-    CurrentValue = false,
-    Callback = function(Value)
-        getgenv().AutoTeleport = Value
-        if Value then
-            TeleportAndPressE()
-        end
-    end
-})
-
