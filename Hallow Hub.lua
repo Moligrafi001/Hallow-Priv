@@ -65,7 +65,6 @@ Dropdown = Games:CreateDropdown({
   Name = "Select Game to Join",
   Options = GetGameNames(),
   CurrentOption = {"Choose one"},
-  MultipleOptions = false,
   Callback = function(Options)
     selectedGame = Options[1]
   end,
