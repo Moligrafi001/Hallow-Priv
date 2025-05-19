@@ -18,28 +18,26 @@ local Settings = {
 }
 
 -- Functions
-local function Rope(player)
-local args = {
+local function SetRope(player)
+  local args = {
     [1] = {
-        ["toolInstance"] = game:GetService("Players").LocalPlayer.Character.Common,
-        ["target"] = game:GetService("Players").nilo_0f.Character,
-        ["ropeInfos"] = {
-            ["Thickness"] = 0.3,
-            ["WinchForce"] = math.huge,
-            ["WinchTarget"] = 18,
-            ["WinchResponsiveness"] = 200,
-            ["Color"] = BrickColor.new(356),
-            ["WinchEnabled"] = true,
-            ["WinchSpeed"] = 15,
-            ["Visible"] = true
-        },
-        ["attacker"] = game:GetService("Players").LocalPlayer.Character,
-        ["body"] = game:GetService("Players").nilo_0f.Character:FindFirstChild("Right Leg")
+      ["toolInstance"] = eu.Character.Common,
+      ["target"] = player.Character,
+      ["ropeInfos"] = {
+        ["Thickness"] = math.huge,
+        ["WinchForce"] = math.huge,
+        ["WinchTarget"] = 18,
+        ["WinchResponsiveness"] = 200,
+        ["Color"] = BrickColor.new(356),
+        ["WinchEnabled"] = true,
+        ["WinchSpeed"] = 15,
+        ["Visible"] = true
+      },
+      ["attacker"] = eu.Character,
+      ["body"] = player.Character:FindFirstChild("Right Leg")
     }
-}
-
-game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
-
+  }
+  game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
 end
 local function AutoStruggle()
   while getgenv().AutoStruggle and task.wait(1) do
@@ -60,19 +58,19 @@ local function RopeAura()
       if part:IsA("Model") then
         local player = game:GetService("Players"):GetPlayerFromCharacter(part)
         if player then
-          table.insert(Detected, player.Character)
+          table.insert(Detected, player)
         end
       end
     end
     return Detected
   end
   while getgenv().RopeAura and task.wait(0.3) do
-    for _, character in pairs(GetNearby()) do
-      
+    for _, player in pairs(GetNearby()) do
+      if p ~= eu then
+        SetRope(player)
+      end
     end
   end
-end
-local function AutoAttack()
 end
 
 -- Menu
@@ -93,4 +91,13 @@ Input = Menu:CreateInput({
    Callback = function(Text)
      Settings.AuraDistance = tonumber(Text) * 2
    end,
+})
+Section = Menu:CreateSection("Helpful")
+Toggle = Menu:CreateToggle({
+  Name = "Auto Struggle",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoStruggle = Value
+    AutoStruggle()
+  end
 })
