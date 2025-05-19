@@ -18,6 +18,9 @@ local Settings = {
 }
 
 -- Functions
+local function Rope(player)
+
+end
 local function AutoStruggle()
   while getgenv().AutoStruggle and task.wait(1) do
     if not eu.Character:GetAttribute("Connected") then
@@ -34,36 +37,22 @@ local function RopeAura()
   local function GetNearby()
     local Detected = {}
     for _, part in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
-      if part:IsA("Model") and game:GetService("Players"):GetPlayerFromCharacter(part) then
-        table.insert(Detected, part.Character)
+      if part:IsA("Model") then
+        local player = game:GetService("Players"):GetPlayerFromCharacter(part)
+        if player then
+          table.insert(Detected, player.Character)
+        end
       end
     end
     return Detected
   end
   while getgenv().RopeAura and task.wait(0.3) do
-    
+    for _, character in pairs(GetNearby()) do
+      
+    end
   end
 end
 local function AutoAttack()
-  local args = {
-      [1] = {
-          ["toolInstance"] = game:GetService("Players").LocalPlayer.Character.Common,
-          ["target"] = game:GetService("Players").yuliaa3413.Character,
-          ["ropeInfos"] = {
-              ["Thickness"] = 0.3,
-              ["WinchForce"] = math.huge,
-              ["WinchTarget"] = 18,
-              ["WinchResponsiveness"] = 200,
-              ["Color"] = BrickColor.new(356),
-              ["WinchEnabled"] = true,
-              ["WinchSpeed"] = 15,
-              ["Visible"] = true
-          },
-          ["attacker"] = game:GetService("Players").LocalPlayer.Character,
-          ["body"] = game:GetService("Players").yuliaa3413.Character:FindFirstChild("Right Arm")
-      }
-  }
-  game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
 end
 
 -- Menu
