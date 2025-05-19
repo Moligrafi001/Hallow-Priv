@@ -46,6 +46,7 @@ local function GetReward(manual)
     Middle(Settings.Reward)
   end
   eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Pos") * CFrame.new(0, 1, 0)
+  return true
 end
 local function HitAll()
   pcall(function()
@@ -64,13 +65,11 @@ local function HitAll()
     end
     if eu.Character:FindFirstChild("YeetGlove") then
       Hit()
-    else
-      if eu.Backpack:FindFirstChild("YeetGlove") then
-        eu.Backpack.YeetGlove.Parent = eu.Character
-        Hit()
-      else
-        GetReward("SteamPunk")
-      end
+    elseif eu.Backpack:FindFirstChild("YeetGlove") then
+      eu.Backpack.YeetGlove.Parent = eu.Character
+      Hit()
+    elseif GetReward("SteamPunk") then
+      Hit()
     end
   end)
 end
