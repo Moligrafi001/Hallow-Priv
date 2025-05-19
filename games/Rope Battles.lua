@@ -10,7 +10,7 @@ local function AutoStruggle()
     if not eu.Character:GetAttribute("Connected") then
       eu.Character:SetAttribute("Connected", true)
       eu.Character:GetAttributeChangedSignal("StruggleProgress"):Connect(function()
-        if getgenv().AutoStruggle and eu.Character:GetAttribute("StruggleProgress") > 0 then
+        if getgenv().AutoStruggle and eu.Character:GetAttribute("StruggleProgress") ~= 0 then
           game:GetService("ReplicatedStorage").RemoteEvents.StruggleRE:FireServer({ event = "Break", activeBreak = false })
         end
       end)
