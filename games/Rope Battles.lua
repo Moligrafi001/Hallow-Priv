@@ -1,8 +1,21 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+  Name = "Hallow Hub | Rope Battles",
+  Icon = 17091459839,
+  LoadingTitle = "Hallow Hub",
+  LoadingSubtitle = "By Moligrafi",
+  Theme = "Amethyst"
+})
+
 -- Global Values
 getgenv().AutoStruggle = false
+getgenv().RopeAura = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
+local Settings = {
+  AuraDistance = 30
+}
 
 -- Functions
 local function AutoStruggle()
@@ -15,6 +28,20 @@ local function AutoStruggle()
         end
       end)
     end
+  end
+end
+local function RopeAura()
+  local function GetNearby()
+    local Detected = {}
+    for _, part in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
+      if part:IsA("Model") and game:GetService("Players"):GetPlayerFromCharacter(part) then
+        table.insert(Detected, part.Character)
+      end
+    end
+    return Detected
+  end
+  while getgenv().RopeAura and task.wait(0.3) do
+    
   end
 end
 local function AutoAttack()
@@ -38,3 +65,23 @@ local function AutoAttack()
   }
   game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
 end
+
+-- Menu
+local Menu = Window:CreateTab("Main", "home")
+Section = Menu:CreateSection("Exterminate")
+Toggle = Menu:CreateToggle({
+  Name = "Rope Aura",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().RopeAura = Value
+    RopeAura()
+  end
+})
+Input = Menu:CreateInput({
+   Name = "Aura Distance",
+   CurrentValue = tostring(Settings.AuraDistance / 2),
+   PlaceholderText = "Numbers only, ex.: 15",
+   Callback = function(Text)
+     Settings.AuraDistance = tonumber(Text) * 2
+   end,
+})
