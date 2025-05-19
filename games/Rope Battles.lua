@@ -19,6 +19,26 @@ local Settings = {
 
 -- Functions
 local function Rope(player)
+local args = {
+    [1] = {
+        ["toolInstance"] = game:GetService("Players").LocalPlayer.Character.Common,
+        ["target"] = game:GetService("Players").nilo_0f.Character,
+        ["ropeInfos"] = {
+            ["Thickness"] = 0.3,
+            ["WinchForce"] = math.huge,
+            ["WinchTarget"] = 18,
+            ["WinchResponsiveness"] = 200,
+            ["Color"] = BrickColor.new(356),
+            ["WinchEnabled"] = true,
+            ["WinchSpeed"] = 15,
+            ["Visible"] = true
+        },
+        ["attacker"] = game:GetService("Players").LocalPlayer.Character,
+        ["body"] = game:GetService("Players").nilo_0f.Character:FindFirstChild("Right Leg")
+    }
+}
+
+game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
 
 end
 local function AutoStruggle()
