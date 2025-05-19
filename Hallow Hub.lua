@@ -44,7 +44,7 @@ local function GetGames()
     ["Dungeons of Doom"] = 77293138169730,
     ["Flee The Facility"] = 893973440,
     ["City Destroyer Simulator"] = 15148585624
-    }
+  }
   return gamePlaceIds
 end
 local function GetGameNames()
