@@ -23,6 +23,7 @@ getgenv().AutoHeal = false
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
   Distance = 30,
+  Amount = 999,
   Heal = {
     self = true,
     others = true
@@ -277,7 +278,7 @@ Toggle = Blatant:CreateToggle({
     ExterminateSkinwalkers()
   end
 })
-Toggle = Blatant:CreateButton({
+Button = Blatant:CreateButton({
   Name = "Kill All Skinwalkers",
   Callback = function(Value)
     KillAll("skinwalkers")
@@ -300,7 +301,7 @@ Toggle = Blatant:CreateToggle({
     ExterminateNightwalkers()
   end
 })
-Toggle = Blatant:CreateButton({
+Button = Blatant:CreateButton({
   Name = "Kill All Nightwalkers",
   Callback = function(Value)
     KillAll("nightwalkers")
@@ -313,6 +314,47 @@ Toggle = Blatant:CreateToggle({
     getgenv().RevealNightwalkers = Value
     RevealNightwalkers()
   end
+})
+
+-- Get Items
+local GetItems = Window:CreateTab("Get Items", "gift")
+Section = GetItems:CreateSection("Skinwalkers")
+Label = GetItems:CreateLabel("CAN BE USED ONLY ONCE", "triangle-alert")
+Input = GetItems:CreateInput({
+  Name = "Amount to Get",
+  CurrentValue = "999",
+  PlaceholderText = "1 - 999 ( Only Numbers )",
+  RemoveTextAfterFocusLost = false,
+  Callback = function(Text)
+    Settings.Amount = tonumber(Text)
+  end,
+})
+Button = GetItems:CreateButton({
+  Name = "Get Cola",
+  Callback = function()
+    game:GetService("ReplicatedStorage").Assets.Tools.Cola.Amount.Value = Settings.Amount
+    game:GetService("ReplicatedStorage").Assets.Tools.Cola.Parent = eu.Backpack
+  end,
+})
+Button = GetItems:CreateButton({
+  Name = "Get Gatling Gun",
+  Callback = function()
+    game:GetService("ReplicatedStorage").Assets.Tools.Gatling.Parent = eu.Backpack
+  end,
+})
+Button = GetItems:CreateButton({
+  Name = "Get Snappers",
+  Callback = function()
+    game:GetService("ReplicatedStorage").Assets.Tools.Snapper.Amount.Value = Settings.Amount
+    game:GetService("ReplicatedStorage").Assets.Tools.Snapper.Parent = eu.Backpack
+  end,
+})
+Button = GetItems:CreateButton({
+  Name = "Get Turrets",
+  Callback = function()
+    game:GetService("ReplicatedStorage").Assets.Tools.Turret.Amount.Value = Settings.Amount
+    game:GetService("ReplicatedStorage").Assets.Tools.Turret.Parent = eu.Backpack
+  end,
 })
 
 -- Movement
