@@ -1,24 +1,22 @@
--- loadstring(game:HttpGet("https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/HallowHub.lua",true))()
 local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local Window = Rayfield:CreateWindow({
-   Name = "Hallow Hub | No Game Dettected",
-   Icon = 17091459839,
-   LoadingTitle = "Hallow Hub",
-   LoadingSubtitle = "By Moligrafi",
-   Theme = "Amethyst"
+  Name = "Hallow Hub | No Game Dettected",
+  Icon = 17091459839,
+  LoadingTitle = "Hallow Hub",
+  LoadingSubtitle = "By Moligrafi",
+  Theme = "Amethyst"
 })
 
 -- Teleport
 local selectedGame = "The Upgrade Tree Of Tree"
 function TeleportToGame(placeId)
-    local teleportService = game:GetService("TeleportService")
-    local success, errorMessage = pcall(function()
-        teleportService:Teleport(placeId, game.Players.LocalPlayer)
-    end)
+  local success, errorMessage = pcall(function()
+  game:GetService("TeleportService"):Teleport(placeId, game.Players.LocalPlayer)
+  end)
 end
-
--- Lista de Place IDs correspondentes aos jogos
-local gamePlaceIds = {
+-- Games List
+local function GetGames()
+  local gamePlaceIds = {
     ["Ninja Legends"] = 3956818381,
     ["The Upgrade Tree Of Tree"] = 16148053600,
     ["Everything Upgrade Tree"] = 122809141833750,
@@ -46,36 +44,46 @@ local gamePlaceIds = {
     ["Dungeons of Doom"] = 77293138169730,
     ["Flee The Facility"] = 893973440,
     ["City Destroyer Simulator"] = 15148585624
-}
+    }
+  return gamePlaceIds
+end
+local function GetGameNames()
+  local names = {}
+  
+  for name, _ in pairs(GetGames()) do
+    table.insert(names, name)
+  end
+  
+  return names
+end
 
 -- Games
 local Games = Window:CreateTab("Supported Games", "gamepad-2")
-local Section = Games:CreateSection("Join game system")
-local Label = Games:CreateLabel("Here are all the supported games in this script <3", "smile")
-local Dropdown = Games:CreateDropdown({
-   Name = "Select Game to Join",
-   Options = {"The Upgrade Tree Of Tree", "Everything Upgrade Tree", "Snow Plow Simulator", "Farm for Fun! 🌾", "⚔️ Slash Mobs Simulator", "Rune Inc", "Make and Sell Cars", "Find The Buttons! 🔎🔴", "🥊Punch Monsters!", "Cash Incremental", "Legends Of Speed", "Find The Buttons!", "Clicking Quest!", "Growth Incremental", "Find The Button", "Snow Incremental Simulator", "Ultimate Upgrade Tree", "Jump Incremental", "Find Chicken Nuggets", "Find Buttons! 👀", "Vyasa", "Computer Upgrade Tree", "Swords Battle Simulator", "Dungeons of Doom", "Flee The Facility", "City Destroyer Simulator"},
-   CurrentOption = {"Choose one"},
-   MultipleOptions = false,
-   Callback = function(Options)
-   		selectedGame = Options[1]
-   end,
+Section = Games:CreateSection("Join game system")
+Label = Games:CreateLabel("Here are all the supported games in this script <3", "smile")
+Dropdown = Games:CreateDropdown({
+  Name = "Select Game to Join",
+  Options = GetGameNames(),
+  CurrentOption = {"Choose one"},
+  MultipleOptions = false,
+  Callback = function(Options)
+    selectedGame = Options[1]
+  end,
 })
-local Button = Games:CreateButton({
-   Name = "Teleport to selected game",
-   Callback = function()
-   			setclipboard("loadstring(game:HttpGet(\"https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua\",true))() -- https://discord.gg/AESCuek87s")
-   			toclipboard("loadstring(game:HttpGet(\"https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua\",true))() -- https://discord.gg/AESCuek87s")
-   			Rayfield:Notify({
-			  Title = "Teleleporting...",
-			   Content = "The loadstring has copied, teleporting to selected game...",
-			   Duration = 3,
-			   Image = 17091459839,
-				})
-   			wait(3.5)
-        local placeId = gamePlaceIds[selectedGame]
-        if placeId then
-            TeleportToGame(placeId)
-        end
-    end,
+Button = Games:CreateButton({
+  Name = "Teleport to selected game",
+  Callback = function()
+    setclipboard("loadstring(game:HttpGet(\"https://raw.githubusercontent.com/Moligrafi001/Hallow-Hub/main/Loader.lua\",true))() -- https://discord.gg/AESCuek87s")
+    Rayfield:Notify({
+      Title = "Teleleporting...",
+      Content = "The loadstring has copied, teleporting to selected game...",
+      Duration = 3,
+      Image = 17091459839,
+    })
+    wait(3.5)
+    local id = GetGames()[selectedGame]
+    if id then
+      TeleportToGame(id)
+    end
+  end,
 })
