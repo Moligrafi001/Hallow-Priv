@@ -13,7 +13,7 @@ getgenv().AutoHit = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Cooldown = 0.5,
+  Cooldown = 1,
   Reward = "Carpet"
 }
 
@@ -74,6 +74,37 @@ local function AutoHit()
   end
 end
 
+getgenv().AutoTeleport = false
+
+local function TeleportAndPressE()
+    task.spawn(function()
+        while getgenv().AutoTeleport do
+            local player = game:GetService("Players").LocalPlayer
+            local char = player.Character or player.CharacterAdded:Wait()
+            local hrp = char:WaitForChild("HumanoidRootPart")
+
+            hrp.CFrame = CFrame.new(
+                -212.457565, 530.234497, -1843.7771,
+                -0.00445137778, 5.40920775e-09, -0.999990106,
+                 1.7387547e-10, 1, 5.40848744e-09,
+                 0.999990106, -1.49798535e-10, -0.00445137778
+            )
+
+            task.wait(0.2)
+
+            -- Simulate pressing E
+            local virtualInputManager = game:GetService("VirtualInputManager")
+            virtualInputManager:SendKeyEvent(true, Enum.KeyCode.E, false, game)
+            task.wait(0.05)
+            virtualInputManager:SendKeyEvent(false, Enum.KeyCode.E, false, game)
+
+            task.wait(1) 
+        end
+    end)
+end
+
+
+
 -- Menu
 local Menu = Window:CreateTab("Menu", "home")
 Section = Menu:CreateSection("Helpful")
@@ -115,3 +146,15 @@ Input = Menu:CreateInput({
      Settings.Cooldown = tonumber(Text)
    end,
 })
+
+Menu:CreateToggle({
+    Name = "Auto Wins",
+    CurrentValue = false,
+    Callback = function(Value)
+        getgenv().AutoTeleport = Value
+        if Value then
+            TeleportAndPressE()
+        end
+    end
+})
+
