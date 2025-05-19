@@ -9,35 +9,49 @@ local Window = Rayfield:CreateWindow({
 
 -- Global Values
 getgenv().AutoStruggle = false
-getgenv().RopeAura = false
+getgenv().AutoRope = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  AuraDistance = 30
+  Cooldown = 1
 }
 
 -- Functions
-local function SetRope(player)
-  local args = {
-    [1] = {
-      ["toolInstance"] = eu.Character.Common,
-      ["target"] = player.Character,
-      ["ropeInfos"] = {
-        ["Thickness"] = math.huge,
-        ["WinchForce"] = math.huge,
-        ["WinchTarget"] = 18,
-        ["WinchResponsiveness"] = 200,
-        ["Color"] = BrickColor.new(356),
-        ["WinchEnabled"] = true,
-        ["WinchSpeed"] = 15,
-        ["Visible"] = true
-      },
-      ["attacker"] = eu.Character,
-      ["body"] = player.Character:FindFirstChild("Right Leg")
-    }
-  }
-  game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
+local function RopeAll()
+  pcall(function()
+    for _, p in pairs(game.Players:GetPlayers()) do
+      for _, tool in pairs(eu.Character:GetChildren()) do
+        if p ~= eu and tool:IsA("Tool") then
+          local args = {
+            [1] = {
+              ["toolInstance"] = tool,
+              ["target"] = p.Character,
+              ["ropeInfos"] = {
+                ["Thickness"] = math.huge,
+                ["WinchForce"] = math.huge,
+                ["WinchTarget"] = 18,
+                ["WinchResponsiveness"] = 200,
+                ["Color"] = BrickColor.new(356),
+                ["WinchEnabled"] = true,
+                ["WinchSpeed"] = 15,
+                ["Visible"] = false
+              },
+              ["attacker"] = eu.Character,
+              ["body"] = p.Character:FindFirstChild("Right Leg")
+            }
+          }
+        
+          game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
+        end
+      end
+    end
+  end)
+end
+local function AutoRope()
+  while getgenv().AutoRope and task.wait(Settings.Cooldown) do
+    RopeAll()
+  end
 end
 local function AutoStruggle()
   while getgenv().AutoStruggle and task.wait(1) do
@@ -51,45 +65,31 @@ local function AutoStruggle()
     end
   end
 end
-local function RopeAura()
-  local function GetNearby()
-    local Detected = {}
-    for _, part in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
-      if part:IsA("Model") then
-        local player = game:GetService("Players"):GetPlayerFromCharacter(part)
-        if player then
-          table.insert(Detected, player)
-        end
-      end
-    end
-    return Detected
-  end
-  while getgenv().RopeAura and task.wait(0.3) do
-    for _, player in pairs(GetNearby()) do
-      if p ~= eu then
-        SetRope(player)
-      end
-    end
-  end
-end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Exterminate")
-Toggle = Menu:CreateToggle({
-  Name = "Rope Aura",
+Button = Menu:CreateButton({
+  Name = "Rope All",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().RopeAura = Value
-    RopeAura()
+    RopeAll()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Rope All",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoRope = Value
+    AutoRope()
   end
 })
 Input = Menu:CreateInput({
-   Name = "Aura Distance",
-   CurrentValue = tostring(Settings.AuraDistance / 2),
-   PlaceholderText = "Numbers only, ex.: 15",
+   Name = "Aura Rope Cooldown",
+   CurrentValue = tostring(Settings.Cooldown),
+   PlaceholderText = "Seconds only, ex.: 1.5",
    Callback = function(Text)
-     Settings.AuraDistance = tonumber(Text) * 2
+     Settings.Cooldown = tonumber(Text)
    end,
 })
 Section = Menu:CreateSection("Helpful")
