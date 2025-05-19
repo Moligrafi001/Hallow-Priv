@@ -322,9 +322,8 @@ Section = GetItems:CreateSection("Skinwalkers")
 Label = GetItems:CreateLabel("CAN BE USED ONLY ONCE", "triangle-alert")
 Input = GetItems:CreateInput({
   Name = "Amount to Get",
-  CurrentValue = "999",
+  CurrentValue = tostring(Settings.Amount),
   PlaceholderText = "1 - 999 ( Only Numbers )",
-  RemoveTextAfterFocusLost = false,
   Callback = function(Text)
     Settings.Amount = tonumber(Text)
   end,
