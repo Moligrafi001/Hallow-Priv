@@ -19,6 +19,7 @@ local function KillAll()
   end
 end
 local function AutoKill()
+  if getgenv().AutoKill then KillAll() end
   while getgenv().AutoKill and task.wait(1) do
     if not workspace.Things.Zombies:GetAttribute("Connected") then
       workspace.Things.Zombies:SetAttribute("Connected", true)
