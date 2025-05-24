@@ -56,13 +56,6 @@ local function AutoContribute()
     end)
   end
 end
-local function AutoCraft()
-  while getgenv().AutoCraft and task.wait(1) do
-    pcall(function()
-      game:GetService("ReplicatedStorage").Communication.Craft:FireServer(workspace.Plots[eu.Name].Land.S13.Crafter.Attachment)
-    end)
-  end
-end
 local function AutoSell()
   while getgenv().AutoSell and task.wait(1) do
     game:GetService("ReplicatedStorage").Communication.SellToMerchant:FireServer(true, {})
@@ -73,7 +66,7 @@ end
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Auto Farm")
 Toggle = Menu:CreateToggle({
-  Name = "Collect Resources",
+  Name = "Mine Resources",
   CurrentValue = false,
   Callback = function(Value)
     getgenv().CollectResources = Value
@@ -89,14 +82,6 @@ Toggle = Menu:CreateToggle({
   end
 })
 Toggle = Menu:CreateToggle({
-  Name = "Auto Sell All",
-  CurrentValue = false,
-  Callback = function(Value)
-    getgenv().AutoSell = Value
-    AutoSell()
-  end
-})
-Toggle = Menu:CreateToggle({
   Name = "Auto Contribute",
   CurrentValue = false,
   Callback = function(Value)
@@ -105,20 +90,46 @@ Toggle = Menu:CreateToggle({
   end
 })
 Toggle = Menu:CreateToggle({
-  Name = "Auto Craft",
+  Name = "Auto Sell All",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().AutoCraft = Value
-    AutoCraft()
+    getgenv().AutoSell = Value
+    AutoSell()
   end
 })
 Section = Menu:CreateSection("Craft")
+Button = Menu:CreateButton({
+  Name = "Craft Planks",
+  Callback = function(Value)
+    pcall(function()
+      game:GetService("ReplicatedStorage").Communication.Craft:FireServer(workspace.Plots[eu.Name].Land.S13.Crafter.Attachment)
+    end)
+  end
+})
+Button = Menu:CreateButton({
+  Name = "Craft Chairs",
+  Callback = function(Value)
+    pcall(function()
+      game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(workspace.Plots[eu.Name].Land.S9.Crafter.Attachment)
+    end)
+  end
+})
+Button = Menu:CreateButton({
+  Name = "Craft Iron",
+  Callback = function(Value)
+    pcall(function()
+      game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(workspace.Plots[eu.Name].Land.S23.Crafter.Attachment)
+    end)
+  end
+})
+Section = Menu:CreateSection("Tutorial")
+Button = Menu:CreateButton({
+  Name = "Finish Tutorial",
+  Callback = function(Value)
+    pcall(function()
+      game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
+    end)
+  end
+})
 
 -- game:GetService("ReplicatedStorage").Communication.Plant:FireServer(eu.Character:FindFirstChild("Corn Seeds"), Vector3.new(-313.9991760253906, 0, 190.43287658691406))
--- game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
--- game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(workspace.Plots[eu.Name].Land.S9.Crafter.Attachment)
-local args = {
-    [1] = workspace.Plots.HallowHubby.Land.S23.Crafter.Attachment
-}
-
-game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(unpack(args))
