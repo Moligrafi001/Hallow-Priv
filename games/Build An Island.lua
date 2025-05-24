@@ -10,7 +10,6 @@ local Window = Rayfield:CreateWindow({
 -- Global Values
 getgenv().CollectResources = false
 getgenv().AutoContribute = false
-getgenv().AutoCraft = false
 getgenv().AutoHarvest = false
 getgenv().AutoSell = false
 
