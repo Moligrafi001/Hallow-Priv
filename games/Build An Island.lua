@@ -1,3 +1,12 @@
+local Rayfield = loadstring(game:HttpGet("https://sirius.menu/rayfield"))()
+local Window = Rayfield:CreateWindow({
+  Name = "Hallow Hub | Build An Island",
+  Icon = 17091459839,
+  LoadingTitle = "Hallow Hub",
+  LoadingSubtitle = "By Moligrafi",
+  Theme = "Amethyst"
+})
+
 -- Global Values
 getgenv().AutoHarvest = false
 getgenv().AutoContribute = false
