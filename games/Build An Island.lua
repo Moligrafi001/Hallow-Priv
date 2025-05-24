@@ -33,7 +33,7 @@ local function AutoContribute()
         if resource:FindFirstChild("Amount") then
           local atual, maximo = resource.Amount.Text:match("(%d+)/(%d+)")
           if tonumber(atual) < tonumber(maximo) then
-            game:GetService("ReplicatedStorage").Communication.ContributeToExpand:FireServer(expand.Name, resource.Name, math.huge)
+            game:GetService("ReplicatedStorage").Communication.ContributeToExpand:FireServer(expand.Name, resource.Name, tonumber(maximo))
           end
         end
       end
