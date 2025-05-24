@@ -10,6 +10,7 @@ local Window = Rayfield:CreateWindow({
 -- Global Values
 getgenv().AutoHarvest = false
 getgenv().AutoContribute = false
+getgenv().AutoCraft = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
@@ -42,6 +43,13 @@ local function AutoContribute()
 -- workspace.Plots[eu.Name].Expand.S13.Top.BillboardGui.Log.Amount
   end
 end
+local function AutoCraft()
+  while getgenv().AutoCraft and task.wait(1) do
+    pcall(function()
+      game:GetService("ReplicatedStorage").Communication.Craft:FireServer(workspace.Plots[eu.Name].Land.S13.Crafter.Attachment)
+    end)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -62,5 +70,11 @@ Toggle = Menu:CreateToggle({
     AutoContribute()
   end
 })
-
--- game:GetService("ReplicatedStorage").Communication.Craft:FireServer(workspace.Plots[eu.Name].Land.S13.Crafter.Attachment) 
+Toggle = Menu:CreateToggle({
+  Name = "Auto Craft",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoCraft = Value
+    AutoCraft()
+  end
+})
