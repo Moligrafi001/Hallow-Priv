@@ -33,7 +33,7 @@ local function AutoHarvest()
   while getgenv().AutoHarvest and task.wait(1) do
     pcall(function()
       for _, plant in pairs(workspace.Plots[eu.Name].Plants:GetChildren()) do
-        if plant:GetAttribute("Grown") then
+        if plant:GetAttribute("Grown") and plant:GetAttribute("Grown") == true then
           game:GetService("ReplicatedStorage").Communication.Harvest:FireServer(plant.Name)
         end
       end
@@ -112,6 +112,7 @@ Toggle = Menu:CreateToggle({
     AutoCraft()
   end
 })
+Section = Menu:CreateSection("Craft")
 
 -- game:GetService("ReplicatedStorage").Communication.Plant:FireServer(eu.Character:FindFirstChild("Corn Seeds"), Vector3.new(-313.9991760253906, 0, 190.43287658691406))
 -- game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
