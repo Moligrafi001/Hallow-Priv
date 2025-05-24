@@ -78,3 +78,28 @@ Toggle = Menu:CreateToggle({
     AutoCraft()
   end
 })
+
+local args = {
+    [1] = true,
+    [2] = {}
+}
+
+game:GetService("ReplicatedStorage").Communication.SellToMerchant:FireServer(unpack(args))
+local args = {
+    [1] = "1"
+}
+
+game:GetService("ReplicatedStorage").Communication.Harvest:FireServer(unpack(args))
+local args = {
+    [1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Corn Seeds"),
+    [2] = Vector3.new(-313.9991760253906, 0, 190.43287658691406)
+}
+
+game:GetService("ReplicatedStorage").Communication.Plant:FireServer(unpack(args))
+game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
+local args = {
+    [1] = workspace.Plots.HallowHubby.Land.S9.Crafter.Attachment
+}
+
+game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(unpack(args))
+workspace.Plots.HallowHubby.Plants["2"]:GetAttribute("Grown")
