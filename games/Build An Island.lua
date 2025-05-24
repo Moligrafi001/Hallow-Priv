@@ -11,6 +11,8 @@ local Window = Rayfield:CreateWindow({
 getgenv().CollectResources = false
 getgenv().AutoContribute = false
 getgenv().AutoCraft = false
+getgenv().AutoHarvest = false
+getgenv().AutoSell = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
@@ -22,6 +24,17 @@ local function CollectResources()
       for _, resource in pairs(workspace.Plots[eu.Name].Resources:GetChildren()) do
         if resource:GetAttribute("HP") > 0 then
           game:GetService("ReplicatedStorage").Communication.HitResource:FireServer(resource)
+        end
+      end
+    end)
+  end
+end
+local function AutoHarvest()
+  while getgenv().AutoHarvest and task.wait(1) do
+    pcall(function()
+      for _, plant in pairs(workspace.Plots[eu.Name].Plants:GetChildren()) do
+        if plant:GetAttribute("Grown") then
+          game:GetService("ReplicatedStorage").Communication.Harvest:FireServer(plant.Name)
         end
       end
     end)
@@ -50,6 +63,11 @@ local function AutoCraft()
     end)
   end
 end
+local function AutoSell()
+  while getgenv().AutoSell and task.wait(1) do
+    game:GetService("ReplicatedStorage").Communication.SellToMerchant:FireServer(true, {})
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -60,6 +78,22 @@ Toggle = Menu:CreateToggle({
   Callback = function(Value)
     getgenv().CollectResources = Value
     CollectResources()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Harvest",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoHarvest = Value
+    AutoHarvest()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Auto Sell All",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoSell = Value
+    AutoSell()
   end
 })
 Toggle = Menu:CreateToggle({
@@ -79,27 +113,6 @@ Toggle = Menu:CreateToggle({
   end
 })
 
-local args = {
-    [1] = true,
-    [2] = {}
-}
-
-game:GetService("ReplicatedStorage").Communication.SellToMerchant:FireServer(unpack(args))
-local args = {
-    [1] = "1"
-}
-
-game:GetService("ReplicatedStorage").Communication.Harvest:FireServer(unpack(args))
-local args = {
-    [1] = game:GetService("Players").LocalPlayer.Character:FindFirstChild("Corn Seeds"),
-    [2] = Vector3.new(-313.9991760253906, 0, 190.43287658691406)
-}
-
-game:GetService("ReplicatedStorage").Communication.Plant:FireServer(unpack(args))
-game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
-local args = {
-    [1] = workspace.Plots.HallowHubby.Land.S9.Crafter.Attachment
-}
-
-game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(unpack(args))
-workspace.Plots.HallowHubby.Plants["2"]:GetAttribute("Grown")
+-- game:GetService("ReplicatedStorage").Communication.Plant:FireServer(eu.Character:FindFirstChild("Corn Seeds"), Vector3.new(-313.9991760253906, 0, 190.43287658691406))
+-- game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
+-- game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(workspace.Plots[eu.Name].Land.S9.Crafter.Attachment)
