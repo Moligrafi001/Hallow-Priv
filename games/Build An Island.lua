@@ -8,7 +8,7 @@ local Window = Rayfield:CreateWindow({
 })
 
 -- Global Values
-getgenv().AutoHarvest = false
+getgenv().CollectResources = false
 getgenv().AutoContribute = false
 getgenv().AutoCraft = false
 
@@ -16,8 +16,8 @@ getgenv().AutoCraft = false
 local eu = game:GetService("Players").LocalPlayer
 
 -- Functions
-local function AutoHarvest()
-  while getgenv().AutoHarvest and task.wait(1) do
+local function CollectResources()
+  while getgenv().CollectResources and task.wait(1) do
     pcall(function()
       for _, resource in pairs(workspace.Plots[eu.Name].Resources:GetChildren()) do
         if resource:GetAttribute("HP") > 0 then
@@ -55,11 +55,11 @@ end
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Auto Farm")
 Toggle = Menu:CreateToggle({
-  Name = "Auto Harvest",
+  Name = "Collect Resources",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().AutoHarvest = Value
-    AutoHarvest()
+    getgenv().CollectResources = Value
+    CollectResources()
   end
 })
 Toggle = Menu:CreateToggle({
