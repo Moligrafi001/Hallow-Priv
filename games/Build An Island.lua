@@ -117,3 +117,8 @@ Section = Menu:CreateSection("Craft")
 -- game:GetService("ReplicatedStorage").Communication.Plant:FireServer(eu.Character:FindFirstChild("Corn Seeds"), Vector3.new(-313.9991760253906, 0, 190.43287658691406))
 -- game:GetService("ReplicatedStorage").Communication.CompleteTutorial:FireServer()
 -- game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(workspace.Plots[eu.Name].Land.S9.Crafter.Attachment)
+local args = {
+    [1] = workspace.Plots.HallowHubby.Land.S23.Crafter.Attachment
+}
+
+game:GetService("ReplicatedStorage").Communication.DoubleCraft:FireServer(unpack(args))
