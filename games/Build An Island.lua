@@ -29,18 +29,18 @@ local function AutoHarvest()
 end
 local function AutoContribute()
   while getgenv().AutoContribute and task.wait(1) do
-    for _, expand in pairs(workspace.Plots[eu.Name].Expand:GetChildren()) do
-      for _, resource in pairs(expand.Top.BillboardGui:GetChildren()) do
-        if resource:FindFirstChild("Amount") then
-          local atual, maximo = resource.Amount.Text:match("(%d+)/(%d+)")
-          if tonumber(atual) < tonumber(maximo) then
-            game:GetService("ReplicatedStorage").Communication.ContributeToExpand:FireServer(expand.Name, resource.Name, tonumber(maximo))
-          end
+    pcall(function()
+      for _, expand in pairs(workspace.Plots[eu.Name].Expand:GetChildren()) do
+        for _, resource in pairs(expand.Top.BillboardGui:GetChildren()) do
+          pcall(function()
+            local atual, maximo = resource.Amount.Text:match("(%d+)/(%d+)")
+            if tonumber(atual) < tonumber(maximo) then
+              game:GetService("ReplicatedStorage").Communication.ContributeToExpand:FireServer(expand.Name, resource.Name, tonumber(maximo))
+            end
+          end)
         end
       end
-    end
--- workspace.Plots[eu.Name].Expand.S13.Top.BillboardGui.Stone.Amount
--- workspace.Plots[eu.Name].Expand.S13.Top.BillboardGui.Log.Amount
+    end)
   end
 end
 local function AutoCraft()
