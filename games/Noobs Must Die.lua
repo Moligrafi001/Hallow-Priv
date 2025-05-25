@@ -112,7 +112,7 @@ Button = Menu:CreateButton({
 
 -- Items
 local ItemsTab = Window:CreateTab("Items", "box")
-Section = Menu:CreateSection("Settings")
+Section = ItemsTab:CreateSection("Settings")
 Dropdown = ItemsTab:CreateDropdown({
   Name = "Selected Item",
   Options = ReturnItems(),
@@ -121,7 +121,7 @@ Dropdown = ItemsTab:CreateDropdown({
     Settings.Selected = Options[1]
   end
 })
-Input = Menu:CreateInput({
+Input = ItemsTab:CreateInput({
    Name = "Selected Amount",
    CurrentValue = tostring(Settings.Times),
    PlaceholderText = "Numbers only, ex.: 15",
@@ -129,8 +129,8 @@ Input = Menu:CreateInput({
      Settings.Times = tonumber(Text)
    end,
 })
-Section = Menu:CreateSection("Initialize")
-Button = Menu:CreateButton({
+Section = ItemsTab:CreateSection("Initialize")
+Button = ItemsTab:CreateButton({
   Name = "Get Selected Item",
   Callback = function()
     GetItem()
