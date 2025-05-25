@@ -10,6 +10,7 @@ local Window = Rayfield:CreateWindow({
 -- Global Values
 getgenv().AutoCollect = false
 getgenv().AutoLock = false
+getgenv().AntiBarriers = false
 
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
@@ -44,6 +45,24 @@ local function AutoLock()
     end
   end
 end
+local function AntiBarriers()
+  local function SetState(state)
+   for _, studio in pairs(workspace.Studios:GetChildren()) do
+      if studio:GetAttribute("Owner") ~= eu.UserId then
+        for _, barrier in pairs(studio.Barrier:GetChildren()) do
+          barrier.CanCollide = state
+          barrier.CanTouch = state
+        end
+      end
+    end
+  end
+  while getgenv().AntiBarriers and task.wait(1) do
+    SetState(false)
+  end
+  if not getgenv().AntiBarriers then
+    SetState(true)
+  end
+end
 
 --[[
 game:GetService("Players").LocalPlayer.leaderstats.Worth.Value
@@ -70,5 +89,13 @@ Toggle = Menu:CreateToggle({
   Callback = function(Value)
     getgenv().AutoLock = Value
     AutoLock()
+  end
+})
+Toggle = Menu:CreateToggle({
+  Name = "Anti Lasers Barriers",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AntiBarriers = Value
+    AntiBarriers()
   end
 })
