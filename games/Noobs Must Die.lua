@@ -101,6 +101,7 @@ Input = Menu:CreateInput({
      Settings.Distance = tonumber(Text) * 2
    end,
 })
+Section = Menu:CreateSection("Extra")
 Button = Menu:CreateButton({
   Name = "Finish All Quests",
   Callback = function()
