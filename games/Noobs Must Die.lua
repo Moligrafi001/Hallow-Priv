@@ -16,6 +16,7 @@ local eu = game:GetService("Players").LocalPlayer
 local Settings = {
   Distance = 30,
   Selected = "Armor",
+  Fighter = "Telamon",
   Times = 1
 }
 
@@ -38,13 +39,13 @@ local function ReturnItems()
   return Names
 end
 local function ReturnCharacters()
-  local args = {
-    [1] = "DoomBringer"
-}
+  local Names = {}
 
-game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(unpack(args))
-game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
-game:GetService("ReplicatedStorage").Fighters.Telamon
+  for _, fighter in pairs(game:GetService("ReplicatedStorage").Fighters:GetChildren()) do
+    table.insert(Names, fighter.Name)
+  end
+
+  return Names
 end
 local function KillAll()
   for _, enemy in pairs(workspace.Enemies:GetChildren()) do
@@ -121,8 +122,24 @@ Button = Menu:CreateButton({
 })
 
 -- Items
-local ItemsTab = Window:CreateTab("Items", "box")
-Section = ItemsTab:CreateSection("Settings")
+local ItemsTab = Window:CreateTab("Items & Fighters", "box")
+Section = ItemsTab:CreateSection("Fighters")
+Dropdown = ItemsTab:CreateDropdown({
+  Name = "Selected Fighter",
+  Options = ReturnCharacters(),
+  CurrentOption = { Settings.Fighter },
+  Callback = function(Options)
+    Settings.Fighter = Options[1]
+  end
+})
+Button = ItemsTab:CreateButton({
+  Name = "Equip Selected Fighter",
+  Callback = function()
+    game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(Settings.Fighter)
+    game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
+  end
+})
+Section = ItemsTab:CreateSection("Items")
 Dropdown = ItemsTab:CreateDropdown({
   Name = "Selected Item",
   Options = ReturnItems(),
@@ -139,7 +156,6 @@ Input = ItemsTab:CreateInput({
      Settings.Times = tonumber(Text)
    end,
 })
-Section = ItemsTab:CreateSection("Initialize")
 Button = ItemsTab:CreateButton({
   Name = "Get Selected Item",
   Callback = function()
