@@ -21,7 +21,7 @@ local Settings = {
 
 -- Functios
 local function GetItem()
-  for i = 1, Settings.Selected do
+  for i = 1, Settings.Times do
     game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(Settings.Selected)
     task.wait(0.1)
   end
