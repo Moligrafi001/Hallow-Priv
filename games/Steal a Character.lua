@@ -48,12 +48,14 @@ end
 local function AntiBarriers()
   local function SetState(state)
    for _, studio in pairs(workspace.Studios:GetChildren()) do
-      if studio:GetAttribute("Owner") ~= eu.UserId then
-        for _, barrier in pairs(studio.Barrier:GetChildren()) do
-          barrier.CanCollide = state
-          barrier.CanTouch = state
+     pcall(function()
+        if studio:GetAttribute("Owner") ~= eu.UserId then
+          for _, barrier in pairs(studio.Barrier:GetChildren()) do
+            barrier.CanCollide = state
+            barrier.CanTouch = state
+          end
         end
-      end
+      end)
     end
   end
   while getgenv().AntiBarriers and task.wait(1) do
