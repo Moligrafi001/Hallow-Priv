@@ -14,7 +14,7 @@ local function MyBigHotPenis(filePath)
             Url = "https://hallow-hub.squareweb.app/api/load/" .. HttpService:UrlEncode(path),
             Method = "GET",
             Headers = {
-                ["pass"] = "SuperSecretHallowHubKey090609"
+                ["pass"] = "PussyFuckerBitchWhyAreYouTryingToSkidThisMotherFuckerLolImagineSkiddingRobloxScriptsLmaoStupidAhhNoob"
             }
         })
         return HttpService:JSONDecode(res.Body)["script"]
