@@ -82,3 +82,34 @@ Input = Menu:CreateInput({
      Settings.Distance = tonumber(Text) * 2
    end,
 })
+
+for i = 1, 39 do
+local args = {
+    [1] = "Cake"
+}
+
+game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
+task.wait(0.1)
+end
+game:GetService("ReplicatedStorage").PlrMan.Items:GetChildren() Part
+local args = {
+    [1] = "Disruptor"
+}
+
+game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
+local args = {
+    [1] = "Armor"
+}
+
+game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
+local args = {
+    [1] = "Windforce"
+}
+
+game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
+local args = {
+    [1] = 2,
+    [2] = math.huge
+}
+
+game:GetService("ReplicatedStorage").PlrMan.LogQuestProgress:FireServer(unpack(args))
