@@ -38,6 +38,13 @@ local function ReturnItems()
   return Names
 end
 local function ReturnCharacters()
+  local args = {
+    [1] = "DoomBringer"
+}
+
+game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(unpack(args))
+game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
+game:GetService("ReplicatedStorage").Fighters.Telamon
 end
 local function KillAll()
   for _, enemy in pairs(workspace.Enemies:GetChildren()) do
