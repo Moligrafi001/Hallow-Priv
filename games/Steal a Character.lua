@@ -15,7 +15,8 @@ getgenv().AntiBarriers = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Studio = nil
+  Studio = nil,
+  Busy = false
 }
 
 -- Loading
@@ -29,20 +30,24 @@ end
 -- Functions
 local function AutoCollect()
   while getgenv().AutoCollect and task.wait(1) do
-    for _, platform in pairs(Settings.Studio.Platforms:GetChildren()) do
-      if platform:FindFirstChildOfClass("Model") then
-        firetouchinterest(eu.Character.HumanoidRootPart, platform.Collect, 0)
-        firetouchinterest(eu.Character.HumanoidRootPart, platform.Collect, 1)
+    pcall(function()
+      for _, platform in pairs(Settings.Studio.Platforms:GetChildren()) do
+        if platform:FindFirstChildOfClass("Model") then
+          firetouchinterest(eu.Character.HumanoidRootPart, platform.Collect, 0)
+          firetouchinterest(eu.Character.HumanoidRootPart, platform.Collect, 1)
+        end
       end
-    end
+    end)
   end
 end
 local function AutoLock()
   while getgenv().AutoLock and task.wait(1) do
-    if not Settings.Studio:GetAttribute("Locked") and eu.leaderstats.Worth.Value >= 30000 then
-      firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 0)
-      firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 1)
-    end
+    pcall(function()
+      if not Settings.Studio:GetAttribute("Locked") and eu.leaderstats.Worth.Value >= 30000 then
+        firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 0)
+        firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 1)
+      end
+    end)
   end
 end
 local function AntiBarriers()
@@ -66,14 +71,6 @@ local function AntiBarriers()
   end
 end
 
---[[
-game:GetService("Players").LocalPlayer.leaderstats.Worth.Value
-workspace.Studios:GetChildren()[9].LockOneMin.Hitbox.TouchInterest
-workspace.Studios:GetChildren()[9].Platforms:GetChildren()[3].Collect.TouchInterest
-workspace.Studios:GetChildren()[9].Platforms:GetChildren()[3].Noob
-workspace.Studios.Studio.Barrier.Invisibleace.Studios
---]]
-
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Auto Farm")
@@ -85,6 +82,7 @@ Toggle = Menu:CreateToggle({
     AutoCollect()
   end
 })
+Section = Menu:CreateSection("Safety")
 Toggle = Menu:CreateToggle({
   Name = "Auto Lock Base",
   CurrentValue = false,
@@ -93,6 +91,7 @@ Toggle = Menu:CreateToggle({
     AutoLock()
   end
 })
+Section = Menu:CreateSection("Blatant")
 Toggle = Menu:CreateToggle({
   Name = "Anti Lasers Barriers",
   CurrentValue = false,
