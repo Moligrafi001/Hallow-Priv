@@ -37,6 +37,8 @@ local function ReturnItems()
   
   return Names
 end
+local function ReturnCharacters()
+end
 local function KillAll()
   for _, enemy in pairs(workspace.Enemies:GetChildren()) do
     game:GetService("ReplicatedStorage").HurtEnemy:FireServer(enemy, math.huge)
