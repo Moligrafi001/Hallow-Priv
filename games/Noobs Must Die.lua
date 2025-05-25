@@ -65,7 +65,7 @@ Toggle = Menu:CreateToggle({
     AutoKill()
   end
 })
-Section = Menu:CreateSection("Hrlpful")
+Section = Menu:CreateSection("Helpful")
 Toggle = Menu:CreateToggle({
   Name = "Kill Aura",
   CurrentValue = false,
