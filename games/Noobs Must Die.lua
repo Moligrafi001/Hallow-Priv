@@ -14,7 +14,7 @@ getgenv().KillAura = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Distance = 19
+  Distance = 30
 }
 
 -- Functios
