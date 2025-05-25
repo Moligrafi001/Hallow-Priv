@@ -39,7 +39,7 @@ local function KillAura()
     end
     return Detected
   end
-  while getgenv().KillAura and task.wait(0.3) do
+  while getgenv().KillAura and task.wait(0.1) do
     pcall(function()
       for _, enemy in pairs(GetNearby()) do
         game:GetService("ReplicatedStorage").HurtEnemy:FireServer(enemy, math.huge)
