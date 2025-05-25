@@ -14,7 +14,16 @@ getgenv().AutoLock = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
+  Studio = nil
 }
+
+-- Loading
+for _, studio in pairs(workspace.Studios:GetChildren()) do
+  if studio:GetAttribute("Owner") == eu.UserId then
+    Settings.Studio = studio
+    break
+  end
+end
 
 -- Functions
 local function AutoCollect()
@@ -29,13 +38,9 @@ local function AutoCollect()
 end
 local function AutoLock()
   while getgenv().AutoLock and task.wait(1) do
-    for _, studio in pairs(workspace.Studios:GetChildren()) do
-      if studio:GetAttribute("Owner") == eu.UserId then
-        if not studio:GetAttribute("Locked") and eu.leaderstats.Worth.Value >= 30000 then
-          firetouchinterest(eu.Character.HumanoidRootPart, studio.LockOneMin.Hitbox, 0)
-          firetouchinterest(eu.Character.HumanoidRootPart, studio.LockOneMin.Hitbox, 1)
-        end
-      end
+    if not Settings.Studio:GetAttribute("Locked") and eu.leaderstats.Worth.Value >= 30000 then
+      firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 0)
+      firetouchinterest(eu.Character.HumanoidRootPart, Settings.Studio.LockOneMin.Hitbox, 1)
     end
   end
 end
@@ -55,7 +60,7 @@ Toggle = Menu:CreateToggle({
   Name = "Auto Collect Money",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().AutoKill = AutoCollect
+    getgenv().AutoCollect = Value
     AutoCollect()
   end
 })
@@ -63,7 +68,7 @@ Toggle = Menu:CreateToggle({
   Name = "Auto Lock Base",
   CurrentValue = false,
   Callback = function(Value)
-    getgenv().AutoKill = AutoLock
+    getgenv().AutoLock = Value
     AutoLock()
   end
 })
