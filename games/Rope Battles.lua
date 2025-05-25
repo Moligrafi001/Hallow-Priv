@@ -14,10 +14,22 @@ getgenv().AutoRope = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Cooldown = 1
+  Cooldown = 1,
+  Selected = "Commom"
 }
 
 -- Functions
+local function ReturnRopes()
+  local Names = {}
+  
+  for _, rope in pairs(game:GetService("ReplicatedStorage").Resources.Fp:GetChildren()) do
+    if rope:IsA("Model") then
+      table.insert(Names, rope.Name)
+    end
+  end
+  
+  return Names
+end
 local function RopeAll()
   pcall(function()
     for _, p in pairs(game.Players:GetPlayers()) do
@@ -71,8 +83,7 @@ local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Exterminate")
 Button = Menu:CreateButton({
   Name = "Rope All",
-  CurrentValue = false,
-  Callback = function(Value)
+  Callback = function()
     RopeAll()
   end
 })
@@ -93,6 +104,20 @@ Input = Menu:CreateInput({
    end,
 })
 Section = Menu:CreateSection("Helpful")
+Dropdown = Menu:CreateDropdown({
+  Name = "Selected Item to Equip",
+  Options = ReturnRopes(),
+  CurrentOption = { Settings.Selected },
+  Callback = function(Options)
+    Settings.Selected = Options[1]
+  end
+})
+Button = Menu:CreateButton({
+  Name = "Equip Selected Item",
+  Callback = function()
+    game:GetService("ReplicatedStorage").RemoteFunctions.EquipToolRF:InvokeServer(Settings.Selected)
+  end
+})
 Toggle = Menu:CreateToggle({
   Name = "Auto Struggle",
   CurrentValue = false,
