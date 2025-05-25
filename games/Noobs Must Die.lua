@@ -14,10 +14,29 @@ getgenv().KillAura = false
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Distance = 30
+  Distance = 30,
+  Selected = "Armor",
+  Times = 1
 }
 
 -- Functios
+local function GetItem()
+  for i = 1, Settings.Selected do
+    game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(Settings.Selected)
+    task.wait(0.1)
+  end
+end
+local function ReturnItems()
+  local Names = {}
+  
+  for _, item in pairs(game:GetService("ReplicatedStorage").PlrMan.Items:GetChildren()) do
+    if item:IsA("Part") then
+      table.insert(Names, item.Name)
+    end
+  end
+  
+  return Names
+end
 local function KillAll()
   for _, enemy in pairs(workspace.Enemies:GetChildren()) do
     game:GetService("ReplicatedStorage").HurtEnemy:FireServer(enemy, math.huge)
@@ -53,7 +72,7 @@ local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Exterminate")
 Button = Menu:CreateButton({
   Name = "Kill All",
-  Callback = function(Value)
+  Callback = function()
     KillAll()
   end
 })
@@ -82,34 +101,38 @@ Input = Menu:CreateInput({
      Settings.Distance = tonumber(Text) * 2
    end,
 })
+Button = Menu:CreateButton({
+  Name = "Finish All Quests",
+  Callback = function()
+    for i = 1, 9 do
+      game:GetService("ReplicatedStorage").PlrMan.LogQuestProgress:FireServer(i, math.huge)
+    end
+  end
+})
 
-for i = 1, 39 do
-local args = {
-    [1] = "Cake"
-}
-
-game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
-task.wait(0.1)
-end
-game:GetService("ReplicatedStorage").PlrMan.Items:GetChildren() Part
-local args = {
-    [1] = "Disruptor"
-}
-
-game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
-local args = {
-    [1] = "Armor"
-}
-
-game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
-local args = {
-    [1] = "Windforce"
-}
-
-game:GetService("ReplicatedStorage").PlrMan.Items.PickupItem:FireServer(unpack(args))
-local args = {
-    [1] = 2,
-    [2] = math.huge
-}
-
-game:GetService("ReplicatedStorage").PlrMan.LogQuestProgress:FireServer(unpack(args))
+-- Items
+local ItemsTab = Window:CreateTab("Items", "box")
+Section = Menu:CreateSection("Settings")
+Dropdown = ItemsTab:CreateDropdown({
+  Name = "Selected Item",
+  Options = ReturnItems(),
+  CurrentOption = { Settings.Selected },
+  Callback = function(Options)
+    Settings.Selected = Options[1]
+  end
+})
+Input = Menu:CreateInput({
+   Name = "Selected Amount",
+   CurrentValue = tostring(Settings.Times),
+   PlaceholderText = "Numbers only, ex.: 15",
+   Callback = function(Text)
+     Settings.Times = tonumber(Text)
+   end,
+})
+Section = Menu:CreateSection("Initialize")
+Button = Menu:CreateButton({
+  Name = "Get Selected Item",
+  Callback = function()
+    GetItem()
+  end
+})
