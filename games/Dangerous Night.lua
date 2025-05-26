@@ -67,7 +67,7 @@ end
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Furniture")
-Dropdown = ItemsTab:CreateDropdown({
+Dropdown = Menu:CreateDropdown({
   Name = "Selected Furniture",
   Options = ReturnFurniture(),
   CurrentOption = { Settings.Selected },
