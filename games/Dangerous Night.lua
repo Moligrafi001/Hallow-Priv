@@ -66,8 +66,9 @@ end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
-Section = Menu:CreateSection("Furniture")
-Dropdown = Menu:CreateDropdown({
+Section = Menu:CreateSection("Bring Furniture")
+Label = GetItems:CreateLabel("CAN ONLY BRING FURNITURES THAT ARE CLOSE TO YOU", "triangle-alert")
+FurnitureDropdown = Menu:CreateDropdown({
   Name = "Selected Furniture",
   Options = ReturnFurniture(),
   CurrentOption = { Settings.Selected },
@@ -76,7 +77,7 @@ Dropdown = Menu:CreateDropdown({
   end
 })
 Button = Menu:CreateButton({
-  Name = "Get Selected Furniture",
+  Name = "Bring Selected Furniture",
   Callback = function()
     if GetFurniture() then
       Rayfield:Notify({
@@ -95,3 +96,16 @@ Button = Menu:CreateButton({
     end
   end
 })
+Button = Menu:CreateButton({
+  Name = "Get Selected Furniture",
+  Callback = function()
+   	FurnitureDropdown:Refresh(ReturnFurniture())
+   	Rayfield:Notify({
+      Title = "Done!",
+      Content = "Updated the furniture list!",
+      Duration = 3,
+      Image = 17091459839,  
+    })
+  end
+})
+Label = GetItems:CreateLabel("CHANCE TO FAIL", "triangle-alert")
