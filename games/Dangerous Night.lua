@@ -49,27 +49,58 @@ local function GetFurniture()
   
   return false
 end
-local function ReturnFood(what)
-  local Names = {}
-  
-  for _, food in pairs(workspace:GetChildren()) do
-    if food:IsA("Tool") then
-      if what == "Names" then
-        table.insert(Names, food.Name)
-      elseif what == "Objects" then
+local function CollectFood()
+  local function ReturnFood()
+    local Names = {}
+    
+    for _, food in pairs(workspace:GetChildren()) do
+      if food:IsA("Tool") and food:FindFirstChild("Handle") then
         table.insert(Names, food)
       end
     end
+    
+    return Names
   end
-  
-  return Names
-end
-local function CollectFood()
-  
+  repeat
+    if not Settings.Busy and #ReturnFood() > 0 then
+      Settings.Busy = true
+      eu.Character.HumanoidRootPart:SetAttribute("Marc", eu.Character.HumanoidRootPart.CFrame)
+      for _, food in pairs(ReturnFood()) do
+        eu.Character.HumanoidRootPart.CFrame = food.Handle.CFrame
+        task.wait(0.3)
+        fireproximityprompt(food.Handle.ProximityPrompt)
+        eu.Character.HumanoidRootPart.CFrame = eu.Character.HumanoidRootPart:GetAttribute("Marc")
+        task.wait(0.1)
+      end
+      Settings.Busy = false
+    end
+  until #ReturnFood() == 0
 end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
+Section = Menu:CreateSection("Bring Food")
+Button = Menu:CreateButton({
+  Name = "Collect Food",
+  Callback = function()
+   	if Settings.Busy then
+     	Rayfield:Notify({
+        Title = "Hey, wait!",
+        Content = "Player is collecting!",
+        Duration = 3,
+        Image = 17091459839,  
+      })
+   	else
+     	Rayfield:Notify({
+        Title = "Collecting...",
+        Content = "Waiting...",
+        Duration = 6,
+        Image = 17091459839,  
+      })
+      CollectFood()
+    end
+  end
+})
 Section = Menu:CreateSection("Bring Furniture")
 Label = Menu:CreateLabel("CAN ONLY BRING FURNITURES THAT ARE CLOSE TO YOU", "triangle-alert")
 FurnitureDropdown = Menu:CreateDropdown({
