@@ -67,7 +67,7 @@ end
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
 Section = Menu:CreateSection("Bring Furniture")
-Label = GetItems:CreateLabel("CAN ONLY BRING FURNITURES THAT ARE CLOSE TO YOU", "triangle-alert")
+Label = Menu:CreateLabel("CAN ONLY BRING FURNITURES THAT ARE CLOSE TO YOU", "triangle-alert")
 FurnitureDropdown = Menu:CreateDropdown({
   Name = "Selected Furniture",
   Options = ReturnFurniture(),
