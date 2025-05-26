@@ -10,7 +10,8 @@ local Window = Rayfield:CreateWindow({
 -- Locals
 local eu = game:GetService("Players").LocalPlayer
 local Settings = {
-  Selected = ""
+  Selected = "",
+  Busy = false
 }
 
 -- Functions
@@ -63,6 +64,9 @@ local function ReturnFood(what)
   
   return Names
 end
+local function CollectFood()
+  
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -97,7 +101,7 @@ Button = Menu:CreateButton({
   end
 })
 Button = Menu:CreateButton({
-  Name = "Get Selected Furniture",
+  Name = "Update Furniture List",
   Callback = function()
    	FurnitureDropdown:Refresh(ReturnFurniture())
    	Rayfield:Notify({
