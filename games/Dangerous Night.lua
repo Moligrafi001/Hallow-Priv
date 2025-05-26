@@ -36,7 +36,7 @@ local function GetFurniture()
     if furniture:IsA("Folder") then
       for _, interno in pairs(furniture:GetChildren()) do
         if interno:IsA("Model") and interno.Name == Settings.Selected then
-          game:GetService("ReplicatedStorage").PickupItemEvent:FireServer(furniture)
+          game:GetService("ReplicatedStorage").PickupItemEvent:FireServer(interno)
           return true
         end
       end
