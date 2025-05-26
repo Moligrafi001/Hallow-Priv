@@ -108,4 +108,4 @@ Button = Menu:CreateButton({
     })
   end
 })
-Label = GetItems:CreateLabel("CHANCE TO FAIL", "triangle-alert")
+Label = Menu:CreateLabel("CHANCE TO FAIL", "triangle-alert")
