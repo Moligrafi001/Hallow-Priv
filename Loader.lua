@@ -277,6 +277,8 @@ elseif Game == 7516718402 then
   MyBigHotPenis("games/Noobs Must Die.lua")
 elseif Game == 7577218041 then
   MyBigHotPenis("games/Steal a Character.lua")
+elseif Game == 7453941040 then
+  MyBigHotPenis("games/Dangerous Night.lua")
 else
   MyBigHotPenis("Hallow Hub.lua")
 end
