@@ -246,20 +246,22 @@ local Toggle =  Menu:CreateToggle({
 -- Teleport
 local TPsTab = Window:CreateTab("Teleport", "shell")
 Section = TPsTab:CreateSection("Teleport to Mirror")
--- Button = TPsTab:CreateButton({
---    Name = "Unlock All Mirrors",
---    Callback = function()
---    	for _, mirror in pairs(ReturnThing("Mirrors")) do
---       game:GetService("ReplicatedStorage").Remotes.Mirror:FireServer(mirror)
---    	end
---    	Rayfield:Notify({
---       Title = "Done!",
---       Content = "Unlocked all the mirrors!",
---       Duration = 3,
---       Image = 17091459839,
---     })
---    end,
--- })
+--[[
+  Button = TPsTab:CreateButton({
+    Name = "Unlock All Mirrors",
+    Callback = function()
+    	for _, mirror in pairs(ReturnThing("Mirrors")) do
+      game:GetService("ReplicatedStorage").Remotes.Mirror:FireServer(mirror)
+    	end
+    	Rayfield:Notify({
+      Title = "Done!",
+      Content = "Unlocked all the mirrors!",
+      Duration = 3,
+      Image = 17091459839,
+    })
+    end,
+})
+--]]
 MirDrop = TPsTab:CreateDropdown({
    Name = "Selected Mirror",
    Options = ReturnThing("Mirrors"),
