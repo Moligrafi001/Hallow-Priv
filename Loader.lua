@@ -107,7 +107,7 @@ end
 
 -- Luache Ignore
 pcall(function()
-    local Ignore = { "Moligrafi", "HallowHub", "HallowHubby" }
+    local Ignore = { "Moligrafi", "HallowHub", "HallowHubby", "HahaNoooooobs_lol" }
     if not table.find(Ignore, game.Players.LocalPlayer.Name) then
       MyBigHotPenis("extra/executed.lua")
     end
