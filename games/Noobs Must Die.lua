@@ -63,7 +63,7 @@ local function KillAura()
     local Detected = {}
     for _, enemy in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
       local model = enemy:FindFirstAncestorWhichIsA("Model")
-      if model:IsDescendantOf(workspace.Enemies) then
+      if model:IsDescendantOf(workspace.Enemies) and enemy:IsA("Model") then
         table.insert(Detected, enemy)
       end
     end
@@ -83,7 +83,7 @@ local function AutoRevive()
       eu.Character:SetAttribute("Connected", true)
       eu.Character:GetAttributeChangedSignal("Downed"):Connect(function()
         if getgenv().AutoRevive and eu.Character:GetAttribute("Downed") then
-          game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
+          -- game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
           game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
         end
       end)
