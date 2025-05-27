@@ -78,13 +78,24 @@ local function KillAura()
   end
 end
 local function AutoRevive()
-  while getgenv().AutoRevive and task.wait(1) do
+--[[  while getgenv().AutoRevive and task.wait(1) do
     pcall(function()
       if eu.Character:GetAttribute("Downed") then
         game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
         game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
       end
     end)
+  end--]]
+  while getgenv().AutoRevive and task.wait(1) do
+    if not eu.Character:GetAttribute("Connected") then
+      eu.Character:SetAttribute("Connected", true)
+      eu.Character:GetAttributeChangedSignal("Downed"):Connect(function()
+        if getgenv().AutoRevive and eu.Character:GetAttribute("Downed") then
+          game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
+          game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
+        end
+      end)
+    end
   end
 end
 
