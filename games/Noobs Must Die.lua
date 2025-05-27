@@ -83,7 +83,6 @@ local function AutoRevive()
       eu.Character:SetAttribute("Connected", true)
       eu.Character:GetAttributeChangedSignal("Downed"):Connect(function()
         if getgenv().AutoRevive and eu.Character:GetAttribute("Downed") then
-          -- game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
           game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
         end
       end)
