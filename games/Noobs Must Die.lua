@@ -63,8 +63,8 @@ local function KillAura()
     local Detected = {}
     for _, enemy in pairs(workspace:GetPartBoundsInBox(eu.Character.HumanoidRootPart.CFrame, Vector3.new(Settings.Distance, 20, Settings.Distance), nil)) do
       local model = enemy:FindFirstAncestorWhichIsA("Model")
-      if model:IsDescendantOf(workspace.Enemies) and enemy:IsA("Model") then
-        table.insert(Detected, enemy)
+      if model:IsDescendantOf(workspace.Enemies) then
+        table.insert(Detected, model)
       end
     end
     return Detected
