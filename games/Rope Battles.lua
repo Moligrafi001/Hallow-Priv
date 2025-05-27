@@ -36,24 +36,24 @@ local function RopeAll()
       for _, tool in pairs(eu.Character:GetChildren()) do
         if p ~= eu and tool:IsA("Tool") then
           local args = {
-            [1] = {
+            [1] = eu,
+            [2] = {
               ["toolInstance"] = tool,
               ["target"] = p.Character,
               ["ropeInfos"] = {
-                ["Thickness"] = math.huge,
-                ["WinchForce"] = math.huge,
-                ["WinchTarget"] = 18,
+                ["Thickness"] = 0.03,
+                ["WinchForce"] = 800,
+                ["Visible"] = true,
                 ["WinchResponsiveness"] = 200,
-                ["Color"] = BrickColor.new(356),
+                ["WinchTarget"] = 25,
                 ["WinchEnabled"] = true,
                 ["WinchSpeed"] = 15,
-                ["Visible"] = false
+                ["Color"] = BrickColor.new(1001)
               },
               ["attacker"] = eu.Character,
-              ["body"] = p.Character:FindFirstChild("Right Leg")
+              ["body"] = p.Character:FindFirstChild("Left Leg")
             }
           }
-        
           game:GetService("ReplicatedStorage").RemoteEvents.OnHitRE:FireServer(unpack(args))
         end
       end
