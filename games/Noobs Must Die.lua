@@ -9,6 +9,7 @@ local Window = Rayfield:CreateWindow({
 
 -- Global Values
 getgenv().AutoKill = false
+getgenv().AutoRevive = false
 getgenv().KillAura = false
 
 -- Locals
@@ -76,6 +77,16 @@ local function KillAura()
     end)
   end
 end
+local function AutoRevive()
+  while getgenv().AutoRevive and task.wait(1) do
+    pcall(function()
+      if eu.Character:GetAttribute("Downed") then
+        game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.SetActiveFighter:FireServer(eu.Fighter.Value or "Telamon")
+        game:GetService("Players").LocalPlayer.PlayerGui.ScreenUI.StartGame:FireServer()
+      end
+    end)
+  end
+end
 
 -- Menu
 local Menu = Window:CreateTab("Main", "home")
@@ -112,6 +123,14 @@ Input = Menu:CreateInput({
    end,
 })
 Section = Menu:CreateSection("Extra")
+Toggle = Menu:CreateToggle({
+  Name = "Auto Self Revive",
+  CurrentValue = false,
+  Callback = function(Value)
+    getgenv().AutoRevive = Value
+    AutoRevive()
+  end
+})
 Button = Menu:CreateButton({
   Name = "Finish All Quests",
   Callback = function()
