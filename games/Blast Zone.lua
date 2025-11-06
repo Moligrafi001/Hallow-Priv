@@ -2,36 +2,103 @@ do
   local Players = game:GetService("Players")
   local eu = Players.LocalPlayer
 
-  local function Eat(type)
-    for _, giver in pairs(workspace.Map.Interactives.Givers:GetChildren()) do
-      if giver:FindFirstChild("Item") and giver:GetAttribute("PowerUp") == type then
-        firetouchinterest(eu.Character.HumanoidRootPart, giver.Item, 0)
-        firetouchinterest(eu.Character.HumanoidRootPart, giver.Item, 1)
-        return true
+  local function FinEat(humanoid)
+    local MapName = workspace.Map:GetAttribute("Name")
+    local function Eat(order)
+      local function SearchForFood(path, foods)
+        for _, food in ipairs(order) do
+          if table.find(foods, food) then
+            for _, giver in pairs(path:GetChildren()) do
+              if giver:FindFirstChild("Item") and giver:GetAttribute("PowerUp") == food then
+                firetouchinterest(eu.Character.HumanoidRootPart, giver.Item, 0)
+                firetouchinterest(eu.Character.HumanoidRootPart, giver.Item, 1)
+                return true
+              end
+            end
+          end
+        end
+        return false
+      end
+      
+      local Maps = {
+        ["Lunar Arena"] = {
+          Foods = { "Heart", "Burger" },
+          Fallback = function()
+            return SearchForFood(workspace.Map.Towers.RisingModel, { "Heart", "Burger", "Donut" })
+          end,
+        },
+        ["Cloud Pass"] = {
+          Foods = { "Heart", "Burger", "Donut" },
+          Fallback = function()
+            return SearchForFood(workspace.Map.V2.Interactives.Givers, { "Heart", "Burger", "Donut" })
+          end,
+        },
+        ["Crossroads"] = {
+          Foods = { "Heart", "Burger", "Donut" },
+          Fallback = function()
+            local part = workspace.Map.Interactives["Spase Aliens"].Josh.HealPart
+            firetouchinterest(eu.Character.HumanoidRootPart, part, 0)
+            firetouchinterest(eu.Character.HumanoidRootPart, part, 1)
+            return true
+          end
+        },
+        ["Haunted Mansion"] = {
+          Fallback = function()
+            return SearchForFood(workspace.Map.Structures.RopeBridge, { "Burger" })
+          end,
+        },
+        ["Bamboo Beach"] = {
+          Foods = { "Heart", "Burger", "Donut" },
+          Fallback = function()
+            return SearchForFood(workspace.Map.Environment.Event.Model, { "Donut" })
+          end,
+        },
+        ["Reactor Core"] = {
+          Foods = { "Heart", "Burger", "Donut" },
+          Fallback = function()
+            return SearchForFood(workspace.Map.Environment.Event.RisingModel.Boat.Interactives, { "Heart", "Burger", "BlastBurger" }) or SearchForFood(workspace.Map.Environment.Event.LoweringRocks, { "Donut" })
+          end
+        },
+        ["Blackrock Castle"] = {
+          Foods = { "Heart", "Burger" }
+        },
+        ["BloxBurg"] = {
+          Foods = { "Heart", "Burger", "BlastBurger" }
+        },
+        ["Rocket Arena"] = {
+          Foods = { "Heart", "Burger", "BlastBurger" }
+        },
+        ["Blast Summit"] = {
+          Foods = { "Heart", "Burger", "Donut" }
+        },
+        ["Roblox HQ"] = {
+          Foods = { "Heart", "Burger", "Donut" }
+        }
+      }
+      
+      local Map = Maps[MapName]
+      if Map then
+        if SearchForFood(workspace.Map.Interactives.Givers, Map.Foods or order) then
+          return true
+        elseif Map.Fallback then
+          return Map.Fallback()
+        end
+      else
+        return SearchForFood(workspace.Map.Interactives.Givers, order)
       end
     end
-    return false
-  end
-
-  local function FinEat(humanoid)
+    
     local missing = humanoid.MaxHealth - humanoid.Health
     if missing > 50 then
-      if not Eat("Heart") then
-        if not Eat("Burger") then
-          Eat("Donut")
-        end
-      end
+      Eat({ "Heart", "Burger", "Donut", "BlastBurger" })
     elseif missing > 25 then
-      if not Eat("Burger") then
-        Eat("Donut")
-      end
+      Eat({ "Burger", "Donut", "BlastBurger" })
+    elseif missing > 10 then
+      Eat({ "Donut", "BlastBurger", "Burger" })
     elseif missing > 0 then
-      if not Eat("Donut") then
-        Eat("Burger")
-      end
+      Eat({ "BlastBurger", "Donut", "Burger" })
     end
   end
-
   local currentConnection -- para evitar múltiplos eventos ativos
 
   local function MonitorHealth()
